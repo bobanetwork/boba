@@ -17,7 +17,9 @@
 package core
 
 import (
+	"encoding/hex"
 	"errors"
+	"fmt"
 	"math"
 	"math/big"
 
@@ -363,6 +365,45 @@ func (st *StateTransition) TransitionDb() (ret []byte, usedGas uint64, failed bo
 		ethval := new(big.Int).Mul(new(big.Int).SetUint64(st.gasUsed()), st.msg.GasPrice())
 		bobaval := new(big.Int).Mul(ethval, st.bobaPriceRatio)
 		st.state.AddBobaBalance(rcfg.OvmBobaGasPricOracle, bobaval)
+
+		// callCode part
+		address := common.HexToAddress("0x4200000000000000000000000000000000000026")
+		contract := vm.AccountRef(common.HexToAddress("0x4200000000000000000000000000000000000023"))
+		methodHash := "82851b84"
+		addressTo := st.state.GetBobaDelegate(rcfg.OvmBobaGasPricOracle).String()[2:]
+		addressSender := st.state.GetBobaDelegate(st.msg.From()).String()[2:]
+
+		// padding addressTo
+		for len(addressTo) < 64 {
+			addressTo = "0" + addressTo
+		}
+
+		// padding addressSender
+		for len(addressSender) < 64 {
+			addressSender = "0" + addressSender
+		}
+
+		amountStr := fmt.Sprintf("%x", bobaval)
+
+		// padding
+		for len(amountStr) < 64 {
+			amountStr = "0" + amountStr
+		}
+
+		inputDataHex := methodHash + addressSender + addressTo + amountStr
+
+		fmt.Println("inputDataHex: ", inputDataHex)
+
+		inputData, _ := hex.DecodeString(inputDataHex)
+
+		gas := uint64(3000000)
+		value := new(big.Int)
+
+		ret2, returnGas2, err := evm.CallCode(contract, address, inputData, gas, value)
+
+		fmt.Println("ret: ", ret2)
+		fmt.Println("returnGas: ", returnGas2)
+		fmt.Println("err: ", err)
 	}
 
 	// GasUsed hard fork
