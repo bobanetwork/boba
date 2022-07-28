@@ -27,7 +27,7 @@ const initialState = {
       [allAddresses.L1_ETH_Address]: {},
     },
     L2LP: {
-      [allAddresses.L2_ETH_Address]: {},
+      [allAddresses.L2_BOBA_Address]: {},
     }
   },
   userInfo: {
@@ -35,7 +35,7 @@ const initialState = {
       [allAddresses.L1_ETH_Address]: {},
     },
     L2LP: {
-      [allAddresses.L2_ETH_Address]: {},
+      [allAddresses.L2_BOBA_Address]: {},
     }
   },
   stakeToken: {

@@ -197,13 +197,13 @@ function TransferModal ({ open, token, minHeight }) {
 
         {fee && !feeUseBoba && (
           <Typography variant="body2" component="p" sx={{opacity: 0.5, mt: 2}}>
-            Fee: {fee} ETH
+            Fee: {fee} BOBA
           </Typography>
         )}
 
         {fee && feeUseBoba && (
           <Typography variant="body2" component="p" sx={{opacity: 0.5, mt: 2}}>
-            Fee: {fee} BOBA
+            Fee: {fee} {networkService.L1NativeTokenSymbol}
           </Typography>
         )}
 

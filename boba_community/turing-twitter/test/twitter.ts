@@ -79,6 +79,9 @@ describe("Verify Twitter post for testnet funds", function() {
       deployerWallet
     );
 
+    /*twitter = await Factory__TwitterClaim.attach(
+      '0xCED1459C6B56a85363426a502a24De99fBbF5a83'
+    )*/
     twitter = await Factory__TwitterClaim.deploy(
       "https://o9gvgzsjw5.execute-api.us-east-1.amazonaws.com/Prod/",
       turingHelper.address,
@@ -96,6 +99,12 @@ describe("Verify Twitter post for testnet funds", function() {
       L2GovernanceERC20Json.abi,
       deployerWallet
     );
+
+    L2BOBAToken = new Contract(
+      BOBAL2Address,
+      L2GovernanceERC20Json.abi,
+      deployerWallet
+    )
 
     // fund faucet
     const fTx = await deployerWallet.sendTransaction({
