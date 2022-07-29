@@ -8,7 +8,7 @@ Price Feed oracles allow smart contracts to work with external data and open the
 
 ## 1. Boba-Straw
 
-Boba-Straw, Boba's self-operated price feed oracle is based on ChainLink's implementation and can handle price data aggregation from multiple trusted external entities (data oracles), on-chain. Currently, Boba-Straw is powered by Folkvang, our first data oracle. To further increase reliability and precision, we are adding more data-sources. Data oracles accumulate BOBA for every submission to offset operational and gas costs. To be a data-provider oracle and earn BOBA refer to the section below.
+Boba-Straw, Boba's self-operated price feed oracle is based on ChainLink's implementation and can handle price data aggregation from multiple trusted external entities (data oracles), on-chain. Currently, Boba-Straw is powered by Folkvang, our first data oracle. The price data is submitted based on the 0.25% price change threshold, but the maximal frequency is once every 10 minutes per market. To further increase reliability and precision, we are adding more data-sources. Data oracles accumulate BOBA for every submission to offset operational and gas costs. To be a data-provider oracle and earn BOBA refer to the section below.
 
 ### Feeds supported
 
@@ -134,7 +134,7 @@ Witnet is a decentralized oracle network, with multiple price feeds currently li
 
 ## 3. Turing
 
-Turing is Boba's off-chain compute system and among many other things you can fetch real-world market price data. Turing gives you the flexibility to select and set up your own data source. Or even select and work with any other reliable service that can help provide such data. In the background, Turing works with a modified L2Geth, by intercepting and injecting real world responses into the transaction. Learn more about Turing [here](../../packages/boba/turing/README.md). See [calling APIs](../../packages/boba/turing/README.md#feature-highlight-2-using-turing-to-access-apis-from-within-your-solidity-smart-contract) for detailed instructions.
+Turing is Boba's off-chain compute system and among many other things you can fetch real-world market price data. Turing gives you the flexibility to select and set up your own data source. Or even select and work with any other reliable service that can help provide such data. In the background, Turing works with a modified L2Geth, by intercepting and injecting real world responses into the transaction. Learn more about Turing [here](../../boba_documentation/developer/turing.md).
 
 Note: Unlike a feed contract where every data query remains on-chain, Turing requests are a call to an external endpoint to retrieve data - which are subject to unavailability or distortion. **Best practices include using decentralized on-chain oracles and/or off-chain 'augmentation' where off-chain compute is used to estimate the reliability of on-chain oracles**.
 
