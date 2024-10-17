@@ -15,7 +15,7 @@ contract TestCounter {
 
     address payable immutable hcAccount;  // NOTE - this variale is named "demoAddr" in older instances of the contract
 
-    constructor(address payable _hcAccount) {
+    constructor(address payable _hcAccount) {   
         hcAccount = _hcAccount;
     }
 }
@@ -24,7 +24,7 @@ contract TestCounter {
 To implement our function to waste gas, we can leverage a `for` loop to increase transaction time:
 
 ```solidity
-  //helper method to waste gas
+  // helper method to waste gas
   // repeat - waste gas on writing storage in a loop
   // junk - dynamic buffer to stress the function size.
   mapping(uint256 => uint256) public xxx;
@@ -89,81 +89,5 @@ If we encounter an error during the `CallOffChain()` call, we either revert or s
 ```
 
 Notably, in the first `if` block, we decode the returned object `ret` into two `uint256` values as the off-chain function returns two integers. The variables `x` and `y` hold the results of the addition and subtraction, respectively.
-
-## Calling Off-Chain
-
-Within the `HybridAccount` contract itself, the `CallOffchain()` method calls through to another system contract named `HCHelper`. This is the source code of the function:
-
-``` solidity
-function CallOffchain(bytes32 userKey, bytes memory req) public returns (uint32, bytes memory) {
-   require(PermittedCallers[msg.sender], "Permission denied");
-   IHCHelper HC = IHCHelper(_helperAddr);
-   userKey = keccak256(abi.encodePacked(userKey, msg.sender));
-   return HC.TryCallOffchain(userKey, req);
-}
-```
-
-In this example, the `HybridAccount` implements a simple whitelist of contracts which are allowed to call its methods. It would also be possible for a `HybridAccount` to implement additional logic here, such as requiring payment of an `ERC20` token to perform an off-chain call. Conversely, the owner of a `HybridAccount` could choose to make the `CallOffchain()` method available to all callers without restriction.
-
-You could take the **optional** opportunity for a `HybridAccount` contract to implement a billing system here, requiring a payment of `ERC20` tokens or some other mechanism of collecting payment from the calling contract.
-
-## HybridAccount / HCHelper Interaction
-
-Our `HCHelper` contract acts as a system-wide interface to the Hybrid Compute framework. Let's examine some of the calls we made to it in our own contract.
-
-First, the helper checks an internal mapping to see if a response exists for the given request. If not, the method reverts with a special prefix, followed by an encoded version of the request parameters. 
-
-```solidity
-function TryCallOffchain(bytes32 userKey, bytes memory req) public returns (uint32, bytes memory) {
-    bool found;
-    uint32 result;
-    bytes memory ret;
-
-    bytes32 subKey = keccak256(abi.encodePacked(userKey, req));
-    bytes32 mapKey = keccak256(abi.encodePacked(msg.sender, subKey));
-
-    (found, success, ret) = getEntry(mapKey);
-
-    if (found) {
-        return (result, ret);
-    } else {
-        // If no off-chain response, check for a system error response.
-        bytes32 errKey = keccak256(abi.encodePacked(address(this), subKey));
-
-        (found, result, ret) = getEntry(errKey);
-        if (found) {
-            require(result != HC_ERR_NONE, "Invalid error code");
-            return (result, ret);
-        } else {
-            // Nothing found, so trigger a new request.
-            bytes memory prefix = "_HC_TRIG";
-            bytes memory r2 = bytes.concat(prefix, abi.encodePacked(msg.sender, userKey, req));
-            assembly {
-                revert(add(r2, 32), mload(r2))
-            }
-        }
-    }
-}
-```
-
-If a response does exist, it's removed from the internal mapping and is returned to the caller. The map key encodes the request parameters, so that a response initiated by one request will not be returned later in response to a modified request from the caller.
-
-To populate the response mapping, `HybridAccount` contracts use another method in the Helper:
-
-```solidity
-function PutResponse(bytes32 subKey, bytes calldata response) public {
-    //require(msg.sender == address(this)); // _requireFromEntryPointOrOwner();
-    require(RegisteredCallers[msg.sender].owner != address(0), "Unregistered caller");
-    //require(ResponseCache[mapKey].length == 0, "Cache entry already exists");
-
-    require(response.length >= 32, "Response too short");
-    bytes32 mapKey = keccak256(abi.encodePacked(msg.sender, subKey));
-    ResponseCache[mapKey] = response;
-}
-```
-
-Note that the `msg.sender` is included in the calculation of the internal map key, ensuring that only `HybridAccount` is able to populate the response (which it will later receive back in the `TryCallOffchain()` call). However, in the case of an error result of `(success == false)`, there's also a provision for the HC implementation to insert a result under a different map key.
-
-Account Abstraction calls `PutResponse()` and the off-chain `userOperation` must carry a valid signature in order to execute the operation.
 
 That finishes our smart contract! Proceed to the next section to learn how to deploy it.
