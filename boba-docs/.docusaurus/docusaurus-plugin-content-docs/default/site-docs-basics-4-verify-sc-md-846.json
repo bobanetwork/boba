@@ -1,0 +1,27 @@
+{
+  "id": "basics/verify-sc",
+  "title": "Verifying Contracts",
+  "description": "Learn how to verify smart contracts on Boba",
+  "source": "@site/docs/basics/4_verify-sc.md",
+  "sourceDirName": "basics",
+  "slug": "/basics/verify-sc",
+  "permalink": "/docs/basics/verify-sc",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/basics/4_verify-sc.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 4,
+  "frontMatter": {
+    "description": "Learn how to verify smart contracts on Boba"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Using the BOBA Token Bridge Between L1s",
+    "permalink": "/docs/basics/bridging/boba-token-bridge"
+  },
+  "next": {
+    "title": "Adding a new ERC20 to Boba",
+    "permalink": "/docs/basics/add-new-token"
+  }
+}

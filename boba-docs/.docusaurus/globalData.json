@@ -1,0 +1,153 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/docs",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/docs",
+          "mainDocId": "index",
+          "docs": [
+            {
+              "id": "basics/add-new-token",
+              "path": "/docs/basics/add-new-token",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "basics/basic-ops",
+              "path": "/docs/basics/basic-ops",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "basics/bridging/boba-token-bridge",
+              "path": "/docs/basics/bridging/boba-token-bridge",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "basics/bridging/index",
+              "path": "/docs/basics/bridging/index",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "basics/bridging/light-bridge",
+              "path": "/docs/basics/bridging/light-bridge",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "basics/bridging/standard-bridge",
+              "path": "/docs/basics/bridging/standard-bridge",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "basics/deploy-contract",
+              "path": "/docs/basics/deploy-contract",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "basics/index",
+              "path": "/docs/basics/index",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "basics/json-rpc-api",
+              "path": "/docs/basics/json-rpc-api",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "basics/verify-sc",
+              "path": "/docs/basics/verify-sc",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "faucets",
+              "path": "/docs/faucets",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "hc/addsub/README",
+              "path": "/docs/hc/addsub/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "hc/addsub/write-contract",
+              "path": "/docs/hc/addsub/write-contract",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "hc/addsub/write-handler",
+              "path": "/docs/hc/addsub/write-handler",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "hc/deploy-contract",
+              "path": "/docs/hc/deploy-contract",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "hc/index",
+              "path": "/docs/hc/index",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "hc/price-fetch",
+              "path": "/docs/hc/price-fetch",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "hc/server-setup",
+              "path": "/docs/hc/server-setup",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "index",
+              "path": "/docs/index",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "node-operators/index",
+              "path": "/docs/node-operators/index",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "node-operators/network-upgrades",
+              "path": "/docs/node-operators/network-upgrades",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "node-operators/run-node-docker",
+              "path": "/docs/node-operators/run-node-docker",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "node-operators/run-node-source",
+              "path": "/docs/node-operators/run-node-source",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "node-operators/snapshot-downloads",
+              "path": "/docs/node-operators/snapshot-downloads",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "node-operators/software-release",
+              "path": "/docs/node-operators/software-release",
+              "sidebar": "tutorialSidebar"
+            }
+          ],
+          "draftIds": [],
+          "sidebars": {
+            "tutorialSidebar": {
+              "link": {
+                "path": "/docs/index",
+                "label": "index"
+              }
+            }
+          }
+        }
+      ],
+      "breadcrumbs": true
+    }
+  }
+}

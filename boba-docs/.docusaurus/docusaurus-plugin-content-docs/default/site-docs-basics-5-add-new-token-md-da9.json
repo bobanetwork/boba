@@ -1,0 +1,27 @@
+{
+  "id": "basics/add-new-token",
+  "title": "Adding a new ERC20 to Boba",
+  "description": "Adding a new ERC20 token to Boba",
+  "source": "@site/docs/basics/5_add-new-token.md",
+  "sourceDirName": "basics",
+  "slug": "/basics/add-new-token",
+  "permalink": "/docs/basics/add-new-token",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/basics/5_add-new-token.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 5,
+  "frontMatter": {
+    "description": "Adding a new ERC20 token to Boba"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Verifying Contracts",
+    "permalink": "/docs/basics/verify-sc"
+  },
+  "next": {
+    "title": "Contract Deployment Example",
+    "permalink": "/docs/basics/deploy-contract"
+  }
+}

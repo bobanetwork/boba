@@ -1,0 +1,25 @@
+{
+  "id": "node-operators/run-node-docker",
+  "title": "Running a Node with Docker",
+  "description": "This tutorial will walk you through the process of using Docker to run an BOBA Sepolia node, OP Mainnet node and OP Sepolia node. You can find all Docker Compose files here.",
+  "source": "@site/docs/node-operators/1_run-node-docker.md",
+  "sourceDirName": "node-operators",
+  "slug": "/node-operators/run-node-docker",
+  "permalink": "/docs/node-operators/run-node-docker",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/node-operators/1_run-node-docker.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Overview",
+    "permalink": "/docs/node-operators/index"
+  },
+  "next": {
+    "title": "Running a Node from Source",
+    "permalink": "/docs/node-operators/run-node-source"
+  }
+}

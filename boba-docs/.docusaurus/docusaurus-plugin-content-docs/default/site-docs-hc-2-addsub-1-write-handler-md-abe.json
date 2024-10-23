@@ -1,0 +1,25 @@
+{
+  "id": "hc/addsub/write-handler",
+  "title": "Write an Off-Chain Handler",
+  "description": "The first step is to write our off-chain handler. This handler is responsible for receiving requests from the bundler along with their payloads and returning the appropriate responses.",
+  "source": "@site/docs/hc/2_addsub/1_write-handler.md",
+  "sourceDirName": "hc/2_addsub",
+  "slug": "/hc/addsub/write-handler",
+  "permalink": "/docs/hc/addsub/write-handler",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/hc/2_addsub/1_write-handler.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Add-Subtract Example",
+    "permalink": "/docs/hc/addsub/"
+  },
+  "next": {
+    "title": "Write the Smart Contract",
+    "permalink": "/docs/hc/addsub/write-contract"
+  }
+}

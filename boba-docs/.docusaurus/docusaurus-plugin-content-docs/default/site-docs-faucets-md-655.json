@@ -1,0 +1,22 @@
+{
+  "id": "faucets",
+  "title": "Testnet Faucets",
+  "description": "Testnet faucets",
+  "source": "@site/docs/faucets.md",
+  "sourceDirName": ".",
+  "slug": "/faucets",
+  "permalink": "/docs/faucets",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/faucets.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "description": "Testnet faucets"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Node Software Releases",
+    "permalink": "/docs/node-operators/software-release"
+  }
+}

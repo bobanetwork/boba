@@ -1,0 +1,25 @@
+{
+  "id": "hc/index",
+  "title": "Introduction",
+  "description": "Welcome to the developer documentation for implementing a basic example with our system and API. This guide will walk you through the necessary steps to get started and provide you with the information you need to successfully integrate our system into your project. Additionally, you can view a full example on our Github.",
+  "source": "@site/docs/hc/0_index.md",
+  "sourceDirName": "hc",
+  "slug": "/hc/index",
+  "permalink": "/docs/hc/index",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/hc/0_index.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 0,
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Contract Deployment Example",
+    "permalink": "/docs/basics/deploy-contract"
+  },
+  "next": {
+    "title": "Price Fetch Example",
+    "permalink": "/docs/hc/price-fetch"
+  }
+}

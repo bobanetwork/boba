@@ -1,0 +1,25 @@
+{
+  "id": "basics/index",
+  "title": "Introduction",
+  "description": "Here are some basic things to know.",
+  "source": "@site/docs/basics/0_index.md",
+  "sourceDirName": "basics",
+  "slug": "/basics/index",
+  "permalink": "/docs/basics/index",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/basics/0_index.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 0,
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Introduction",
+    "permalink": "/docs/index"
+  },
+  "next": {
+    "title": "Basic Operations",
+    "permalink": "/docs/basics/basic-ops"
+  }
+}

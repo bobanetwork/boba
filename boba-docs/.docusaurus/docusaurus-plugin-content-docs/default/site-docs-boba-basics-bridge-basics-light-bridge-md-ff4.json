@@ -1,0 +1,26 @@
+{
+  "id": "boba-basics/bridge-basics/light-bridge",
+  "title": "Using the Light Bridge",
+  "description": "Learn more about the Light Bridge",
+  "source": "@site/docs/boba-basics/bridge-basics/light-bridge.md",
+  "sourceDirName": "boba-basics/bridge-basics",
+  "slug": "/boba-basics/bridge-basics/light-bridge",
+  "permalink": "/docs/boba-basics/bridge-basics/light-bridge",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/boba-basics/bridge-basics/light-bridge.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "description": "Learn more about the Light Bridge"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Using the BOBA Token Bridge Between L1s",
+    "permalink": "/docs/boba-basics/bridge-basics/boba-token-bridge"
+  },
+  "next": {
+    "title": "Using the Standard Token Bridge",
+    "permalink": "/docs/boba-basics/bridge-basics/standard-bridge"
+  }
+}

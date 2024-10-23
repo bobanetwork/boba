@@ -1,0 +1,25 @@
+{
+  "id": "node-operators/run-node-source",
+  "title": "Running a Node from Source",
+  "description": "DDocker images make it very simple to run a BOBA node, but you can also create your own node using the source code. You might choose to do this if you need the node to work on a  specific architecture or if you want to look closely at the node's code. This guide will show you how to build and run a node from scratch.",
+  "source": "@site/docs/node-operators/2_run-node-source.md",
+  "sourceDirName": "node-operators",
+  "slug": "/node-operators/run-node-source",
+  "permalink": "/docs/node-operators/run-node-source",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/node-operators/2_run-node-source.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Running a Node with Docker",
+    "permalink": "/docs/node-operators/run-node-docker"
+  },
+  "next": {
+    "title": "Network Upgrade Overview",
+    "permalink": "/docs/node-operators/network-upgrades"
+  }
+}

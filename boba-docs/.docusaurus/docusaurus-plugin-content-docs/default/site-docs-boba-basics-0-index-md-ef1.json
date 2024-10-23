@@ -1,0 +1,25 @@
+{
+  "id": "boba-basics/index",
+  "title": "Introduction",
+  "description": "The intro page.",
+  "source": "@site/docs/boba-basics/0_index.md",
+  "sourceDirName": "boba-basics",
+  "slug": "/boba-basics/index",
+  "permalink": "/docs/boba-basics/index",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/boba-basics/0_index.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 0,
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Tutorial Intro",
+    "permalink": "/docs/index"
+  },
+  "next": {
+    "title": "Token Bridging",
+    "permalink": "/docs/boba-basics/bridge-basics/index"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "boba-basics/contract-deployment",
+  "title": "Contract Deployment Example",
+  "description": "Contract deployment examples",
+  "source": "@site/docs/boba-basics/contract-deployment.md",
+  "sourceDirName": "boba-basics",
+  "slug": "/boba-basics/contract-deployment",
+  "permalink": "/docs/boba-basics/contract-deployment",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/boba-basics/contract-deployment.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "description": "Contract deployment examples"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Basic Operations",
+    "permalink": "/docs/boba-basics/basic-ops"
+  },
+  "next": {
+    "title": "Testnet Faucets",
+    "permalink": "/docs/boba-basics/faucets"
+  }
+}

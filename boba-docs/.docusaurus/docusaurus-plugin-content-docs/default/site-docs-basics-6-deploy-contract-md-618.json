@@ -1,0 +1,27 @@
+{
+  "id": "basics/deploy-contract",
+  "title": "Contract Deployment Example",
+  "description": "Contract deployment examples",
+  "source": "@site/docs/basics/6_deploy-contract.md",
+  "sourceDirName": "basics",
+  "slug": "/basics/deploy-contract",
+  "permalink": "/docs/basics/deploy-contract",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/basics/6_deploy-contract.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 6,
+  "frontMatter": {
+    "description": "Contract deployment examples"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Adding a new ERC20 to Boba",
+    "permalink": "/docs/basics/add-new-token"
+  },
+  "next": {
+    "title": "Introduction",
+    "permalink": "/docs/hc/index"
+  }
+}

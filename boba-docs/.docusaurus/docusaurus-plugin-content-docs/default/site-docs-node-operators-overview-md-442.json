@@ -1,0 +1,24 @@
+{
+  "id": "node-operators/overview",
+  "title": "Node Operators (Anchorage)",
+  "description": "The anchorage is activated on Sepolia Testnet. For other networks, please refer to Replica Node (Legacy).",
+  "source": "@site/docs/node-operators/overview.md",
+  "sourceDirName": "node-operators",
+  "slug": "/node-operators/overview",
+  "permalink": "/docs/node-operators/overview",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/node-operators/overview.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Network Upgrade Overview",
+    "permalink": "/docs/node-operators/network-upgrades"
+  },
+  "next": {
+    "title": "Running a Node with Docker",
+    "permalink": "/docs/node-operators/run-node-docker"
+  }
+}

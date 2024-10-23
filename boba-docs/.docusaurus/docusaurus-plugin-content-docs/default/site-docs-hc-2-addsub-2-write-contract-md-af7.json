@@ -1,0 +1,25 @@
+{
+  "id": "hc/addsub/write-contract",
+  "title": "Write the Smart Contract",
+  "description": "To start our contract, we need to import the interface to our HybridAccount contract. The address of this HybridAccount is passed to the constructor and is stored as an immutable variable. Next we define other contract variables and helper functions.",
+  "source": "@site/docs/hc/2_addsub/2_write-contract.md",
+  "sourceDirName": "hc/2_addsub",
+  "slug": "/hc/addsub/write-contract",
+  "permalink": "/docs/hc/addsub/write-contract",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/hc/2_addsub/2_write-contract.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Write an Off-Chain Handler",
+    "permalink": "/docs/hc/addsub/write-handler"
+  },
+  "next": {
+    "title": "Set Up a Server",
+    "permalink": "/docs/hc/server-setup"
+  }
+}

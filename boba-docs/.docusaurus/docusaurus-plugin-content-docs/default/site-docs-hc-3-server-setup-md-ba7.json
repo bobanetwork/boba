@@ -1,0 +1,25 @@
+{
+  "id": "hc/server-setup",
+  "title": "Set Up a Server",
+  "description": "For any smart contract, with or without an off-chain handler, the next step is to set up a server to run it. In this example, we will create a simple JSON-RPC server using the jsonrpclib library:",
+  "source": "@site/docs/hc/3_server-setup.md",
+  "sourceDirName": "hc",
+  "slug": "/hc/server-setup",
+  "permalink": "/docs/hc/server-setup",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/hc/3_server-setup.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Write the Smart Contract",
+    "permalink": "/docs/hc/addsub/write-contract"
+  },
+  "next": {
+    "title": "Deploy the Smart Contracts",
+    "permalink": "/docs/hc/deploy-contract"
+  }
+}

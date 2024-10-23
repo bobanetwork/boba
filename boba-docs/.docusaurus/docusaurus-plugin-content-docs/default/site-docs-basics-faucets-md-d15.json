@@ -1,0 +1,26 @@
+{
+  "id": "basics/faucets",
+  "title": "Testnet Faucets",
+  "description": "Testnet faucets",
+  "source": "@site/docs/basics/faucets.md",
+  "sourceDirName": "basics",
+  "slug": "/basics/faucets",
+  "permalink": "/docs/basics/faucets",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/basics/faucets.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "description": "Testnet faucets"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Contract Deployment Example",
+    "permalink": "/docs/basics/contract-deployment"
+  },
+  "next": {
+    "title": "JSON-RPC API",
+    "permalink": "/docs/basics/json-rpc-api"
+  }
+}

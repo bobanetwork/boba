@@ -1,0 +1,26 @@
+{
+  "id": "basics/basic-ops",
+  "title": "Basic Operations",
+  "description": "Learn how to use basic features of Boba (e.g. bridges, basic L2 ops) through examples",
+  "source": "@site/docs/basics/basic-ops.md",
+  "sourceDirName": "basics",
+  "slug": "/basics/basic-ops",
+  "permalink": "/docs/basics/basic-ops",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/basics/basic-ops.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "description": "Learn how to use basic features of Boba (e.g. bridges, basic L2 ops) through examples"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Adding a new ERC20 to Boba",
+    "permalink": "/docs/basics/add-new-token"
+  },
+  "next": {
+    "title": "Contract Deployment Example",
+    "permalink": "/docs/basics/contract-deployment"
+  }
+}

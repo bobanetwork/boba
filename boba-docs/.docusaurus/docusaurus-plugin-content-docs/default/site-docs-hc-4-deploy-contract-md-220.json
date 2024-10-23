@@ -1,0 +1,25 @@
+{
+  "id": "hc/deploy-contract",
+  "title": "Deploy the Smart Contracts",
+  "description": "A deploy-local.py script is provided to deploy and configure the necessary contracts on a local stack, launched from make devnet-up in a Boba/Optimism repository.",
+  "source": "@site/docs/hc/4_deploy-contract.md",
+  "sourceDirName": "hc",
+  "slug": "/hc/deploy-contract",
+  "permalink": "/docs/hc/deploy-contract",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/hc/4_deploy-contract.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 4,
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Set Up a Server",
+    "permalink": "/docs/hc/server-setup"
+  },
+  "next": {
+    "title": "Overview",
+    "permalink": "/docs/node-operators/index"
+  }
+}

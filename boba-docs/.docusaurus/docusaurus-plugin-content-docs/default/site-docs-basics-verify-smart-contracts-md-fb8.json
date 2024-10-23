@@ -1,0 +1,26 @@
+{
+  "id": "basics/verify-smart-contracts",
+  "title": "Verifying Contracts",
+  "description": "Learn how to verify smart contracts on Boba",
+  "source": "@site/docs/basics/verify-smart-contracts.md",
+  "sourceDirName": "basics",
+  "slug": "/basics/verify-smart-contracts",
+  "permalink": "/docs/basics/verify-smart-contracts",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/basics/verify-smart-contracts.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "description": "Learn how to verify smart contracts on Boba"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Contract Deployment Example",
+    "permalink": "/docs/basics/contract-deployment"
+  },
+  "next": {
+    "title": "Testnet Faucets",
+    "permalink": "/docs/faucets"
+  }
+}

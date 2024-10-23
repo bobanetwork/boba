@@ -1,0 +1,25 @@
+{
+  "id": "node-operators/network-upgrades",
+  "title": "Network Upgrade Overview",
+  "description": "This section has information on how to upgrade your Mainnet and Testnet nodes for new network upgrades.",
+  "source": "@site/docs/node-operators/3_network-upgrades.md",
+  "sourceDirName": "node-operators",
+  "slug": "/node-operators/network-upgrades",
+  "permalink": "/docs/node-operators/network-upgrades",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/node-operators/3_network-upgrades.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Running a Node from Source",
+    "permalink": "/docs/node-operators/run-node-source"
+  },
+  "next": {
+    "title": "Node Snapshots",
+    "permalink": "/docs/node-operators/snapshot-downloads"
+  }
+}

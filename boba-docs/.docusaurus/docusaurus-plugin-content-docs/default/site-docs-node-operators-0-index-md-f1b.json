@@ -1,0 +1,25 @@
+{
+  "id": "node-operators/index",
+  "title": "Overview",
+  "description": "The anchorage is activated on Sepolia Testnet. For other networks, please refer to Replica Node (Legacy).",
+  "source": "@site/docs/node-operators/0_index.md",
+  "sourceDirName": "node-operators",
+  "slug": "/node-operators/index",
+  "permalink": "/docs/node-operators/index",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/node-operators/0_index.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 0,
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Deploy the Smart Contracts",
+    "permalink": "/docs/hc/deploy-contract"
+  },
+  "next": {
+    "title": "Running a Node with Docker",
+    "permalink": "/docs/node-operators/run-node-docker"
+  }
+}

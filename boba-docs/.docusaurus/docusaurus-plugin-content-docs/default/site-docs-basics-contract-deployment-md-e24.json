@@ -1,0 +1,26 @@
+{
+  "id": "basics/contract-deployment",
+  "title": "Contract Deployment Example",
+  "description": "Contract deployment examples",
+  "source": "@site/docs/basics/contract-deployment.md",
+  "sourceDirName": "basics",
+  "slug": "/basics/contract-deployment",
+  "permalink": "/docs/basics/contract-deployment",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/basics/contract-deployment.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "description": "Contract deployment examples"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Adding a new ERC20 to Boba",
+    "permalink": "/docs/basics/add-new-token"
+  },
+  "next": {
+    "title": "Testnet Faucets",
+    "permalink": "/docs/faucets"
+  }
+}

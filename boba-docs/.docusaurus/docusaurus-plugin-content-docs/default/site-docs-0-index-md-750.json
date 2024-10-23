@@ -1,0 +1,21 @@
+{
+  "id": "index",
+  "title": "Introduction",
+  "description": "Here are the boba docs yaaaaay how neat!",
+  "source": "@site/docs/0_index.md",
+  "sourceDirName": ".",
+  "slug": "/index",
+  "permalink": "/docs/index",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/0_index.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 0,
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "next": {
+    "title": "Introduction",
+    "permalink": "/docs/basics/index"
+  }
+}

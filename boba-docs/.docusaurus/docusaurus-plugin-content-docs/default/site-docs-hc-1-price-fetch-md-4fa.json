@@ -1,0 +1,25 @@
+{
+  "id": "hc/price-fetch",
+  "title": "Price Fetch Example",
+  "description": "To dip our toes into Hybird Compute's capabilities, consider the following simple smart contract which fetches the price of different cryptocurrencies. You can view the full example in our repository.",
+  "source": "@site/docs/hc/1_price-fetch.md",
+  "sourceDirName": "hc",
+  "slug": "/hc/price-fetch",
+  "permalink": "/docs/hc/price-fetch",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/hc/1_price-fetch.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Introduction",
+    "permalink": "/docs/hc/index"
+  },
+  "next": {
+    "title": "Add-Subtract Example",
+    "permalink": "/docs/hc/addsub/"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "boba-basics/bridge-basics/README",
+  "title": "Token Bridging",
+  "description": "Learn more about the Boba Network Bridges",
+  "source": "@site/docs/boba-basics/bridge-basics/README.md",
+  "sourceDirName": "boba-basics/bridge-basics",
+  "slug": "/boba-basics/bridge-basics/",
+  "permalink": "/docs/boba-basics/bridge-basics/",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/boba-basics/bridge-basics/README.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "description": "Learn more about the Boba Network Bridges"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Basic Operations",
+    "permalink": "/docs/boba-basics/basic-ops"
+  },
+  "next": {
+    "title": "Using the BOBA Token Bridge Between L1s",
+    "permalink": "/docs/boba-basics/bridge-basics/boba-token-bridge"
+  }
+}

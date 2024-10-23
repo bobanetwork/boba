@@ -1,0 +1,24 @@
+{
+  "id": "basics/json-rpc-api",
+  "title": "JSON-RPC API",
+  "description": "Boba Network shares the same JSON-RPC API (opens new window) as Ethereum. Some new custom methods have been introduced and some other have been made unsupported for operation.",
+  "source": "@site/docs/basics/json-rpc-api.md",
+  "sourceDirName": "basics",
+  "slug": "/basics/json-rpc-api",
+  "permalink": "/docs/basics/json-rpc-api",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/basics/json-rpc-api.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Contract Deployment Example",
+    "permalink": "/docs/basics/contract-deployment"
+  },
+  "next": {
+    "title": "Verifying Contracts",
+    "permalink": "/docs/basics/verify-smart-contracts"
+  }
+}

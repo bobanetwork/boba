@@ -1,0 +1,26 @@
+{
+  "id": "basics/bridging/light-bridge",
+  "title": "Using the Light Bridge",
+  "description": "Learn more about the Light Bridge",
+  "source": "@site/docs/basics/3_bridging/light-bridge.md",
+  "sourceDirName": "basics/3_bridging",
+  "slug": "/basics/bridging/light-bridge",
+  "permalink": "/docs/basics/bridging/light-bridge",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/basics/3_bridging/light-bridge.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "description": "Learn more about the Light Bridge"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Using the BOBA Token Bridge Between L1s",
+    "permalink": "/docs/basics/bridging/boba-token-bridge"
+  },
+  "next": {
+    "title": "Verifying Contracts",
+    "permalink": "/docs/basics/verify-sc"
+  }
+}

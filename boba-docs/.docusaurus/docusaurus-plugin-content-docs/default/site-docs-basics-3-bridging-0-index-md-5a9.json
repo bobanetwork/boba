@@ -1,0 +1,25 @@
+{
+  "id": "basics/bridging/index",
+  "title": "Introduction",
+  "description": "Although Boba Network is an L2 (and therefore fundamentally connected to an L1), it's also a separate blockchain system. App developers commonly need to move data and assets between Boba Network and Ethereum or an alt-L1 like BNB Chain. We call the process of moving data and assets between the two networks \"bridging\".",
+  "source": "@site/docs/basics/3_bridging/0_index.md",
+  "sourceDirName": "basics/3_bridging",
+  "slug": "/basics/bridging/index",
+  "permalink": "/docs/basics/bridging/index",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/basics/3_bridging/0_index.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 0,
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "JSON-RPC API",
+    "permalink": "/docs/basics/json-rpc-api"
+  },
+  "next": {
+    "title": "Using the Standard Token Bridge",
+    "permalink": "/docs/basics/bridging/standard-bridge"
+  }
+}
