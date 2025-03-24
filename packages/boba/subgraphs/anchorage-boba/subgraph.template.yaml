@@ -1,6 +1,6 @@
 specVersion: 1.0.0
 indexerHints:
-  prune: auto
+  prune: 50000
 schema:
   file: ./schema.graphql
 dataSources:
