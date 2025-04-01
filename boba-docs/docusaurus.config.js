@@ -13,11 +13,7 @@ const config = {
   favicon: 'img/boba_B.ico',
 
   // Set the production url of your site here
-<<<<<<< Updated upstream
-  url: 'https://docs.boba.network',
-=======
   url: 'https://docs.boba.network/',
->>>>>>> Stashed changes
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
