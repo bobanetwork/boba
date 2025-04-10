@@ -232,6 +232,7 @@ func (n *OpNode) initL1(ctx context.Context, cfg *Config) error {
 
 func (n *OpNode) initRuntimeConfig(ctx context.Context, cfg *Config) error {
 	// attempt to load runtime config, repeat N times
+	n.log.Info("initializing runtime config")
 	n.runCfg = NewRuntimeConfig(n.log, n.l1Source, &cfg.Rollup)
 
 	confDepth := cfg.Driver.VerifierConfDepth
