@@ -59,11 +59,18 @@ func GenerateL2Genesis(pEnv *Env, intent *state.Intent, bundle ArtifactsBundle, 
 		overrideAllocsMode = "granite"
 	}
 
+	bobaAddress := common.Address{};
+	if st.L1Deployment != nil {
+		lgr.Info("L1 Boba token", "address", st.L1Deployment.BobaL1);
+		bobaAddress = st.L1Deployment.BobaL1
+	}
+
 	if err := opcm.L2Genesis(host, &opcm.L2GenesisInput{
 		L1Deployments: opcm.L1Deployments{
 			L1CrossDomainMessengerProxy: thisChainState.L1CrossDomainMessengerProxyAddress,
 			L1StandardBridgeProxy:       thisChainState.L1StandardBridgeProxyAddress,
 			L1ERC721BridgeProxy:         thisChainState.L1ERC721BridgeProxyAddress,
+			BobaToken:                   bobaAddress,
 		},
 		L2Config:           initCfg.L2InitializationConfig,
 		OverrideAllocsMode: overrideAllocsMode,

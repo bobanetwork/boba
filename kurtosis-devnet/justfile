@@ -100,6 +100,9 @@ devnet-test DEVNET *TEST:
 
 # Devnet recipes
 
+# Boba devnet
+boba-local: (devnet "boba-local.yaml")
+
 # Simple devnet
 simple-devnet: (devnet "simple.yaml")
 

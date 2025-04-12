@@ -55,6 +55,7 @@ type StateFile struct {
 	OpChainDeployments        []map[string]interface{} `json:"opChainDeployments"`
 	SuperChainDeployment      map[string]interface{}   `json:"superchainDeployment"`
 	ImplementationsDeployment map[string]interface{}   `json:"implementationsDeployment"`
+	L1Deployment map[string]interface{}   `json:"l1Deployment,omitempty"`
 }
 
 // Wallet represents a wallet with optional private key and name
@@ -284,6 +285,11 @@ func parseStateFile(r io.Reader) (*DeployerState, error) {
 	result.Addresses = mapDeployment(state.ImplementationsDeployment)
 	// merge the superchain and implementations addresses
 	for key, value := range mapDeployment(state.SuperChainDeployment) {
+		result.Addresses[key] = value
+	}
+
+	// merge the Boba L1 addresses
+	for key, value := range mapDeployment(state.L1Deployment) {
 		result.Addresses[key] = value
 	}
 

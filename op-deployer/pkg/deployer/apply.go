@@ -308,6 +308,15 @@ func ApplyPipeline(
 		}},
 	}
 
+	if opts.DeploymentTarget == DeploymentTargetLive {
+		pline = append(pline, pipelineStage{
+			"deploy-boba-l1",
+			func() error {
+				return pipeline.DeployBobaL1(pEnv, intent, st)
+			},
+		})
+	}
+
 	// Deploy all OP Chains first.
 	for _, chain := range intent.Chains {
 		chainID := chain.ID

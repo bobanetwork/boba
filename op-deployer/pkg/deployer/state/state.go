@@ -47,6 +47,8 @@ type State struct {
 	// DeploymentCalldata contains the calldata of each transaction in the deployment. This is only
 	// populated if apply is called with --deployment-target=calldata.
 	DeploymentCalldata []broadcaster.CalldataDump
+
+	L1Deployment *L1Deployment `json:"l1Deployment,omitempty"`
 }
 
 func (s *State) WriteToFile(path string) error {
@@ -68,6 +70,10 @@ type SuperchainDeployment struct {
 	SuperchainConfigImplAddress  common.Address `json:"superchainConfigImplAddress"`
 	ProtocolVersionsProxyAddress common.Address `json:"protocolVersionsProxyAddress"`
 	ProtocolVersionsImplAddress  common.Address `json:"protocolVersionsImplAddress"`
+}
+
+type L1Deployment struct {
+	BobaL1 common.Address `json:"bobaL1Address,omitempty"`
 }
 
 type ImplementationsDeployment struct {

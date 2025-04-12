@@ -18,6 +18,7 @@ type L1Deployments struct {
 	L1CrossDomainMessengerProxy common.Address
 	L1StandardBridgeProxy       common.Address
 	L1ERC721BridgeProxy         common.Address
+        BobaToken                   common.Address
 }
 
 type L2GenesisInput struct {
@@ -34,6 +35,7 @@ func L2Genesis(l2Host *script.Host, input *L2GenesisInput) error {
 	l2Host.SetEnvVar("L2GENESIS_L1CrossDomainMessengerProxy", input.L1Deployments.L1CrossDomainMessengerProxy.String())
 	l2Host.SetEnvVar("L2GENESIS_L1StandardBridgeProxy", input.L1Deployments.L1StandardBridgeProxy.String())
 	l2Host.SetEnvVar("L2GENESIS_L1ERC721BridgeProxy", input.L1Deployments.L1ERC721BridgeProxy.String())
+        l2Host.SetEnvVar("L2GENESIS_L1BobaToken", input.L1Deployments.BobaToken.String())
 
 	var allocsMode string
 	if input.OverrideAllocsMode == "" {
