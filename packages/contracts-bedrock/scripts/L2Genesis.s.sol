@@ -195,6 +195,10 @@ contract L2Genesis is Deployer {
         if (writeForkGenesisAllocs(_fork, Fork.ISTHMUS, _mode)) {
             return;
         }
+
+        if (writeForkGenesisAllocs(_fork, Fork.JOVIAN, _mode)) {
+            return;
+        }
     }
 
     function writeForkGenesisAllocs(Fork _latest, Fork _current, OutputMode _mode) internal returns (bool isLatest_) {
@@ -287,7 +291,7 @@ contract L2Genesis is Deployer {
         if (cfg.useInterop()) {
             setCrossL2Inbox(); // 22
             setL2ToL2CrossDomainMessenger(); // 23
-            setSuperchainWETH(); // 24
+            setSuperchainETHBridge(); // 24
             setETHLiquidity(); // 25
             setSuperchainTokenBridge(); // 28
         }
@@ -617,8 +621,8 @@ contract L2Genesis is Deployer {
 
     /// @notice This predeploy is following the safety invariant #1.
     ///         This contract has no initializer.
-    function setSuperchainWETH() internal {
-        _setImplementationCode(Predeploys.SUPERCHAIN_WETH);
+    function setSuperchainETHBridge() internal {
+        _setImplementationCode(Predeploys.SUPERCHAIN_ETH_BRIDGE);
     }
 
     /// @notice This predeploy is following the safety invariant #1.

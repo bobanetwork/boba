@@ -809,6 +809,7 @@ contract Specification_Test is CommonTest {
         _addSpec({ _name: "OPContractsManager", _sel: _getSel("opcmGameTypeAdder()") });
         _addSpec({ _name: "OPContractsManager", _sel: _getSel("opcmDeployer()") });
         _addSpec({ _name: "OPContractsManager", _sel: _getSel("opcmUpgrader()") });
+        _addSpec({ _name: "OPContractsManager", _sel: _getSel("opcmInteropMigrator()") });
         _addSpec({ _name: "OPContractsManager", _sel: IOPContractsManager.deploy.selector });
         _addSpec({ _name: "OPContractsManager", _sel: IOPContractsManager.blueprints.selector });
         _addSpec({ _name: "OPContractsManager", _sel: IOPContractsManager.chainIdToBatchInboxAddress.selector });
@@ -816,6 +817,7 @@ contract Specification_Test is CommonTest {
         _addSpec({ _name: "OPContractsManager", _sel: IOPContractsManager.upgrade.selector });
         _addSpec({ _name: "OPContractsManager", _sel: IOPContractsManager.addGameType.selector });
         _addSpec({ _name: "OPContractsManager", _sel: IOPContractsManager.updatePrestate.selector });
+        _addSpec({ _name: "OPContractsManager", _sel: IOPContractsManager.migrate.selector });
         _addSpec({ _name: "OPContractsManager", _sel: _getSel("isRC()") });
         _addSpec({ _name: "OPContractsManager", _sel: _getSel("setRC(bool)") });
         _addSpec({ _name: "OPContractsManager", _sel: _getSel("upgradeController()") });
@@ -890,7 +892,6 @@ contract Specification_Test is CommonTest {
 
         _addSpec({ _name: "StandardValidator", _sel: _getSel("superchainConfig()") });
         _addSpec({ _name: "StandardValidator", _sel: _getSel("l1PAOMultisig()") });
-        _addSpec({ _name: "StandardValidator", _sel: _getSel("mips()") });
         _addSpec({ _name: "StandardValidator", _sel: _getSel("challenger()") });
         _addSpec({ _name: "StandardValidator", _sel: _getSel("l1ERC721BridgeImpl()") });
         _addSpec({ _name: "StandardValidator", _sel: _getSel("optimismPortalImpl()") });
@@ -914,6 +915,7 @@ contract Specification_Test is CommonTest {
         _addSpec({ _name: "StandardValidator", _sel: _getSel("l1StandardBridgeVersion()") });
         _addSpec({ _name: "StandardValidator", _sel: _getSel("optimismMintableERC20FactoryVersion()") });
         _addSpec({ _name: "StandardValidator", _sel: _getSel("preimageOracleVersion()") });
+        _addSpec({ _name: "StandardValidator", _sel: _getSel("withdrawalDelaySeconds()") });
     }
 
     /// @dev Computes the selector from a function signature.

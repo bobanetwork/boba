@@ -47,7 +47,10 @@ op-program-client-mips64-interop:
 op-program-client-riscv:
 	env GO111MODULE=on GOOS=linux GOARCH=riscv64 go build -v -gcflags="all=-d=softfloat" -ldflags "$(PC_LDFLAGSSTRING)" -o ./bin/op-program-client-riscv.elf ./client/cmd/main.go
 
-reproducible-prestate:
+check-custom-chains: op-program-host
+	./bin/op-program configs check-custom-chains
+
+reproducible-prestate: check-custom-chains
 	@docker build --output ./bin/ --progress plain -f Dockerfile.repro ../
 	@echo "Cannon Absolute prestate hash: "
 	@cat ./bin/prestate-proof.json | jq -r .pre
@@ -105,6 +108,14 @@ verify-sepolia-fjord: op-program-host op-program-client
 
 verify-compat: verify-sepolia-delta verify-sepolia-ecotone verify-mainnet-genesis
 
+analyze-op-program-client: analyze-op-program-client-cannon-singlethreaded-32 analyze-op-program-client-cannon-multithreaded-64
+
+analyze-op-program-client-cannon-singlethreaded-32:
+	./scripts/run-static-analysis.sh cannon-singlethreaded-32 ./compatibility-test/baseline-cannon-singlethreaded-32.json
+
+analyze-op-program-client-cannon-multithreaded-64:
+	./scripts/run-static-analysis.sh cannon-multithreaded-64 ./compatibility-test/baseline-cannon-multithreaded-64.json
+
 .PHONY: \
 	op-program \
 	op-program-host \
@@ -122,4 +133,7 @@ verify-compat: verify-sepolia-delta verify-sepolia-ecotone verify-mainnet-genesi
 	capture-chain-test-data \
 	run-goerli-verify \
 	run-sepolia-verify \
-	run-compat
+	run-compat \
+	analyze-op-program-client \
+	analyze-op-program-client-cannon-singlethreaded-32 \
+	analyze-op-program-client-cannon-multithreaded-64

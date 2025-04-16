@@ -186,7 +186,9 @@ func TestRandomConfigDescription(t *testing.T) {
 		config.HoloceneTime = &h
 		i := uint64(1677119341)
 		config.IsthmusTime = &i
-		it := uint64(1677119342)
+		j := uint64(1677119342)
+		config.JovianTime = &j
+		it := uint64(1677119343)
 		config.InteropTime = &it
 
 		out := config.Description(nil)
@@ -199,6 +201,7 @@ func TestRandomConfigDescription(t *testing.T) {
 		require.Contains(t, out, fmt.Sprintf("Fjord: @ %d ~ ", f))
 		require.Contains(t, out, fmt.Sprintf("Holocene: @ %d ~ ", h))
 		require.Contains(t, out, fmt.Sprintf("Isthmus: @ %d ~ ", i))
+		require.Contains(t, out, fmt.Sprintf("Jovian: @ %d ~ ", j))
 		require.Contains(t, out, fmt.Sprintf("Interop: @ %d ~ ", it))
 	})
 	t.Run("holocene & isthmus date", func(t *testing.T) {
@@ -289,6 +292,15 @@ func TestActivations(t *testing.T) {
 			},
 			checkEnabled: func(t uint64, c *Config) bool {
 				return c.IsIsthmus(t)
+			},
+		},
+		{
+			name: "Jovian",
+			setUpgradeTime: func(t *uint64, c *Config) {
+				c.JovianTime = t
+			},
+			checkEnabled: func(t uint64, c *Config) bool {
+				return c.IsJovian(t)
 			},
 		},
 		{
@@ -563,7 +575,8 @@ func TestConfig_Check(t *testing.T) {
 				graniteTime := uint64(6)
 				holoceneTime := uint64(7)
 				isthmusTime := uint64(8)
-				interopTime := uint64(9)
+				jovianTime := uint64(9)
+				interopTime := uint64(10)
 				cfg.RegolithTime = &regolithTime
 				cfg.CanyonTime = &canyonTime
 				cfg.DeltaTime = &deltaTime
@@ -572,6 +585,7 @@ func TestConfig_Check(t *testing.T) {
 				cfg.GraniteTime = &graniteTime
 				cfg.HoloceneTime = &holoceneTime
 				cfg.IsthmusTime = &isthmusTime
+				cfg.JovianTime = &jovianTime
 				cfg.InteropTime = &interopTime
 			},
 			expectedErr: nil,

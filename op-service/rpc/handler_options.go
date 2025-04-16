@@ -4,8 +4,10 @@ import (
 	"net/http"
 
 	"github.com/ethereum/go-ethereum/log"
+	gethrpc "github.com/ethereum/go-ethereum/rpc"
 
 	opmetrics "github.com/ethereum-optimism/optimism/op-service/metrics"
+	"github.com/ethereum-optimism/optimism/op-service/httputil"
 )
 
 type Option func(b *Handler)
@@ -63,5 +65,20 @@ func WithLogger(lgr log.Logger) Option {
 func WithMiddleware(middleware func(http.Handler) (hdlr http.Handler)) Option {
 	return func(b *Handler) {
 		b.middlewares = append(b.middlewares, middleware)
+	}
+}
+
+// WithRPCRecorder adds an RPC recorder to the RPC handler stack.
+// See op-service RPCMetricer to create a recorder that maintains RPC metrics.
+func WithRPCRecorder(recorder gethrpc.Recorder) Option {
+	return func(b *Handler) {
+		b.recorder = recorder
+	}
+}
+
+// Timeout
+func WithRPCServerTimeout(rpcServerTimeout httputil.HTTPTimeouts) Option {
+	return func(b *Handler) {
+		b.rpcServerTimeout = rpcServerTimeout
 	}
 }

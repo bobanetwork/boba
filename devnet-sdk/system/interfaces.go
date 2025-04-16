@@ -2,6 +2,7 @@ package system
 
 import (
 	"context"
+	"crypto/ecdsa"
 	"math/big"
 
 	"github.com/ethereum-optimism/optimism/devnet-sdk/contracts/bindings"
@@ -18,23 +19,16 @@ import (
 	"github.com/ethereum/go-ethereum/params"
 )
 
-type genSystem[T Chain, U L2Chain] interface {
+type System interface {
 	Identifier() string
-	L1() T
-	L2s() []U
+	L1() Chain
+	L2s() []L2Chain
 }
-
-// System represents a complete Optimism system with L1 and L2 chains
-type System = genSystem[Chain, L2Chain]
-
-type LowLevelSystem = genSystem[LowLevelChain, LowLevelL2Chain]
 
 // Chain represents an Ethereum chain (L1 or L2)
 type Chain interface {
 	ID() types.ChainID
-	ContractsRegistry() interfaces.ContractsRegistry
-	SupportsEIP(ctx context.Context, eip uint64) bool
-	Node() Node
+	Nodes() []Node // The node at index 0 will always be the sequencer node
 	Config() (*params.ChainConfig, error)
 
 	// The wallets and addresses below are for use on the chain that the instance represents.
@@ -52,22 +46,16 @@ type L2Chain interface {
 }
 
 type Node interface {
+	Name() string
 	GasPrice(ctx context.Context) (*big.Int, error)
 	GasLimit(ctx context.Context, tx TransactionData) (uint64, error)
 	PendingNonceAt(ctx context.Context, address common.Address) (uint64, error)
 	BlockByNumber(ctx context.Context, number *big.Int) (eth.BlockInfo, error)
-}
-
-type LowLevelChain interface {
-	Chain
+	ContractsRegistry() interfaces.ContractsRegistry
+	SupportsEIP(ctx context.Context, eip uint64) bool
 	RPCURL() string
 	Client() (*sources.EthClient, error)
 	GethClient() (*ethclient.Client, error)
-}
-
-type LowLevelL2Chain interface {
-	L2Chain
-	LowLevelChain
 }
 
 type WalletMap map[string]Wallet
@@ -85,6 +73,15 @@ type Wallet interface {
 	Nonce() uint64
 
 	TransactionProcessor
+}
+
+// WalletV2 is a temporary interface for integrating txplan and txintent
+type WalletV2 interface {
+	PrivateKey() *ecdsa.PrivateKey
+	Address() common.Address
+	Client() *sources.EthClient
+	GethClient() *ethclient.Client
+	Ctx() context.Context
 }
 
 // TransactionProcessor is a helper interface for signing and sending transactions.

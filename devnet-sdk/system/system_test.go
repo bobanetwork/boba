@@ -207,8 +207,7 @@ func TestSystemFromDevnet(t *testing.T) {
 }
 
 func TestWallet(t *testing.T) {
-	chain := newChain("1", "http://localhost:8545", nil, nil, map[string]types.Address{})
-
+	chain := newChain("1", WalletMap{}, nil, AddressMap{}, []Node{})
 	tests := []struct {
 		name        string
 		privateKey  string
@@ -238,7 +237,7 @@ func TestWallet(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			w, err := newWallet(tt.privateKey, tt.address, chain)
+			w, err := NewWallet(tt.privateKey, tt.address, chain)
 			assert.Nil(t, err)
 
 			assert.Equal(t, tt.wantAddr, w.Address())
@@ -247,9 +246,9 @@ func TestWallet(t *testing.T) {
 }
 
 func TestChainUser(t *testing.T) {
-	chain := newChain("1", "http://localhost:8545", nil, nil, map[string]types.Address{})
+	chain := newChain("1", WalletMap{}, nil, AddressMap{}, []Node{})
 
-	testWallet, err := newWallet("0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef", common.HexToAddress("0x123"), chain)
+	testWallet, err := NewWallet("0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef", common.HexToAddress("0x123"), chain)
 	assert.Nil(t, err)
 
 	chain.wallets = WalletMap{

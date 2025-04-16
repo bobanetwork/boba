@@ -14,6 +14,7 @@ import (
 	oplog "github.com/ethereum-optimism/optimism/op-service/log"
 	opmetrics "github.com/ethereum-optimism/optimism/op-service/metrics"
 	optls "github.com/ethereum-optimism/optimism/op-service/tls"
+	"github.com/ethereum-optimism/optimism/op-service/httputil"
 )
 
 // the root is "", since the "/" prefix is already assumed to be stripped.
@@ -43,12 +44,14 @@ type Handler struct {
 
 	log         log.Logger
 	middlewares []Middleware
+	recorder    rpc.Recorder
 
 	// rpcRoutes is a collection of RPC servers
 	rpcRoutes     map[string]*rpc.Server
 	rpcRoutesLock sync.Mutex
 
 	mux *http.ServeMux
+        rpcServerTimeout httputil.HTTPTimeouts
 
 	// What we serve to users of this Handler, see ServeHTTP
 	outer http.Handler
@@ -136,6 +139,7 @@ func (b *Handler) AddRPC(route string) error {
 	}
 
 	srv := rpc.NewServer()
+	srv.SetRecorder(b.recorder)
 
 	if err := srv.RegisterName("health", &healthzAPI{
 		appVersion: b.appVersion,

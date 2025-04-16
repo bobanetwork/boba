@@ -240,7 +240,7 @@ func (su *SupervisorBackend) initResources(ctx context.Context, cfg *config.Conf
 	}
 	// the config has some sync sources (RPC connections) to attach to the chain-processors
 	for _, srcSetup := range setups {
-		src, err := srcSetup.Setup(ctx, su.logger)
+		src, err := srcSetup.Setup(ctx, su.logger, su.m)
 		if err != nil {
 			return fmt.Errorf("failed to set up sync source: %w", err)
 		}
@@ -264,13 +264,13 @@ func (su *SupervisorBackend) openChainDBs(chainID eth.ChainID) error {
 	}
 	su.chainDBs.AddLogDB(chainID, logDB)
 
-	localDB, err := db.OpenLocalDerivationDB(su.logger, chainID, su.dataDir, cm)
+	localDB, err := db.OpenLocalDerivationDB(su.logger.New("db-kind", "local-db", "chainID", chainID), chainID, su.dataDir, cm)
 	if err != nil {
 		return fmt.Errorf("failed to open local derived-from DB of chain %s: %w", chainID, err)
 	}
 	su.chainDBs.AddLocalDerivationDB(chainID, localDB)
 
-	crossDB, err := db.OpenCrossDerivationDB(su.logger, chainID, su.dataDir, cm)
+	crossDB, err := db.OpenCrossDerivationDB(su.logger.New("db-kind", "cross-db", "chainID", chainID), chainID, su.dataDir, cm)
 	if err != nil {
 		return fmt.Errorf("failed to open cross derived-from DB of chain %s: %w", chainID, err)
 	}
@@ -405,7 +405,7 @@ func (su *SupervisorBackend) AddL2RPC(ctx context.Context, rpc string, jwtSecret
 		JWTSecret: jwtSecret,
 		Endpoint:  rpc,
 	}
-	src, err := setupSrc.Setup(ctx, su.logger)
+	src, err := setupSrc.Setup(ctx, su.logger, su.m)
 	if err != nil {
 		return fmt.Errorf("failed to set up sync source from RPC: %w", err)
 	}

@@ -38,6 +38,7 @@ var (
 type Metricer interface {
 	contractMetrics.ContractMetricer
 	metrics.VmMetricer
+	opmetrics.RPCMetricer
 
 	RecordFailure(vmType string)
 	RecordPanic(vmType string)

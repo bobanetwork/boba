@@ -3,6 +3,7 @@ package kurtosis
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 
@@ -42,6 +43,7 @@ type KurtosisDeployer struct {
 	enclaveInspecter srcInterfaces.EnclaveInspecter
 	enclaveObserver  srcInterfaces.EnclaveObserver
 	jwtExtractor     srcInterfaces.JWTExtractor
+	depsetExtractor  srcInterfaces.DepsetExtractor
 
 	// interface for kurtosis interactions
 	kurtosisCtx apiInterfaces.KurtosisContextInterface
@@ -97,6 +99,12 @@ func WithKurtosisJWTExtractor(extractor srcInterfaces.JWTExtractor) KurtosisDepl
 	}
 }
 
+func WithKurtosisDepsetExtractor(extractor srcInterfaces.DepsetExtractor) KurtosisDeployerOptions {
+	return func(d *KurtosisDeployer) {
+		d.depsetExtractor = extractor
+	}
+}
+
 func WithKurtosisKurtosisContext(kurtosisCtx apiInterfaces.KurtosisContextInterface) KurtosisDeployerOptions {
 	return func(d *KurtosisDeployer) {
 		d.kurtosisCtx = kurtosisCtx
@@ -115,6 +123,7 @@ func NewKurtosisDeployer(opts ...KurtosisDeployerOptions) (*KurtosisDeployer, er
 		enclaveInspecter: &enclaveInspectAdapter{},
 		enclaveObserver:  &enclaveDeployerAdapter{},
 		jwtExtractor:     &enclaveJWTAdapter{},
+		depsetExtractor:  &enclaveDepsetAdapter{},
 	}
 
 	for _, opt := range opts {
@@ -144,7 +153,7 @@ func (d *KurtosisDeployer) getWallets(wallets deployer.WalletList) descriptors.W
 }
 
 // GetEnvironmentInfo parses the input spec and inspect output to create KurtosisEnvironment
-func (d *KurtosisDeployer) GetEnvironmentInfo(ctx context.Context, spec *spec.EnclaveSpec) (*KurtosisEnvironment, error) {
+func (d *KurtosisDeployer) GetEnvironmentInfo(ctx context.Context, s *spec.EnclaveSpec) (*KurtosisEnvironment, error) {
 	inspectResult, err := d.enclaveInspecter.EnclaveInspect(ctx, d.enclave)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse inspect output: %w", err)
@@ -162,16 +171,26 @@ func (d *KurtosisDeployer) GetEnvironmentInfo(ctx context.Context, spec *spec.En
 		return nil, fmt.Errorf("failed to extract JWT data: %w", err)
 	}
 
+	// Get dependency set
+	var depsetData json.RawMessage
+	if s.Features.Contains(spec.FeatureInterop) {
+		depsetData, err = d.depsetExtractor.ExtractData(ctx, d.enclave)
+		if err != nil {
+			return nil, fmt.Errorf("failed to extract dependency set: %w", err)
+		}
+	}
+
 	env := &KurtosisEnvironment{
 		DevnetEnvironment: descriptors.DevnetEnvironment{
-			L2:       make([]*descriptors.L2Chain, 0, len(spec.Chains)),
-			Features: spec.Features,
+			L2:       make([]*descriptors.L2Chain, 0, len(s.Chains)),
+			Features: s.Features,
+			DepSet:   depsetData,
 		},
 	}
 
 	// Find L1 endpoint
-	networks := make([]string, len(spec.Chains))
-	for idx, chainSpec := range spec.Chains {
+	networks := make([]string, len(s.Chains))
+	for idx, chainSpec := range s.Chains {
 		networks[idx] = chainSpec.Name
 	}
 	finder := NewServiceFinder(inspectResult.UserServices, WithL2Networks(networks))
@@ -184,6 +203,7 @@ func (d *KurtosisDeployer) GetEnvironmentInfo(ctx context.Context, spec *spec.En
 			JWT:       jwtData.L1JWT,
 			Addresses: descriptors.AddressMap(deployerData.State.Addresses),
 			Wallets:   d.getWallets(deployerData.L1ValidatorWallets),
+			Config:    deployerData.L1ChainConfig,
 		}
 		if deployerData.State != nil {
 			chain.Addresses = descriptors.AddressMap(deployerData.State.Addresses)
@@ -193,7 +213,7 @@ func (d *KurtosisDeployer) GetEnvironmentInfo(ctx context.Context, spec *spec.En
 	}
 
 	// Find L2 endpoints
-	for _, chainSpec := range spec.Chains {
+	for _, chainSpec := range s.Chains {
 		nodes, services := finder.FindL2Services(chainSpec.Name)
 
 		chain := &descriptors.L2Chain{

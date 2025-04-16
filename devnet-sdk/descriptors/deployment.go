@@ -1,12 +1,15 @@
 package descriptors
 
 import (
+	"encoding/json"
+
 	"github.com/ethereum-optimism/optimism/devnet-sdk/types"
 	"github.com/ethereum/go-ethereum/params"
 )
 
 type PortInfo struct {
 	Host        string `json:"host"`
+	Scheme      string `json:"scheme,omitempty"`
 	Port        int    `json:"port,omitempty"`
 	PrivatePort int    `json:"private_port,omitempty"`
 }
@@ -25,6 +28,7 @@ type ServiceMap map[string]Service
 
 // Node represents a node for a chain
 type Node struct {
+	Name     string     `json:"name"`
 	Services ServiceMap `json:"services"`
 }
 
@@ -63,5 +67,6 @@ type DevnetEnvironment struct {
 	L1   *Chain     `json:"l1"`
 	L2   []*L2Chain `json:"l2"`
 
-	Features []string `json:"features,omitempty"`
+	Features []string        `json:"features,omitempty"`
+	DepSet   json.RawMessage `json:"dep_set,omitempty"`
 }
