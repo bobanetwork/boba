@@ -289,12 +289,11 @@ require (
 )
 
 // replace github.com/ethereum/go-ethereum => github.com/ethereum-optimism/op-geth v1.101503.4-rc.1
-
-replace github.com/ethereum/go-ethereum => github.com/bobanetwork/op-geth v0.0.0-20250416044936-6f1510c51329
+replace github.com/ethereum/go-ethereum => github.com/bobanetwork/op-geth v0.0.0-20250429232130-12c51ee4fdbd
 
 //replace github.com/ethereum/go-ethereum => ../op-geth
 
-// replace github.com/ethereum-optimism/superchain-registry/superchain => github.com/bobanetwork/superchain-registry/superchain v0.0.0-20250107213715-cb3c5cb83e2e
+// replace github.com/ethereum-optimism/superchain-registry/superchain => ../superchain-registry/superchain
 
 // This release keeps breaking Go builds. Stop that.
 exclude (
