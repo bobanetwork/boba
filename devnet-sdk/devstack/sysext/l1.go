@@ -3,7 +3,7 @@ package sysext
 import (
 	"github.com/ethereum-optimism/optimism/devnet-sdk/devstack/shim"
 	"github.com/ethereum-optimism/optimism/devnet-sdk/devstack/stack"
-	"github.com/ethereum-optimism/optimism/op-service/client"
+	"github.com/ethereum-optimism/optimism/devnet-sdk/devstack/stack/match"
 	"github.com/ethereum-optimism/optimism/op-service/eth"
 )
 
@@ -26,13 +26,10 @@ func (o *Orchestrator) hydrateL1(system stack.ExtensibleSystem) {
 		elService, ok := node.Services[ELServiceName]
 		require.True(ok, "need L1 EL service %d", idx)
 
-		elRPC, err := o.findProtocolService(&elService, RPCProtocol)
-		require.NoError(err)
-		elClient := o.rpcClient(system.T(), elRPC)
 		l1.AddL1ELNode(shim.NewL1ELNode(shim.L1ELNodeConfig{
 			ELNodeConfig: shim.ELNodeConfig{
 				CommonConfig: commonConfig,
-				Client:       elClient,
+				Client:       o.rpcClient(system.T(), &elService, RPCProtocol),
 				ChainID:      l1ID,
 			},
 			ID: stack.L1ELNodeID{
@@ -44,15 +41,13 @@ func (o *Orchestrator) hydrateL1(system stack.ExtensibleSystem) {
 		clService, ok := node.Services[CLServiceName]
 		require.True(ok, "need L1 CL service %d", idx)
 
-		clHTTP, err := o.findProtocolService(&clService, HTTPProtocol)
-		require.NoError(err)
 		l1.AddL1CLNode(shim.NewL1CLNode(shim.L1CLNodeConfig{
 			ID: stack.L1CLNodeID{
 				Key:     clService.Name,
 				ChainID: l1ID,
 			},
 			CommonConfig: commonConfig,
-			Client:       client.NewBasicHTTPClient(clHTTP, system.Logger()),
+			Client:       o.httpClient(system.T(), &clService, HTTPProtocol),
 		}))
 	}
 
@@ -63,7 +58,7 @@ func (o *Orchestrator) hydrateL1(system stack.ExtensibleSystem) {
 			CommonConfig: commonConfig,
 			ID:           stack.UserID{Key: name, ChainID: l1ID},
 			Priv:         priv,
-			EL:           l1.L1ELNode(l1.L1ELNodes()[0]),
+			EL:           l1.L1ELNode(match.FirstL1EL),
 		}))
 	}
 

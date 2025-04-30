@@ -20,9 +20,16 @@ type Orchestrator struct {
 
 	usePrivatePorts    bool
 	useEagerRPCClients bool
+
+	controlPlane *ControlPlane
+	useDirectCnx bool
 }
 
 var _ stack.Orchestrator = (*Orchestrator)(nil)
+
+func (o *Orchestrator) ControlPlane() stack.ControlPlane {
+	return o.controlPlane
+}
 
 func NewOrchestrator(p devtest.P) *Orchestrator {
 	url := os.Getenv(env.EnvURLVar)
@@ -32,7 +39,9 @@ func NewOrchestrator(p devtest.P) *Orchestrator {
 	}
 	env, err := env.LoadDevnetFromURL(url)
 	p.Require().NoError(err, "Error loading devnet environment")
-	return &Orchestrator{env: &env.Config, p: p}
+	orch := &Orchestrator{env: env.Env, p: p}
+
+	return orch
 }
 
 func (o *Orchestrator) P() devtest.P {
@@ -73,5 +82,11 @@ func WithPrivatePorts() OrchestratorOption {
 func WithEagerRPCClients() OrchestratorOption {
 	return func(orchestrator *Orchestrator) {
 		orchestrator.useEagerRPCClients = true
+	}
+}
+
+func WithDirectConnections() OrchestratorOption {
+	return func(orchestrator *Orchestrator) {
+		orchestrator.useDirectCnx = true
 	}
 }
