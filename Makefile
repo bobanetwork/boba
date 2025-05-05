@@ -167,7 +167,7 @@ mod-tidy: ## Cleans up unused dependencies in Go modules
 	# can take a while to index new versions.
 	#
 	# See https://proxy.golang.org/ for more info.
-	export GOPRIVATE="github.com/ethereum-optimism" && go mod tidy
+	export GOPRIVATE="github.com/ethereum-optimism,github.com/bobanetwork" && go mod tidy
 .PHONY: mod-tidy
 
 clean: ## Removes all generated files under bin/

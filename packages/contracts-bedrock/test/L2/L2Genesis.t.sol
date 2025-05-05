@@ -163,7 +163,8 @@ contract L2GenesisTest is Test {
         return L1Dependencies({
             l1CrossDomainMessengerProxy: payable(address(0x100000)),
             l1StandardBridgeProxy: payable(address(0x100001)),
-            l1ERC721BridgeProxy: payable(address(0x100002))
+            l1ERC721BridgeProxy: payable(address(0x100002)),
+            l1BobaToken: address(0x100003)
         });
     }
 
@@ -180,6 +181,10 @@ contract L2GenesisTest is Test {
         expected += 14; // preinstalls
         expected += 1; // 4788 deployer account
         expected += 1; // 2935 deployer account
+        // boba token contract
+        expected += 1;
+        // weth
+        expected += 1;
         // 16 prefunded dev accounts are excluded
         assertEq(expected, getJSONKeyCount(_path), "key count check");
 
