@@ -42,7 +42,8 @@ RUN git clone --branch $REV --depth 1 https://github.com/ethereum-optimism/optim
 WORKDIR /app
 
 # Install correct foundry version
-RUN just update-foundry
+#RUN just update-foundry
+RUN foundryup -i 1.0.0
 
 # Set the working directory to the root of the contracts package
 WORKDIR /app/packages/contracts-bedrock
