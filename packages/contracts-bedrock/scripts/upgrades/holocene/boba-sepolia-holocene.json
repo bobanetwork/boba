@@ -1,6 +1,6 @@
 {
-  "finalSystemOwner": "0xe62B0E3a9F715493301eBdEC8310C899eae5b30c",
-  "superchainConfigGuardian": "0x17070B4AF21625106E7971983Aa524f59EA40c57",
+  "finalSystemOwner": "0x17070B4AF21625106E7971983Aa524f59EA40c57",
+  "superchainConfigGuardian": "0xe62B0E3a9F715493301eBdEC8310C899eae5b30c",
 
   "l1StartingBlockTag": "0x632d8caedbfd573e09c1b49134bd5147147e0904e0f04eba15c662be0258f517",
 
@@ -63,7 +63,7 @@
 
   "systemConfigStartBlock": 5669592,
 
-  "faultGameAbsolutePrestate": "0x03f6089ca1d664a504db3764a75d64fadb421162632bb7bb2de98caa602cc0be",
+  "faultGameAbsolutePrestate": "0x035df6fdd5a67c38035300453c2223bce260bff8ae28ca4b25770fab0f513eca",
   "faultGameMaxDepth": 73,
   "faultGameClockExtension": 10800,
   "faultGameMaxClockDuration": 302400,
