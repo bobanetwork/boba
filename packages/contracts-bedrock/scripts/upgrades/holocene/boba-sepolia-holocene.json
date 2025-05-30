@@ -63,7 +63,7 @@
 
   "systemConfigStartBlock": 5669592,
 
-  "faultGameAbsolutePrestate": "0x035df6fdd5a67c38035300453c2223bce260bff8ae28ca4b25770fab0f513eca",
+  "faultGameAbsolutePrestate": "0x03ddcb9294fef6dd477b4e911fd777fda0832fdd10aa594ac941540ea62a2aa0",
   "faultGameMaxDepth": 73,
   "faultGameClockExtension": 10800,
   "faultGameMaxClockDuration": 302400,
