@@ -109,11 +109,22 @@ func (a *Artifact) Download(path string) error {
 		}
 
 		fpath := filepath.Join(path, filepath.Clean(header.Name))
+		absPath, err := filepath.Abs(fpath)
+		if err != nil {
+			return fmt.Errorf("failed to compute absolute path for %s: %w", fpath, err)
+		}
+		absBasePath, err := filepath.Abs(path)
+		if err != nil {
+			return fmt.Errorf("failed to compute absolute base path for %s: %w", path, err)
+		}
+		if !strings.HasPrefix(absPath, absBasePath) {
+			return fmt.Errorf("path traversal detected: %s is outside of %s", absPath, absBasePath)
+		}
 
 		switch header.Typeflag {
 		case tar.TypeDir:
-			if err := os.MkdirAll(fpath, os.FileMode(header.Mode)); err != nil {
-				return fmt.Errorf("failed to create directory %s: %w", fpath, err)
+			if err := os.MkdirAll(absPath, os.FileMode(header.Mode)); err != nil {
+				return fmt.Errorf("failed to create directory %s: %w", absPath, err)
 			}
 		case tar.TypeReg:
 			// Create parent directories if they don't exist
