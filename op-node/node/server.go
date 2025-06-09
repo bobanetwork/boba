@@ -5,9 +5,9 @@ import (
 	"github.com/ethereum/go-ethereum/rpc"
 
 	"github.com/ethereum-optimism/optimism/op-node/rollup"
+	ophttp "github.com/ethereum-optimism/optimism/op-service/httputil"
 	opmetrics "github.com/ethereum-optimism/optimism/op-service/metrics"
 	oprpc "github.com/ethereum-optimism/optimism/op-service/rpc"
-	ophttp "github.com/ethereum-optimism/optimism/op-service/httputil"
 )
 
 func newRPCServer(rpcCfg *RPCConfig, rollupCfg *rollup.Config, l2Client l2EthClient, dr driverClient,
@@ -20,7 +20,7 @@ func newRPCServer(rpcCfg *RPCConfig, rollupCfg *rollup.Config, l2Client l2EthCli
 		oprpc.WithLogger(log),
 		oprpc.WithCORSHosts([]string{"*"}), // CORS is not important on op-node, but we used to do this on the old op-node RPC server, so kept for compatibility.
 		oprpc.WithRPCRecorder(metrics.NewRecorder("main")),
-                oprpc.WithRPCServerTimeout(rpcServerTimeout),
+		oprpc.WithRPCServerTimeout(rpcServerTimeout),
 	)
 	api := NewNodeAPI(rollupCfg, l2Client, dr, safeDB, log)
 	server.AddAPI(rpc.API{

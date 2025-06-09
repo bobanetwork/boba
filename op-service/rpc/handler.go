@@ -11,10 +11,10 @@ import (
 	"github.com/ethereum/go-ethereum/node"
 	"github.com/ethereum/go-ethereum/rpc"
 
+	"github.com/ethereum-optimism/optimism/op-service/httputil"
 	oplog "github.com/ethereum-optimism/optimism/op-service/log"
 	opmetrics "github.com/ethereum-optimism/optimism/op-service/metrics"
 	optls "github.com/ethereum-optimism/optimism/op-service/tls"
-	"github.com/ethereum-optimism/optimism/op-service/httputil"
 )
 
 // the root is "", since the "/" prefix is already assumed to be stripped.
@@ -50,8 +50,8 @@ type Handler struct {
 	rpcRoutes     map[string]*rpc.Server
 	rpcRoutesLock sync.Mutex
 
-	mux *http.ServeMux
-        rpcServerTimeout httputil.HTTPTimeouts
+	mux              *http.ServeMux
+	rpcServerTimeout httputil.HTTPTimeouts
 
 	// What we serve to users of this Handler, see ServeHTTP
 	outer http.Handler
