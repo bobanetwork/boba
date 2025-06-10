@@ -1,0 +1,11 @@
+{
+  "prank": "0x99A546A50f0cCD9d2936793b78e378b0F5a83b92",
+  "chainConfigs": [
+    {
+      "superchainConfigProxy": "0x029A23c6E9D3026f984cd1Fd9C47906e4F5327F3",
+      "systemConfigProxy": "0xfDC9bCE032cEF55a71b4fde9B9a2198ad1551965",
+      "proxyAdmin": "0x66930dd34EA64bD4B9F32464e363511b49966C5D",
+      "absolutePrestate": "0x03ddcb9294fef6dd477b4e911fd777fda0832fdd10aa594ac941540ea62a2aa0"
+    }
+  ]
+}
