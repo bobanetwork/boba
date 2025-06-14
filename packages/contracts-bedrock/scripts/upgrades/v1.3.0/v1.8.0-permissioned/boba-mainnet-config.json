@@ -1,6 +1,4 @@
 {
-  "SuperchainConfigProxy": "0x996ffD627901f10C80A7d4B72A12316D2e77c076",
-
   "l1StartingBlockTag": "0x945d6244d259e63892abf93e5e6dd3388b79e25ae5ec0502e290a0d0163aa5cf",
   "l1ChainID": 1,
   "l2ChainID": 288,

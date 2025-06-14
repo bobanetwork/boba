@@ -136,9 +136,9 @@ cat << EOF > "standard-addresses.json"
 EOF
 
 # Copy results into output directory
-cp deploy.log /outputs/deploy.log
-cp bundle.json /outputs/bundle.json
-cp validation.txt /outputs/validation.txt
-cp deployments.json /outputs/deployments.json
-cp standard-addresses.json /outputs/standard-addresses.json
-cp $TRANSACTIONS_JSON_PATH /outputs/transactions.json
+cp deploy.log ./outputs/deploy.log
+cp bundle.json ./outputs/bundle.json
+cp validation.txt ./outputs/validation.txt
+cp deployments.json ./outputs/deployments.json
+cp standard-addresses.json ./outputs/standard-addresses.json
+cp $TRANSACTIONS_JSON_PATH ./outputs/transactions.json

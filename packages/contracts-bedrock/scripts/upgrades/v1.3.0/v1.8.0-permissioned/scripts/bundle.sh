@@ -37,7 +37,7 @@ L1_ERC721_BRIDGE_IMPL=$(fetch_standard_address $NETWORK $RELEASE_VERSION "l1_erc
 OPTIMISM_MINTABLE_ERC20_FACTORY_IMPL=$(fetch_standard_address $NETWORK $RELEASE_VERSION "optimism_mintable_erc20_factory")
 
 # Fetch SuperchainConfigProxy address
-SUPERCHAIN_CONFIG_PROXY=$(fetch_superchain_config_address $NETWORK)
+SUPERCHAIN_CONFIG_PROXY=$(load_local_address $DEPLOYMENTS_JSON_PATH "SuperchainConfigProxy")
 
 # We need to re-generate the SystemConfig initialization call
 # We want to use the exact same values that the SystemConfig is already using
