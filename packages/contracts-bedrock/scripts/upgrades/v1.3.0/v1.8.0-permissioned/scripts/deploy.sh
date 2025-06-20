@@ -32,7 +32,10 @@ MIPS_IMPL=$(fetch_standard_address $NETWORK $RELEASE_VERSION "mips")
 OPTIMISM_PORTAL_2_IMPL=$(fetch_standard_address $NETWORK $RELEASE_VERSION "optimism_portal")
 
 # Fetch the SuperchainConfigProxy address
-SUPERCHAIN_CONFIG_PROXY=$(fetch_superchain_config_address $NETWORK)
+#SUPERCHAIN_CONFIG_PROXY=$(fetch_superchain_config_address $NETWORK)
+# Override for Boba-mainnet
+SUPERCHAIN_CONFIG_PROXY=$(load_local_address $DEPLOYMENTS_JSON_PATH "SuperchainConfigProxy")
+echo "OVERRIDE SuperchainConfigProxy=$SUPERCHAIN_CONFIG_PROXY"
 
 # Run the upgrade script
 forge script DeployUpgrade.s.sol:DeployUpgrade \
