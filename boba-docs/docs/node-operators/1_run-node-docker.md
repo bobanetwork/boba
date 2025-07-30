@@ -139,7 +139,7 @@ docker-compose -f docker-compose-mainnet-geth.yml up -d
 docker-compose -f [docker-compose-file] up -d
 ```
 
-Will start the node in a detatched shell (`-d`), meaning the node will continue to run in the background.
+Will start the node in a detached shell (`-d`), meaning the node will continue to run in the background.
 
 ### View Logs
 
