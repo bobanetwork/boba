@@ -305,7 +305,7 @@ require (
 )
 
 //replace github.com/ethereum/go-ethereum => github.com/ethereum-optimism/op-geth v1.101511.1-dev.1.0.20250710181308-c6e05723600e
-replace github.com/ethereum/go-ethereum => github.com/bobanetwork/op-geth v0.0.0-20250730032344-8a171cc04151
+replace github.com/ethereum/go-ethereum => github.com/bobanetwork/op-geth v0.0.0-20250731233457-e22a08661c0c
 
 //replace github.com/ethereum/go-ethereum => ../op-geth
 
