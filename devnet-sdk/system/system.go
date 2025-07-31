@@ -69,7 +69,7 @@ func systemFromDevnet(dn *descriptors.DevnetEnvironment) (System, error) {
 	if slices.Contains(dn.Features, "interop") {
 		// TODO(14849): this will break as soon as we have a dependency set that
 		// doesn't include all L2s.
-		supervisorRPC := dn.L2[0].Services["supervisor"].Endpoints["rpc"]
+		supervisorRPC := dn.L2[0].Services["supervisor"][0].Endpoints["rpc"]
 		return &interopSystem{
 			system:        sys,
 			supervisorRPC: fmt.Sprintf("http://%s:%d", supervisorRPC.Host, supervisorRPC.Port),

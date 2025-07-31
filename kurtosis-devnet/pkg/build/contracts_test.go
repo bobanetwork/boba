@@ -12,6 +12,7 @@ import (
 	"github.com/ethereum-optimism/optimism/kurtosis-devnet/pkg/kurtosis/api/enclave"
 	"github.com/ethereum-optimism/optimism/kurtosis-devnet/pkg/kurtosis/api/interfaces"
 	"github.com/kurtosis-tech/kurtosis/api/golang/core/kurtosis_core_rpc_api_bindings"
+	"github.com/kurtosis-tech/kurtosis/api/golang/core/lib/enclaves"
 	"github.com/kurtosis-tech/kurtosis/api/golang/core/lib/services"
 	"github.com/kurtosis-tech/kurtosis/api/golang/core/lib/starlark_run_config"
 	"github.com/spf13/afero"
@@ -116,6 +117,22 @@ func (e *testEnclaveContext) RunStarlarkScript(ctx context.Context, script strin
 	return nil
 }
 
+func (e *testEnclaveContext) GetEnclaveUuid() enclaves.EnclaveUUID {
+	return enclaves.EnclaveUUID("test-enclave-uuid")
+}
+
+func (e *testEnclaveContext) GetServices() (map[services.ServiceName]services.ServiceUUID, error) {
+	return nil, nil
+}
+
+func (e *testEnclaveContext) GetService(serviceIdentifier string) (interfaces.ServiceContext, error) {
+	return nil, nil
+}
+
+func (e *testEnclaveContext) GetAllFilesArtifactNamesAndUuids(ctx context.Context) ([]*kurtosis_core_rpc_api_bindings.FilesArtifactNameAndUuid, error) {
+	return nil, nil
+}
+
 type testKurtosisContext struct{}
 
 func (c *testKurtosisContext) CreateEnclave(ctx context.Context, name string) (interfaces.EnclaveContext, error) {
@@ -124,6 +141,18 @@ func (c *testKurtosisContext) CreateEnclave(ctx context.Context, name string) (i
 
 func (c *testKurtosisContext) GetEnclave(ctx context.Context, name string) (interfaces.EnclaveContext, error) {
 	return &testEnclaveContext{}, nil
+}
+
+func (c *testKurtosisContext) GetEnclaveStatus(ctx context.Context, name string) (interfaces.EnclaveStatus, error) {
+	return interfaces.EnclaveStatusRunning, nil
+}
+
+func (c *testKurtosisContext) Clean(ctx context.Context, destroyAll bool) ([]interfaces.EnclaveNameAndUuid, error) {
+	return []interfaces.EnclaveNameAndUuid{}, nil
+}
+
+func (c *testKurtosisContext) DestroyEnclave(ctx context.Context, name string) error {
+	return nil
 }
 
 func setupTestFS(t *testing.T) (*testEnclaveFS, afero.Fs) {
@@ -215,7 +244,7 @@ func TestContractBuilder_Build(t *testing.T) {
 			builder.enclaveManager = enclaveManager
 
 			// Execute build
-			output, err := builder.Build("")
+			output, err := builder.Build(context.Background(), "")
 
 			// Verify results
 			if tt.expectError {
@@ -328,4 +357,31 @@ func TestContractBuilder_populateContractsArtifact(t *testing.T) {
 	content, err := afero.ReadFile(memFS, filepath.Join(tempDir, "Contract1.sol", "artifact.json"))
 	require.NoError(t, err)
 	assert.Equal(t, "test artifact", string(content))
+}
+
+func TestContractBuilder_GetContractUrl(t *testing.T) {
+	_, memFS := setupTestFS(t)
+
+	builder := NewContractBuilder(
+		WithContractFS(memFS),
+		WithContractBaseDir("."),
+	)
+
+	// Get the contract URL
+	url := builder.GetContractUrl()
+
+	// Verify the format is correct
+	assert.Regexp(t, `^artifact://contracts-[a-f0-9]{64}$`, url)
+
+	// Verify it's consistent
+	url2 := builder.GetContractUrl()
+	assert.Equal(t, url, url2)
+
+	// Verify it changes when the cache file changes
+	cacheFile := filepath.Join(".", relativeContractsPath, solidityCachePath)
+	err := afero.WriteFile(memFS, cacheFile, []byte("modified cache"), 0644)
+	require.NoError(t, err)
+
+	url3 := builder.GetContractUrl()
+	assert.NotEqual(t, url, url3)
 }

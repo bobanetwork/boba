@@ -358,6 +358,7 @@ func (h *Host) Call(from common.Address, to common.Address, input []byte, gas ui
 			// an unexpected panic and we should re-raise it.
 			rStr, ok := r.(string)
 			if !ok || !strings.Contains(strings.ToLower(rStr), "revision id 1") {
+				fmt.Println("panic", rStr)
 				panic(r)
 			}
 
@@ -452,7 +453,7 @@ func (h *Host) SetNonce(addr common.Address, nonce uint64) {
 	h.state.SetNonce(addr, nonce, tracing.NonceChangeUnspecified)
 }
 
-// GetNonce returs an account's nonce from state.
+// GetNonce returns an account's nonce from state.
 func (h *Host) GetNonce(addr common.Address) uint64 {
 	return h.state.GetNonce(addr)
 }
