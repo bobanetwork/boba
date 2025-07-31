@@ -13,6 +13,7 @@ type L2GenesisInput struct {
 	L1CrossDomainMessengerProxy              common.Address
 	L1StandardBridgeProxy                    common.Address
 	L1ERC721BridgeProxy                      common.Address
+        L1BobaToken                              common.Address
 	OpChainProxyAdminOwner                   common.Address
 	SequencerFeeVaultRecipient               common.Address
 	SequencerFeeVaultMinimumWithdrawalAmount *big.Int

@@ -10,6 +10,9 @@ import { OutputMode, OutputModeUtils, Fork, ForkUtils } from "scripts/libraries/
 import { SetPreinstalls } from "scripts/SetPreinstalls.s.sol";
 import { DeployUtils } from "scripts/libraries/DeployUtils.sol";
 
+// Contracts
+import { LegacyMintableERC20 } from "src/legacy/LegacyMintableERC20.sol";
+
 // Libraries
 import { Predeploys } from "src/libraries/Predeploys.sol";
 import { Preinstalls } from "src/libraries/Preinstalls.sol";
@@ -45,6 +48,7 @@ contract L2Genesis is Script {
         address payable l1CrossDomainMessengerProxy;
         address payable l1StandardBridgeProxy;
         address payable l1ERC721BridgeProxy;
+        address l1BobaToken;
         address opChainProxyAdminOwner;
         address sequencerFeeVaultRecipient;
         uint256 sequencerFeeVaultMinimumWithdrawalAmount;
@@ -210,7 +214,8 @@ contract L2Genesis is Script {
         // 01: legacy, not used in OP-Stack
         setDeployerWhitelist(); // 2
         // 3,4,5: legacy, not used in OP-Stack.
-        setWETH(); // 6: WETH (not behind a proxy)
+        setLegacyERC20ETH(); // Boba network legacy
+        // setWETH(); // 6: WETH (not behind a proxy)
         setL2CrossDomainMessenger(_input.l1CrossDomainMessengerProxy); // 7
         // 8,9,A,B,C,D,E: legacy, not used in OP-Stack.
         setGasPriceOracle(); // f
@@ -236,6 +241,8 @@ contract L2Genesis is Script {
             }
             setL2ToL2CrossDomainMessenger(); // 23
         }
+        setBOBA(_input.l1BobaToken);
+        setWETH();
     }
 
     function setInteropPredeployProxies() internal { }
@@ -367,6 +374,41 @@ contract L2Genesis is Script {
     ///         in the constructor is set manually.
     function setWETH() internal {
         vm.etch(Predeploys.WETH, vm.getDeployedCode("WETH.sol:WETH"));
+    }
+
+    /// @notice This predeploy is following the safety invariant #1.
+    ///         This contract is NOT proxied and the state that is set
+    ///         in the constructor is set manually.
+    function setLegacyERC20ETH() public {
+        //console.log("Setting %s implementation at: %s", "LegacyERC20ETH", Predeploys.LEGACY_ERC20_ETH);
+        vm.etch(Predeploys.LEGACY_ERC20_ETH, vm.getDeployedCode("LegacyERC20ETH.sol:LegacyERC20ETH"));
+    }
+
+    /// @notice This predeploy is following the safety invariant #1.
+    ///         This contract is NOT proxied and the state that is set
+    ///         in the constructor is set manually.
+    function setBOBA(address _l1Boba) public {
+        LegacyMintableERC20 boba = new LegacyMintableERC20({
+            _l2Bridge: Predeploys.L2_STANDARD_BRIDGE,
+            _l1Token: _l1Boba,
+            _name: "BOBA Network",
+            _symbol: "BOBA"
+        });
+        vm.etch(Predeploys.L2_BOBA, address(boba).code);
+
+        bytes32 _nameSlot = hex"0000000000000000000000000000000000000000000000000000000000000003";
+        bytes32 _symbolSlot = hex"0000000000000000000000000000000000000000000000000000000000000004";
+        bytes32 _l1Token = hex"0000000000000000000000000000000000000000000000000000000000000005";
+        bytes32 _l2Bridge = hex"0000000000000000000000000000000000000000000000000000000000000006";
+
+        vm.store(Predeploys.L2_BOBA, _nameSlot, vm.load(address(boba), _nameSlot));
+        vm.store(Predeploys.L2_BOBA, _symbolSlot, vm.load(address(boba), _symbolSlot));
+        vm.store(Predeploys.L2_BOBA, _l1Token, bytes32(uint256(uint160(_l1Boba))));
+        vm.store(Predeploys.L2_BOBA, _l2Bridge, bytes32(uint256(uint160(Predeploys.L2_STANDARD_BRIDGE))));
+
+        /// Reset so its not included state dump
+        vm.etch(address(boba), "");
+        vm.resetNonce(address(boba));
     }
 
     /// @notice This predeploy is following the safety invariant #1.

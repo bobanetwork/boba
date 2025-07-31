@@ -73,6 +73,9 @@ func GenerateL2Genesis(pEnv *Env, intent *state.Intent, bundle ArtifactsBundle, 
 		return fmt.Errorf("failed to calculate L2 genesis overrides: %w", err)
 	}
 
+        // hardcoded for now
+        l1BobaToken := common.HexToAddress("0xB0ba000000000000000000000000000000012345")
+
 	if err := script.Run(opcm.L2GenesisInput{
 		L1ChainID:                                new(big.Int).SetUint64(intent.L1ChainID),
 		L2ChainID:                                chainID.Big(),
@@ -80,6 +83,7 @@ func GenerateL2Genesis(pEnv *Env, intent *state.Intent, bundle ArtifactsBundle, 
 		L1StandardBridgeProxy:                    thisChainState.L1StandardBridgeProxy,
 		L1ERC721BridgeProxy:                      thisChainState.L1Erc721BridgeProxy,
 		OpChainProxyAdminOwner:                   thisIntent.Roles.L2ProxyAdminOwner,
+                L1BobaToken:                              l1BobaToken,
 		BaseFeeVaultWithdrawalNetwork:            wdNetworkToBig(overrides.BaseFeeVaultWithdrawalNetwork),
 		L1FeeVaultWithdrawalNetwork:              wdNetworkToBig(overrides.L1FeeVaultWithdrawalNetwork),
 		SequencerFeeVaultWithdrawalNetwork:       wdNetworkToBig(overrides.SequencerFeeVaultWithdrawalNetwork),

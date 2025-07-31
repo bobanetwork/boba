@@ -114,6 +114,7 @@ contract L2Genesis_Run_Test is L2Genesis_TestInit {
             l1CrossDomainMessengerProxy: payable(address(0x0000000000000000000000000000000000000001)),
             l1StandardBridgeProxy: payable(address(0x0000000000000000000000000000000000000002)),
             l1ERC721BridgeProxy: payable(address(0x0000000000000000000000000000000000000003)),
+            l1BobaToken: address(0),
             opChainProxyAdminOwner: address(0x0000000000000000000000000000000000000004),
             sequencerFeeVaultRecipient: address(0x0000000000000000000000000000000000000005),
             sequencerFeeVaultMinimumWithdrawalAmount: 1,
