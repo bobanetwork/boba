@@ -2,7 +2,7 @@
 
 ## Overview
 
-Custom gas token allows for an L1-native ERC20 token to collateralize and act as the gas token on L2. This implementation is based on [Optimism's Custom Fee Token](https://specs.optimism.io/protocol/granite/custom-gas-token.html) and enhances its functionality by enabling the bridging of the L1 native token to L2 (ETH) as an ERC20 token.
+Custom gas token allows for an L1-native ERC20 token to collateralize and act as the gas token on L2. This implementation is based on [Optimism's Custom Fee Token](https://specs.optimism.io/experimental/custom-gas-token.html) and enhances its functionality by enabling the bridging of the L1 native token to L2 (ETH) as an ERC20 token.
 
 **The codebase is located in the [custom-fee-token](https://github.com/bobanetwork/boba/tree/custom-fee-token) branch.** **The smart contract is UNDER audit. Please use it with caution.**
 
