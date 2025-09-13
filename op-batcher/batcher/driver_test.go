@@ -11,6 +11,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ethereum-optimism/optimism/op-batcher/batcher/throttler"
+	"github.com/ethereum-optimism/optimism/op-batcher/config"
 	"github.com/ethereum-optimism/optimism/op-batcher/metrics"
 	"github.com/ethereum-optimism/optimism/op-service/dial"
 	"github.com/ethereum-optimism/optimism/op-service/eth"
@@ -54,9 +56,14 @@ func setup(t *testing.T) (*BatchSubmitter, *mockL2EndpointProvider) {
 	cfg.Genesis.L1.Number = genesisL1Origin
 
 	return NewBatchSubmitter(DriverSetup{
-		Log:              testlog.Logger(t, log.LevelDebug),
-		Metr:             metrics.NoopMetrics,
-		RollupConfig:     cfg,
+		Log:          testlog.Logger(t, log.LevelDebug),
+		Metr:         metrics.NoopMetrics,
+		RollupConfig: cfg,
+		Config: BatcherConfig{
+			ThrottleParams: config.ThrottleParams{
+				ControllerType: config.StepControllerType,
+			},
+		},
 		ChannelConfig:    defaultTestChannelConfig(),
 		EndpointProvider: ep,
 	}), ep
@@ -225,7 +232,6 @@ func TestBatchSubmitter_ThrottlingEndpoints(t *testing.T) {
 
 			// Setup test context
 			ctx, cancel := context.WithCancel(context.Background())
-			defer cancel()
 
 			// Add in an endpoint with no server at all, representing an "always down" endpoint
 			urls = append(urls, "http://invalid/")
@@ -235,13 +241,16 @@ func TestBatchSubmitter_ThrottlingEndpoints(t *testing.T) {
 			// Create test BatchSubmitter using the setup function
 			bs, _ := setup(t)
 			bs.shutdownCtx = ctx
-			bs.Config = BatcherConfig{
-				NetworkTimeout:      time.Second,
-				ThrottleThreshold:   10000,
-				ThrottleTxSize:      5000,
-				ThrottleBlockSize:   20000,
-				ThrottlingEndpoints: urls,
-			}
+			bs.Config.NetworkTimeout = time.Second
+			bs.Config.ThrottleParams.Endpoints = urls
+			bs.throttleController = throttler.NewThrottleController(
+				throttler.NewStepStrategy(10000),
+				throttler.ThrottleConfig{
+					TxSizeLowerLimit:    5000,
+					TxSizeUpperLimit:    10000,
+					BlockSizeLowerLimit: 20000,
+					BlockSizeUpperLimit: 30000,
+				})
 
 			// Test the throttling loop
 			pendingBytesUpdated := make(chan int64, 1)
@@ -254,7 +263,6 @@ func TestBatchSubmitter_ThrottlingEndpoints(t *testing.T) {
 			// Simulate block loading by sending periodically on pendingBytesUpdated
 			wg2 := sync.WaitGroup{}
 			blockLoadingCtx, cancelBlockLoading := context.WithCancel(context.Background())
-			defer cancelBlockLoading()
 			go func() {
 				defer wg2.Done()
 				// Simulate block loading
@@ -276,6 +284,7 @@ func TestBatchSubmitter_ThrottlingEndpoints(t *testing.T) {
 				wg2.Wait()
 				close(pendingBytesUpdated)
 				wg1.Wait()
+				cancel()
 			})
 
 			require.Eventually(t,
@@ -292,7 +301,7 @@ func TestBatchSubmitter_ThrottlingEndpoints(t *testing.T) {
 						}
 					}
 					return true
-				}, time.Second*20, time.Millisecond*10, "All endpoints should have been called within 2s")
+				}, time.Second*10, time.Millisecond*10, "All endpoints should have been called within 10s")
 
 			startTestServerAtAddr := func(addr string, handler http.HandlerFunc) *httptest.Server {
 				ln, err := net.Listen("tcp", addr)

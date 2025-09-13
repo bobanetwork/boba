@@ -66,6 +66,10 @@ type FinalizerL1Interface interface {
 	L1BlockRefByNumber(context.Context, uint64) (eth.L1BlockRef, error)
 }
 
+type EngineController interface {
+	PromoteFinalized(context.Context, eth.L2BlockRef)
+}
+
 type Finalizer struct {
 	mu sync.Mutex
 
@@ -76,6 +80,8 @@ type Finalizer struct {
 	cfg *rollup.Config
 
 	emitter event.Emitter
+
+	engineController EngineController
 
 	// finalizedL1 is the currently perceived finalized L1 block.
 	// This may be ahead of the current traversed origin when syncing.
@@ -96,13 +102,14 @@ type Finalizer struct {
 	l1Fetcher FinalizerL1Interface
 }
 
-func NewFinalizer(ctx context.Context, log log.Logger, cfg *rollup.Config, l1Fetcher FinalizerL1Interface) *Finalizer {
+func NewFinalizer(ctx context.Context, log log.Logger, cfg *rollup.Config, l1Fetcher FinalizerL1Interface, ec EngineController) *Finalizer {
 	lookback := calcFinalityLookback(cfg)
 	return &Finalizer{
 		ctx:              ctx,
 		cfg:              cfg,
 		log:              log,
 		finalizedL1:      eth.L1BlockRef{},
+		engineController: ec,
 		triedFinalizeAt:  0,
 		finalityData:     make([]FinalityData, 0, lookback),
 		finalityLookback: lookback,
@@ -123,14 +130,6 @@ func (fi *Finalizer) FinalizedL1() (out eth.L1BlockRef) {
 	return
 }
 
-type FinalizeL1Event struct {
-	FinalizedL1 eth.L1BlockRef
-}
-
-func (ev FinalizeL1Event) String() string {
-	return "finalized-l1"
-}
-
 type TryFinalizeEvent struct {
 }
 
@@ -139,9 +138,9 @@ func (ev TryFinalizeEvent) String() string {
 }
 
 func (fi *Finalizer) OnEvent(ctx context.Context, ev event.Event) bool {
+	// TODO(#16917) Remove Event System Refactor Comments
+	//  FinalizeL1Event is removed and OnL1Finalized is synchronously called at L1Handler
 	switch x := ev.(type) {
-	case FinalizeL1Event:
-		fi.onL1Finalized(x.FinalizedL1)
 	case engine.SafeDerivedEvent:
 		fi.onDerivedSafeBlock(x.Safe, x.Source)
 	case derive.DeriverIdleEvent:
@@ -159,7 +158,7 @@ func (fi *Finalizer) OnEvent(ctx context.Context, ev event.Event) bool {
 }
 
 // onL1Finalized applies a L1 finality signal
-func (fi *Finalizer) onL1Finalized(l1Origin eth.L1BlockRef) {
+func (fi *Finalizer) OnL1Finalized(l1Origin eth.L1BlockRef) {
 	fi.mu.Lock()
 	defer fi.mu.Unlock()
 	prevFinalizedL1 := fi.finalizedL1
@@ -255,7 +254,7 @@ func (fi *Finalizer) tryFinalize() {
 			})
 			return
 		}
-		fi.emitter.Emit(fi.ctx, engine.PromoteFinalizedEvent{Ref: finalizedL2})
+		fi.engineController.PromoteFinalized(ctx, finalizedL2)
 	}
 }
 

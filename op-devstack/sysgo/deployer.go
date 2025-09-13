@@ -41,6 +41,12 @@ func WithDeployerOptions(opts ...DeployerOption) stack.Option[*Orchestrator] {
 
 type DeployerPipelineOption func(wb *worldBuilder, intent *state.Intent, cfg *deployer.ApplyPipelineOpts)
 
+func WithDeployerCacheDir(dirPath string) DeployerPipelineOption {
+	return func(_ *worldBuilder, _ *state.Intent, cfg *deployer.ApplyPipelineOpts) {
+		cfg.CacheDir = dirPath
+	}
+}
+
 func WithDeployerPipelineOption(opt DeployerPipelineOption) stack.Option[*Orchestrator] {
 	return stack.BeforeDeploy(func(o *Orchestrator) {
 		o.deployerPipelineOptions = append(o.deployerPipelineOptions, opt)
@@ -115,6 +121,7 @@ func WithDeployer() stack.Option[*Orchestrator] {
 type L2Deployment struct {
 	systemConfigProxyAddr   common.Address
 	disputeGameFactoryProxy common.Address
+	l1StandardBridgeProxy   common.Address
 }
 
 var _ stack.L2Deployment = &L2Deployment{}
@@ -125,6 +132,10 @@ func (d *L2Deployment) SystemConfigProxyAddr() common.Address {
 
 func (d *L2Deployment) DisputeGameFactoryProxyAddr() common.Address {
 	return d.disputeGameFactoryProxy
+}
+
+func (d *L2Deployment) L1StandardBridgeProxyAddr() common.Address {
+	return d.l1StandardBridgeProxy
 }
 
 type InteropMigration struct {
@@ -161,6 +172,13 @@ var (
 	oneEth     = uint256.NewInt(1e18)
 	millionEth = new(uint256.Int).Mul(uint256.NewInt(1e6), oneEth)
 )
+
+func WithEmbeddedContractSources() DeployerOption {
+	return func(_ devtest.P, _ devkeys.Keys, builder intentbuilder.Builder) {
+		builder.WithL1ContractsLocator(artifacts.EmbeddedLocator)
+		builder.WithL2ContractsLocator(artifacts.EmbeddedLocator)
+	}
+}
 
 func WithLocalContractSources() DeployerOption {
 	return func(p devtest.P, keys devkeys.Keys, builder intentbuilder.Builder) {
@@ -236,6 +254,34 @@ func WithInteropAtGenesis() DeployerOption {
 	return func(p devtest.P, keys devkeys.Keys, builder intentbuilder.Builder) {
 		for _, l2Cfg := range builder.L2s() {
 			l2Cfg.WithForkAtGenesis(rollup.Interop)
+		}
+	}
+}
+
+// WithHardforkSequentialActivation configures a deployment such that L2 chains
+// activate hardforks sequentially, starting from startFork and continuing
+// until (but not including) endFork. Each successive fork is scheduled at
+// an increasing offset.
+func WithHardforkSequentialActivation(startFork, endFork rollup.ForkName, delta *uint64) DeployerOption {
+	return func(p devtest.P, keys devkeys.Keys, builder intentbuilder.Builder) {
+		for _, l2Cfg := range builder.L2s() {
+			l2Cfg.WithForkAtGenesis(startFork)
+			activateWithOffset := false
+			deactivate := false
+			for idx, refFork := range rollup.AllForks {
+				if deactivate || refFork == endFork {
+					l2Cfg.WithForkAtOffset(refFork, nil)
+					deactivate = true
+					continue
+				}
+				if activateWithOffset {
+					offset := *delta * uint64(idx)
+					l2Cfg.WithForkAtOffset(refFork, &offset)
+				}
+				if startFork == refFork {
+					activateWithOffset = true
+				}
+			}
 		}
 	}
 }
@@ -318,6 +364,7 @@ func (wb *worldBuilder) buildL2DeploymentOutputs() {
 		wb.outL2Deployment[chainID] = &L2Deployment{
 			systemConfigProxyAddr:   ch.SystemConfigProxy,
 			disputeGameFactoryProxy: ch.DisputeGameFactoryProxy,
+			l1StandardBridgeProxy:   ch.L1StandardBridgeProxy,
 		}
 	}
 	wb.outSuperchainDeployment = &SuperchainDeployment{

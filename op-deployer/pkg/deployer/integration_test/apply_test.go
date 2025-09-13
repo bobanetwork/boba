@@ -7,7 +7,6 @@ import (
 	"encoding/hex"
 	"log/slog"
 	"math/big"
-	"regexp"
 	"strings"
 	"testing"
 	"time"
@@ -100,16 +99,10 @@ func TestEndToEndBootstrapApply(t *testing.T) {
 		})
 		require.NoError(t, err)
 
-		var release string
-		if !loc.IsTag() {
-			release = "dev"
-		}
-
 		impls, err := bootstrap.Implementations(ctx, bootstrap.ImplementationsConfig{
 			L1RPCUrl:                        l1RPC,
 			PrivateKey:                      pkHex,
 			ArtifactsLocator:                loc,
-			L1ContractsRelease:              release,
 			MIPSVersion:                     int(standard.MIPSVersion),
 			WithdrawalDelaySeconds:          standard.WithdrawalDelaySeconds,
 			MinProposalSizeBytes:            standard.MinProposalSizeBytes,
@@ -149,13 +142,10 @@ func TestEndToEndBootstrapApply(t *testing.T) {
 	}
 
 	t.Run("default tagged artifacts", func(t *testing.T) {
-		op_e2e.InitParallel(t)
-		testutils.RunOnBranch(t, regexp.MustCompile(`^(backports/op-deployer|proposal/op-contracts)/*`))
 		apply(t, artifacts.DefaultL1ContractsLocator)
 	})
 
 	t.Run("local artifacts", func(t *testing.T) {
-		op_e2e.InitParallel(t)
 		loc, _ := testutil.LocalArtifacts(t)
 		apply(t, loc)
 	})
@@ -785,10 +775,6 @@ func validateOPChainDeployment(t *testing.T, cg codeGetter, st *state.State, int
 		{"DisputeGameFactoryImpl", st.ImplementationsDeployment.DisputeGameFactoryImpl},
 		{"MipsImpl", st.ImplementationsDeployment.MipsImpl},
 		{"PreimageOracleImpl", st.ImplementationsDeployment.PreimageOracleImpl},
-	}
-
-	if !intent.L1ContractsLocator.IsTag() {
-		implAddrs = append(implAddrs, addrTuple{"EthLockboxImpl", st.ImplementationsDeployment.EthLockboxImpl})
 	}
 
 	for _, addr := range implAddrs {

@@ -220,15 +220,25 @@ func (c *OpConductor) initHealthMonitor(ctx context.Context) error {
 		})
 	}
 
+	var elP2p client.ElP2PClient
+	if c.cfg.HealthCheck.ExecutionP2pEnabled {
+		execClient, err := dial.DialEthClientWithTimeout(ctx, 1*time.Minute, c.log, c.cfg.HealthCheck.ExecutionP2pRPCUrl)
+		if err != nil {
+			return errors.Wrap(err, "failed to create execution rpc client out of the el p2p rpc url: "+c.cfg.HealthCheck.ExecutionP2pRPCUrl)
+		}
+		elP2p = client.NewElP2PClientAdmin(execClient)
+	} else {
+		elP2p = nil
+	}
+
 	p2p := sources.NewP2PClient(nc)
 
 	var supervisor health.SupervisorHealthAPI
 	if c.cfg.SupervisorRPC != "" {
-		sc, err := opclient.NewRPC(ctx, c.log, c.cfg.SupervisorRPC)
+		supervisor, err = dial.DialSupervisorClientWithTimeout(ctx, c.log, c.cfg.SupervisorRPC)
 		if err != nil {
-			return errors.Wrap(err, "failed to create supervisor rpc client")
+			return errors.Wrap(err, "failed to dial supervisor")
 		}
-		supervisor = sources.NewSupervisorClient(sc)
 	}
 
 	c.hmon = health.NewSequencerHealthMonitor(
@@ -244,6 +254,8 @@ func (c *OpConductor) initHealthMonitor(ctx context.Context) error {
 		p2p,
 		supervisor,
 		rb,
+		elP2p,
+		c.cfg.HealthCheck.ExecutionP2pMinPeerCount,
 	)
 	c.healthUpdateCh = c.hmon.Subscribe()
 
@@ -281,7 +293,7 @@ func (oc *OpConductor) initRPCServer(ctx context.Context) error {
 			Service:   execMinerProxy,
 		})
 
-		nodeClient, err := dial.DialRollupClientWithTimeout(ctx, 1*time.Minute, oc.log, oc.cfg.NodeRPC)
+		nodeClient, err := dial.DialRollupClientWithTimeout(ctx, oc.log, oc.cfg.NodeRPC)
 		if err != nil {
 			return errors.Wrap(err, "failed to create node rpc client")
 		}
@@ -739,10 +751,8 @@ func (oc *OpConductor) action() {
 	case status.leader && !status.healthy && status.active:
 		// There are two scenarios we need to handle here:
 		// 1. we're transitioned from case status.leader && !status.healthy && !status.active, see description above
-		//    then we should continue to sequence blocks and try to bring ourselves back to healthy state.
-		//    note: we need to also make sure that the health error is not due to ErrSequencerConnectionDown
-		//    		because in this case, we should stop sequencing and transfer leadership to other nodes.
-		if oc.prevState.leader && !oc.prevState.healthy && !oc.prevState.active && !errors.Is(oc.hcerr, health.ErrSequencerConnectionDown) {
+		//    then we should continue to sequence blocks and try to bring ourselves back to healthy state (if possible)
+		if oc.shouldWaitForHealthRecovery() {
 			err = errors.New("waiting for sequencing to become healthy by itself")
 			break
 		}
@@ -923,4 +933,25 @@ func (oc *OpConductor) updateSequencerActiveStatus() error {
 	oc.log.Info("sequencer active status updated", "active", active)
 	oc.seqActive.Store(active)
 	return nil
+}
+
+// shouldWaitForHealthRecovery determines if the conductor should wait for the sequencer
+// to recover health naturally instead of transferring leadership.
+func (oc *OpConductor) shouldWaitForHealthRecovery() bool {
+	// Only wait for recovery if we transitioned from [leader, unhealthy, inactive] state
+	if !oc.prevState.leader || oc.prevState.healthy || oc.prevState.active {
+		return false
+	}
+
+	// Don't wait if the error is a connection issue - transfer leadership instead
+	if errors.Is(oc.hcerr, health.ErrSequencerConnectionDown) {
+		return false
+	}
+
+	// Don't wait if rollup boost is enabled and partially healthy - transfer leadership instead
+	if oc.cfg.RollupBoostEnabled && errors.Is(oc.hcerr, health.ErrRollupBoostPartiallyHealthy) {
+		return false
+	}
+
+	return true
 }

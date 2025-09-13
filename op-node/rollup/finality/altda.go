@@ -29,15 +29,15 @@ type AltDAFinalizer struct {
 
 func NewAltDAFinalizer(ctx context.Context, log log.Logger, cfg *rollup.Config,
 	l1Fetcher FinalizerL1Interface,
-	backend AltDABackend) *AltDAFinalizer {
+	backend AltDABackend, ec EngineController) *AltDAFinalizer {
 
-	inner := NewFinalizer(ctx, log, cfg, l1Fetcher)
+	inner := NewFinalizer(ctx, log, cfg, l1Fetcher, ec)
 
 	// In alt-da mode, the finalization signal is proxied through the AltDA manager.
 	// Finality signal will come from the DA contract or L1 finality whichever is last.
 	// The AltDA module will then call the inner.Finalize function when applicable.
 	backend.OnFinalizedHeadSignal(func(ref eth.L1BlockRef) {
-		inner.OnEvent(ctx, FinalizeL1Event{FinalizedL1: ref})
+		inner.OnL1Finalized(ref)
 	})
 
 	return &AltDAFinalizer{
@@ -47,11 +47,11 @@ func NewAltDAFinalizer(ctx context.Context, log log.Logger, cfg *rollup.Config,
 }
 
 func (fi *AltDAFinalizer) OnEvent(ctx context.Context, ev event.Event) bool {
-	switch x := ev.(type) {
-	case FinalizeL1Event:
-		fi.backend.Finalize(x.FinalizedL1)
-		return true
-	default:
-		return fi.Finalizer.OnEvent(ctx, ev)
-	}
+	// TODO(#16917) Remove Event System Refactor Comments
+	//  FinalizeL1Event is removed and OnL1Finalized is synchronously called at L1Handler
+	return fi.Finalizer.OnEvent(ctx, ev)
+}
+
+func (fi *AltDAFinalizer) OnL1Finalized(l1Origin eth.L1BlockRef) {
+	fi.backend.Finalize(l1Origin)
 }

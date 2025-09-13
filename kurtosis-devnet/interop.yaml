@@ -17,6 +17,8 @@
 {{- $flags := dict
   "log_level" "--log.level=info"
   "log_format" "--log.format=logfmtms"
+  "interop_mempool_filtering" "--rollup.interopmempoolfiltering"
+  "experimental_sequencer_api" "--experimental.sequencer-api"
 -}}
 ---
 optimism_package:
@@ -36,6 +38,9 @@ optimism_package:
       extra_params:
       - {{ $flags.log_level }}
       - {{ $flags.log_format }}
+  test-sequencers:
+    sequencer:
+      enabled: true
   chains:
     op-kurtosis1:
       participants:
@@ -46,7 +51,8 @@ optimism_package:
             log_level: ""
             extra_env_vars: {}
             extra_labels: {}
-            extra_params: []
+            extra_params:
+            - {{ $flags.interop_mempool_filtering }}
             tolerations: []
             volume_size: 0
             min_cpu: 0
@@ -61,6 +67,7 @@ optimism_package:
             extra_labels: {}
             extra_params:
               - {{ $flags.log_format }}
+              - {{ $flags.experimental_sequencer_api }}
             tolerations: []
             volume_size: 0
             min_cpu: 0
@@ -79,6 +86,7 @@ optimism_package:
         granite_time_offset: 0
         holocene_time_offset: 0
         isthmus_time_offset: 0
+        jovian_time_offset: 0
         interop_time_offset: 0
         fund_dev_accounts: true
       batcher_params:
@@ -103,6 +111,8 @@ optimism_package:
         fjord_time_offset: 0
         granite_time_offset: 0
         holocene_time_offset: 0
+        isthmus_time_offset: 0
+        jovian_time_offset: 0
         interop_time_offset: 0
         fund_dev_accounts: true
       batcher_params:
@@ -149,6 +159,7 @@ ethereum_package:
   participants:
     - el_type: geth
       cl_type: teku
+      cl_image: consensys/teku:25.7.1
   network_params:
     preset: minimal
     genesis_delay: 5

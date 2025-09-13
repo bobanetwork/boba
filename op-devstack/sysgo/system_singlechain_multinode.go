@@ -22,15 +22,13 @@ func NewDefaultSingleChainMultiNodeSystemIDs(l1ID, l2ID eth.ChainID) DefaultSing
 }
 
 func DefaultSingleChainMultiNodeSystem(dest *DefaultSingleChainMultiNodeSystemIDs) stack.Option[*Orchestrator] {
-	l1ID := eth.ChainIDFromUInt64(900)
-	l2ID := eth.ChainIDFromUInt64(901)
-	ids := NewDefaultSingleChainMultiNodeSystemIDs(l1ID, l2ID)
+	ids := NewDefaultSingleChainMultiNodeSystemIDs(DefaultL1ID, DefaultL2AID)
 
 	opt := stack.Combine[*Orchestrator]()
 	opt.Add(DefaultMinimalSystem(&dest.DefaultMinimalSystemIDs))
 
-	opt.Add(WithL2ELNode(ids.L2ELB, nil))
-	opt.Add(WithL2CLNode(ids.L2CLB, false, false, ids.L1CL, ids.L1EL, ids.L2ELB))
+	opt.Add(WithL2ELNode(ids.L2ELB))
+	opt.Add(WithL2CLNode(ids.L2CLB, ids.L1CL, ids.L1EL, ids.L2ELB))
 
 	// P2P connect L2CL nodes
 	opt.Add(WithL2CLP2PConnection(ids.L2CL, ids.L2CLB))

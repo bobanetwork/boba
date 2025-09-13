@@ -68,7 +68,7 @@ func NewSingleChainInterop(t devtest.T) *SingleChainInterop {
 		L2ChainA:      dsl.NewL2Network(l2A, orch.ControlPlane()),
 		L2ELA:         dsl.NewL2ELNode(l2A.L2ELNode(match.Assume(t, match.FirstL2EL)), orch.ControlPlane()),
 		L2CLA:         dsl.NewL2CLNode(l2A.L2CLNode(match.Assume(t, match.FirstL2CL)), orch.ControlPlane()),
-		Wallet:        dsl.NewHDWallet(t, devkeys.TestMnemonic, 30),
+		Wallet:        dsl.NewRandomHDWallet(t, 30), // Random for test isolation
 		FaucetA:       dsl.NewFaucet(l2A.Faucet(match.Assume(t, match.FirstFaucet))),
 		L2BatcherA:    dsl.NewL2Batcher(l2A.L2Batcher(match.Assume(t, match.FirstL2Batcher))),
 	}
@@ -129,6 +129,10 @@ func WithSimpleInterop() stack.CommonOption {
 // WithSuperInterop specifies a super root system that meets the SimpleInterop criteria.
 func WithSuperInterop() stack.CommonOption {
 	return stack.MakeCommon(sysgo.DefaultInteropProofsSystem(&sysgo.DefaultInteropSystemIDs{}))
+}
+
+func WithIsthmusSuper() stack.CommonOption {
+	return stack.MakeCommon(sysgo.DefaultIsthmusSuperProofsSystem(&sysgo.DefaultInteropSystemIDs{}))
 }
 
 // WithUnscheduledInterop adds a test-gate to not run the test if the interop upgrade is scheduled.
