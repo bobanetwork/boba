@@ -73,8 +73,8 @@ github.com/bits-and-blooms/bitset v1.20.0 h1:2F+rfL86jE2d/bmw7OhqUg2Sj/1rURkBn3M
 github.com/bits-and-blooms/bitset v1.20.0/go.mod h1:7hO7Gc7Pp1vODcmWvKMRA9BNmbv6a/7QIWpPxHddWR8=
 github.com/bmatcuk/doublestar/v4 v4.8.1 h1:54Bopc5c2cAvhLRAzqOGCYHYyhcDHsFF4wWIR5wKP38=
 github.com/bmatcuk/doublestar/v4 v4.8.1/go.mod h1:xBQ8jztBU6kakFMg+8WGxn0c6z1fTSPVIjEY1Wr7jzc=
-github.com/bobanetwork/op-geth v0.0.0-20250913042720-14a7477bf4f0 h1:bUwoG1pmrmE1/GklGqXFfqFzlYrqDHLIU9M+nuPFpuo=
-github.com/bobanetwork/op-geth v0.0.0-20250913042720-14a7477bf4f0/go.mod h1:rOTZfq3JrsY8ktvTnS6XT9X+t4WQQ42zFb+hzXua2EU=
+github.com/bobanetwork/op-geth v0.0.0-20250913054327-8db004bf526e h1:fD1PRiiwiXavCH7KGb1KQwRyJMGBBbmXmfpvWm4XTcw=
+github.com/bobanetwork/op-geth v0.0.0-20250913054327-8db004bf526e/go.mod h1:rOTZfq3JrsY8ktvTnS6XT9X+t4WQQ42zFb+hzXua2EU=
 github.com/boltdb/bolt v1.3.1 h1:JQmyP4ZBrce+ZQu0dY660FMfatumYDLun9hBCUVIkF4=
 github.com/boltdb/bolt v1.3.1/go.mod h1:clJnj/oiGkjum5o1McbSZDSLxVThjynRyGBgiAx27Ps=
 github.com/bradfitz/go-smtpd v0.0.0-20170404230938-deb6d6237625/go.mod h1:HYsPBTaaSFSlLx/70C2HPIMNZpVV8+vt/A+FMnYP11g=
