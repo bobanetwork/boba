@@ -4,3 +4,4 @@ BASE_URL:
 STAGE: "mainnet"
 DOMAIN_NAME:
 CERTIFICATE_NAME:
+ROUTESCAN_API_URL: "https://api.routescan.io/v2/network"

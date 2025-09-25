@@ -9,9 +9,12 @@ TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 LOGS_DIR="./logs"
 mkdir -p "$LOGS_DIR"
 
-# Log file paths
-DEV_LOG="$LOGS_DIR/dev-deployments.log"
-MAINNET_LOG="$LOGS_DIR/mainnet-deployments.log"
+# Timestamp
+TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
+
+# Create log files with timestamp
+DEV_LOG="$LOGS_DIR/dev-deployments-$TIMESTAMP.log"
+MAINNET_LOG="$LOGS_DIR/mainnet-deployments-$TIMESTAMP.log"
 
 # Create log files if they don't exist
 touch "$DEV_LOG" "$MAINNET_LOG"
@@ -51,16 +54,12 @@ case $STAGE in
       exit 1
     fi
 
-    # Set AWS profile for mainnet
-    export AWS_PROFILE=mainnet
-    log_message "mainnet" "Using AWS Profile: mainnet"
-
     # Copy mainnet environment and deploy
     log_message "mainnet" "Copying mainnet environment configuration..."
     cp env-mainnet.yml env.yml
 
     log_message "mainnet" "Starting serverless deployment..."
-    if serverless deploy --stage mainnet --region us-east-2 2>&1 | tee -a "$MAINNET_LOG"; then
+    if serverless deploy --stage mainnet --region us-east-2 --debug 2>&1 | tee -a "$MAINNET_LOG"; then
       log_message "mainnet" "Deployment successful"
     else
       error_msg="Deployment failed"

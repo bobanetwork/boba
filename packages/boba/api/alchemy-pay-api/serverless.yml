@@ -18,10 +18,23 @@ functions:
             origins: ${self:custom.corsOrigins.${self:provider.stage}}
     timeout: 30
 
+  routescanL2Transaction:
+    handler: src/routescan_handler.routescan_l2_transaction
+    layers:
+      - arn:aws:lambda:us-east-2:641611606580:layer:alchemy-pay-url-generator-mainnet-python-requirements:1
+    events:
+      - http:
+          path: fetch_routescan_l2_transaction
+          method: post
+          cors:
+            origins: ${self:custom.corsOrigins.${self:provider.stage}}
+    timeout: 30
+
 plugins:
   - serverless-python-requirements
   - serverless-offline
   - serverless-domain-manager
+  - serverless-dotenv-plugin
 
 package:
   patterns:
@@ -31,9 +44,12 @@ package:
 
 custom:
   pythonRequirements:
-    layer:
-      name: python-deps
-      description: Python dependencies for Alchemy Pay URL Generator
+    dockerizePip: true        # ensures Linux-compatible binaries
+    layer: true
+    layerName: python-deps          # optional, just for naming
+    layerDescription: Python dependencies
+    compatibleRuntimes:
+      - python3.9
 
   serverless-offline:
     httpPort: 3000

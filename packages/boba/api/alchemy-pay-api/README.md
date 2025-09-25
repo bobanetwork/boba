@@ -38,7 +38,7 @@ cp env-mainnet.example.yml env-mainnet.yml
 pnpm run dev
 
 # Test URL generation
-curl -X POST http://localhost:3000/dev/generate \
+curl -X POST http://localhost:3000/dev/generate_alchemypay_url \
   -H "Content-Type: application/json" \
   -d '{
     "crypto": "USDT",
@@ -47,6 +47,16 @@ curl -X POST http://localhost:3000/dev/generate \
     "merchantOrderNo": "test123",
     "network": "BSC"
   }'
+
+# Test the routescan api invocation
+curl -X POST http://localhost:3000/dev/fetch_routescan_l2_transaction \
+  -H "Content-Type: application/json" \
+  -d '{
+    "chainId": "56288",
+    "address": "0x9703d3B2521F3De2D56831f3df9490cbB1487428",
+    "startBlock": "41661017"
+  }'
+
 ```
 
 4. **Deployment**
@@ -56,57 +66,4 @@ curl -X POST http://localhost:3000/dev/generate \
 
 # Deploy to mainnet (requires MAINNET_SECRET_KEY env variable)
 ./deploy.sh mainnet
-```
-
-## Project Structure
-
-```
-api/
-├── src/
-│   └── handler.py      # Main Lambda handler
-├── test/
-│   └── test_handler.py # Unit tests
-├── serverless.yml      # Main serverless config
-├── env-dev.yml         # Dev environment variables
-├── env-mainnet.yml     # Mainnet environment variables
-├── requirements.txt    # Python dependencies
-├── package.json        # Node.js dependencies
-└── deploy.sh          # Deployment script
-```
-
-## Environment Variables
-
-Required environment variables in `env-*.yml`:
-
-- `APP_ID`: Your Alchemy Pay App ID
-- `SECRET_KEY`: Your Alchemy Pay Secret Key
-- `BASE_URL`: API base URL (dev/mainnet)
-- `STAGE`: Deployment stage
-
-## Local Development
-
-1. Install dependencies:
-```bash
-pnpm install
-pip install -r requirements.txt
-```
-
-2. Start local server:
-```bash
-pnpm run dev
-```
-
-3. Test the endpoint:
-```bash
-curl -X POST http://localhost:3000/dev/generate \
-  -H "Content-Type: application/json" \
-  -d '{
-    "crypto": "USDT",
-    "fiatAmount": "15",
-    "fiat": "USD",
-    "merchantOrderNo": "test123",
-    "network": "BSC",
-    "callbackUrl": "https://your-callback.com",
-    "redirectUrl": "https://your-redirect.com"
-  }'
 ```
