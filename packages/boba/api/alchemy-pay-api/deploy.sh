@@ -78,7 +78,6 @@ case $STAGE in
 
   "dev")
     log_message "dev" "Deploying to Development..."
-
     # Set AWS profile for dev (or use default)
     export AWS_PROFILE=default
     log_message "dev" "Using AWS Profile: default"
@@ -92,7 +91,7 @@ case $STAGE in
     # create_domain
 
     log_message "dev" "Starting serverless deployment..."
-    if serverless deploy --stage dev --debug 2>&1 | tee -a "$DEV_LOG"; then
+    if serverless deploy --stage dev --region us-east-1 --debug 2>&1 | tee -a "$DEV_LOG"; then
       log_message "dev" "Deployment successful"
     else
       error_msg="Deployment failed"
