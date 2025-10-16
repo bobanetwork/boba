@@ -153,9 +153,7 @@ Yes! Please refer to [Boba Faucets](faucets).
 
 For more information on Boba’s testnet and fountain, [check out our documentation](./addresses/network-eth).
 
-### I am trying to run Boba Network locally and I am able to run unit tests. However, integration tests give an error:
-
-`./scripts/wait-for-sequencer.sh is getting timed out. Any Solutions?`
+### I am trying to run Boba Network locally and I am able to run unit tests. However, integration tests give an error (`./scripts/wait-for-sequencer.sh is getting timed out`):
 
 Please run `docker-compose logs`, as well as integration tests, and send us the output of the logs and test results via our [Discord server](https://boba.eco/discord).
 
