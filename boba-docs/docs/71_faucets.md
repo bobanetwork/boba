@@ -13,9 +13,8 @@ Faucets are tools for developers that give you free ETH (and other tokens) on te
 | [Infura Faucet](https://www.infura.io/faucet/sepolia)               | Sepolia               |
 | [QuickNode Faucet](https://faucet.quicknode.com/drip)               | Sepolia               |
 | [PoW Faucet](https://sepolia-faucet.pk910.de/)                      | Sepolia               |
-| [Boba BNB Testnet Faucet](https://faucet.testnet.bnb.boba.network/) | Boba BNB Testnet      |
 | [Boba ETH Testnet Faucet](https://faucet.sepolia.boba.network/)     | Boba ETH Testnet      |
 
 ## Bridge from Sepolia
 
-If you have testnet ETH on Sepolia, you can bridge it to Boba Sepolia (and vice versa) using the [Boba Gateway](https://gateway.boba.network).
+If you have testnet ETH on Sepolia, you can bridge it to Boba Sepolia (and vice versa) using the [Boba Hub](https://hub.boba.network).

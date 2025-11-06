@@ -6,7 +6,7 @@ description: Learn more about the Light Bridge
 The light bridge allows you to bridge particular assets into any direction that has been whitelisted. At the day of writing it is the fastest and most convenient way to bridge assets on Boba.
 
 ## How to use LightBridge?
-1. Head over to the [Gateway](https://gateway.boba.network)
+1. Head over to the [Boba Hub](https://hub.boba.network)
 2. Connect your wallet
 3. Select "Light Bridge" in the tabs
 4. Happy bridging!
@@ -15,7 +15,7 @@ The light bridge allows you to bridge particular assets into any direction that 
 
 ## How does it work?
 From a birds-eye perspective we do have 3 components:
-1. The User interacting with the user-interface such as the [Gateway DApp](https://gateway.boba.network/),
+1. The User interacting with the user-interface such as the [Boba Hub](https://hub.boba.network/),
 2. The Smart Contracts ([Proxy](https://github.com/bobanetwork/light-bridge/blob/main/contracts/Lib_ResolvedDelegateProxy.sol) + [Implementation](https://github.com/bobanetwork/light-bridge/blob/main/contracts/LightBridge.sol) contract) and
 3. The [Backend](https://github.com/bobanetwork/light-bridge/tree/main/src)
 
@@ -39,25 +39,13 @@ Minor note: The routes and limits also apply to testnet.
 ### BOBA
 BOBA can bridged between the following networks. For your convenience, we've added the chainId in brackets.
 
-1. BOBA BNB Mainnet (56288) `<->` BNB Mainnet (56)
-2. BOBA BNB Mainnet (56288) `<->` BOBA ETH Mainnet (288)
-3. ETH Mainnet (1) `<->` BOBA ETH Mainnet (288)
-4. BOBA ETH Mainnet (288) `<->` BNB Mainnet (56)
+1. ETH Mainnet (1) `<->` BOBA ETH Mainnet (288)
+1. BOBA ETH Mainnet (288) `<->` BNB Mainnet (56)
 
 #### Limits for bridging BOBA
 - Minimum Amount to be bridged: **20 BOBA**
 - Maximum Amount to be bridged: **20 000 BOBA**
 - Maximum Amount to be bridged per day & per route (for all users combined): **40 000 BOBA**
-
-### BNB
-These are the supported routes for BNB.
-
-1. BOBA BNB Mainnet (56288) `<->` BNB Mainnet (56)
-
-#### Limits for bridging BNB
-- Minimum Amount to be bridged: **0.01 BNB**
-- Maximum Amount to be bridged: **2 BNB**
-- Maximum Amount to be bridged per day & per route (for all users combined): **6 BNB**
 
 ### ETH
 ETH can be bridged from and to these networks.
@@ -72,12 +60,12 @@ ETH can be bridged from and to these networks.
 - Maximum Amount to be bridged per day & per route (for all users combined): **6 ETH**
 
 ## Gas Airdrop
-If you bridge from **ETH Mainnet** to either **BOBA ETH** or **BOBA BNB Mainnet** you might receive some gas if you match certain conditions.
+If you bridge from **ETH Mainnet** to **BOBA ETH** you might receive some gas if you match certain conditions.
 
 Along with the source network being **ETH Mainnet** you need to fulfill the following:
-- have less than **0.5 BOBA** on Boba BNB (since BOBA is native there) or **0.0005 ETH** on Boba ETH,
-- bridge a non-native asset. Means if you bridge BOBA from Boba Ethereum to Boba BNB you will not receive gas, since BOBA is the native asset on Boba BNB,
-- must not have received an airdrop in the **last 24h**.
+- Have less than **0.0005 ETH** on Boba ETH
+- Bridge a non-native asset
+- Must not have received an airdrop in the **last 24h**
 
 
 ### How to Bridge programmatically
@@ -102,7 +90,7 @@ await approveTx.wait()
 
 // Deposit asset
 const depositTx = await Proxy__LightBridge.teleportAsset(
-  bobaTokenAddress, // if you want to bridge ETH or BNB (or BOBA on Boba BNB) then provide the Zero-Address: 0x0000..0000
+  bobaTokenAddress, // if you want to bridge ETH or BNB then provide the Zero-Address: 0x0000..0000
   depositAmount,
   destinationChainId, // e.g. 288
 )
@@ -153,10 +141,6 @@ Here are the contract deployments for all networks. The most up-to-date version 
 - LightBridge deployed to: `0x3f7Da9C51138E0475aA26E80677d27A568cFD6b9`
 - Proxy__LightBridge deployed to: `0x2dE73Bd1660Fbf4D521a52Ec2a91CCc106113801`
 - Disburser transferred to AWS KMS managed wallet on 3 March 2024: `0x48b722d8b1cdf5ebdaeb3f06f85d2560dc5d373a`
-
-### Boba BNB Testnet
-- LightBridge deployed to: `0x46FA6144C61d2bb9aCDc3Ca90C8673dd9B6caEB2`
-- Proxy__LightBridge deployed to: `0xf4d179d3a083Fa3Eede935FaF4C679D32d514186`
 
 ### Arbitrum Sepolia
 - LightBridge deployed to: `0x4f7E3fF7B52e9843097A8CB3F1b083a8fF6f8c9b`
