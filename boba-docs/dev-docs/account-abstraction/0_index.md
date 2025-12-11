@@ -13,7 +13,7 @@ EOAs have 3 main properties:
 2. The nonce to ensure the uniqueness of every transaction
 3. The address to uniquely identify the account
 
-While a Contract Account is an account with code (smart contract) that executes when it receives a transaction. Like an EOA, a contract account can also hold ether and can be made to trigger arbitrary transactions. But a contract account needs to be controlled with an EOA.
+A Contract Account is an account with code (called a smart contract) that executes when it receives a transaction. Like an EOA, a contract account can also hold ether and can be made to trigger arbitrary transactions. But a contract account needs to be controlled with an EOA.
 
 ## What is Account Abstraction
 

@@ -86,7 +86,7 @@ const config = {
       {
         id: 'dev',
         path: 'dev-docs',
-        routeBasePath: '/', // if you want a landing page, this should be 'dev-docs'
+        routeBasePath: 'dev-docs', // to default to dev-docs instead of a landing page, this should be '/', dev-docs/index should have slug: '/' at the top, and rename src/pages/index.js to _index.js
         sidebarPath: undefined, //require.resolve('./sidebarsSDK.js'),
         lastVersion: 'current',
           versions: {
@@ -123,7 +123,7 @@ const config = {
           src: 'img/boba_B.png',
         },
         items: [
-          { to: '/', label: 'Developer', position: 'left' }, // if you want a landing page, change to 'dev-docs/index'
+          { to: 'dev-docs/index', label: 'Developer', position: 'left' }, // if you want to default to dev-docs instead of a landing page, change to '/'
           { to: 'user-docs/index', label: 'User', position: 'left' },
           // {
           //   type: 'docSidebar',
