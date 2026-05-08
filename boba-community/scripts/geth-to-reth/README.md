@@ -160,12 +160,12 @@ op-node \
   --l1.beacon=<L1_BEACON_URL> \
   --l2=http://localhost:8551 \
   --l2.jwt-secret=jwt.hex \
-  --network=boba-sepolia \
+  --rollup.config=../../rollup-configs/boba-sepolia.json \
   --rpc.addr=0.0.0.0 \
   --rpc.port=9545
 ```
 
-For mainnet, use `--network=boba-mainnet` (or `--rollup.config=<path>` with a rollup config JSON).
+For mainnet, use `--rollup.config=../../rollup-configs/boba-mainnet.json`.
 
 ## Step 7: Verify
 

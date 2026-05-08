@@ -54,6 +54,7 @@ services:
       --authrpc.jwtsecret=/config/jwt-secret.txt
       --rollup.sequencer-http=https://sepolia.boba.network
       --rollup.disable-tx-pool-gossip
+      --rollup.historicalrpc=${HISTORICAL_RPC:-https://sepolia.boba.network}
     ports:
       - "9545:9545"
       - "8551:8551"
@@ -65,14 +66,14 @@ services:
   op-node:
     depends_on:
       - l2
-    image: ${OP_NODE_IMAGE:-us-docker.pkg.dev/boba-392114/bobanetwork-tools-artifacts/images/op-node}:${OP_NODE_VERSION:-v1.16.5}
+    image: ${OP_NODE_IMAGE:-us-docker.pkg.dev/oplabs-tools-artifacts/images/op-node}:${OP_NODE_VERSION:-v1.16.5}
     command: >
       op-node
       --l1=${ETH1_HTTP:-https://sepolia.gateway.tenderly.co}
       --l1.beacon=${ETH2_HTTP}
       --l2=http://l2:8551
       --l2.jwt-secret=/config/jwt-secret.txt
-      --network=boba-sepolia
+      --rollup.config=/config/rollup.json
       --rpc.addr=0.0.0.0
       --rpc.port=8545
       --p2p.bootnodes="enode://0d9f376f90b72f65c8cbeae4c7d34732678822109412c7e8253952b207618733a736f20b43c4c7c62e95b7e6389f04cc9e9e8dbe79ba75af884b0fcf5d580a3d@54.87.50.241:0?discport=30301,enode://48eb348c252f9c527ae40dee64995a65a5a6100725b1462184bb5b86cfbe817864e8ff90b52a78124289a476a1d805b27173d8f01722160c08159fa8880c47c0@13.220.237.71:0?discport=30301"
@@ -85,6 +86,7 @@ services:
       - "8545:8545"
     volumes:
       - ./jwt-secret.txt:/config/jwt-secret.txt
+      - ./rollup-configs/boba-sepolia.json:/config/rollup.json:ro
     #  - ./p2p-node-key.txt:/config/p2p-node-key.txt
     #  - ./discovery:/p2p_discovery_db
     #  - ./peerstore:/p2p_peerstore_db
