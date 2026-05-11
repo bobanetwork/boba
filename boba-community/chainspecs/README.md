@@ -11,47 +11,47 @@ Each file is a complete `Genesis` JSON containing:
 - Chain config: `chainId`, the bedrock block (`bedrockBlock`: the L2 block at which Boba migrated from OVM to EVM — 1149019 for mainnet, 511 for sepolia), all hardfork activation times (canyon/delta/ecotone/fjord/granite/holocene), and the OP Stack `optimism` config (EIP-1559 params)
 - OVM-era genesis block 0 metadata (`extraData`, `gasLimit`, etc.)
 
-## bedrockBlock and historical RPC forwarding
+## Why these files exist (the upstream bedrockBlock bug)
 
-`bedrockBlock` marks the L2 block where Boba migrated from the legacy OVM (a custom Solidity-based VM) to the EVM under Bedrock. Pre-bedrock blocks cannot be executed by op-reth's EVM and require a separate l2geth (OVM) process to serve them.
+Boba is bundled in the upstream OP Labs op-reth image (`us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth`) — its `superchain-configs.tar` includes the Boba mainnet and sepolia configs, and `--chain=boba` / `--chain=boba-sepolia` work out of the box.
 
-When `--rollup.historicalrpc=<legacy-l2geth-url>` is set, op-reth uses `bedrockBlock` to decide which requests to forward: queries for blocks numbered below `bedrockBlock` are forwarded to the legacy node, while post-bedrock blocks are served locally.
+What does *not* work out of the box is the **bedrock block**, which marks the L2 block where Boba migrated from the legacy OVM to the EVM under Bedrock. Pre-bedrock blocks cannot be executed by op-reth's EVM and require a separate l2geth (OVM) process to serve them. When `--rollup.historicalrpc=<legacy-l2geth-url>` is set, op-reth uses `bedrockBlock` to decide which requests to forward: queries for blocks numbered below `bedrockBlock` go to the legacy node; post-bedrock blocks are served locally.
 
-If `bedrockBlock` is set to 0 (or unset), op-reth treats the chain as Bedrock-from-genesis and never forwards. The earlier `paradigmxyz/op-reth:v1.10.2` build of these chain specs had this bug — `dump-genesis` returned `bedrockBlock: 0` for Boba, which broke historical RPC forwarding. This directory contains the corrected values.
+Upstream op-reth has a bug: in `optimism/rust/op-reth/crates/chainspec/src/superchain/chain_metadata.rs`, `bedrock_block` is hardcoded to `Some(105235063)` only for OP Mainnet (chain ID 10) and `Some(0)` for every other chain. Boba (and any other migrated chain that isn't OP Mainnet) therefore gets `bedrockBlock=0` from the built-in spec, which silently disables historical RPC forwarding. The same bug is present in the older `ghcr.io/paradigmxyz/op-reth:v1.10.2` build.
 
-## Why these files exist
+The fix in upstream is a one-line change: each superchain-registry config already carries the migration block at `genesis.l2.number` (1149019 for Boba mainnet, 511 for Boba sepolia, 0 for born-bedrock chains like Base). The code just needs to use that field instead of the hardcoded OP-Mainnet-only special case.
 
-`op-reth` was originally built and released by Paradigm at `ghcr.io/paradigmxyz/op-reth`, which embedded all superchain-registry chains (including Boba) at compile time. Starting with op-reth v1.11.0, ownership of op-reth moved to OP Labs (`ethereum-optimism/op-reth`), and the upstream image now only embeds OP Mainnet, OP Sepolia, Base Mainnet, Base Sepolia, and a dev chain — Boba is no longer built in.
-
-To run op-reth on Boba with the OP Labs image, the chain spec must be supplied at runtime via `--chain=<path-to-json>`.
+Until upstream is fixed, this directory holds Boba chain specs with the correct `bedrockBlock` baked in, supplied at runtime via `--chain=<path-to-json>`.
 
 ## Regenerating these files
 
-The files in this directory were produced by extracting the in-memory chain spec from the last paradigmxyz build that included Boba (`ghcr.io/paradigmxyz/op-reth:v1.10.2`), then **manually correcting `bedrockBlock`** (which paradigm's build defaulted to 0). They should not need to change unless Boba activates a new hardfork.
+These files were produced by dumping the chain spec from a version of op-reth that bundles Boba and then patching `bedrockBlock`. They should not need to change unless Boba activates a new hardfork.
 
-If you do need to regenerate them (e.g. after a hardfork is added to the superchain-registry), run:
+To regenerate:
 
 ```bash
-docker run --rm ghcr.io/paradigmxyz/op-reth:v1.10.2 dump-genesis --chain boba 2>/dev/null \
+docker run --rm us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth:v2.2.1 dump-genesis --chain boba 2>/dev/null \
   | tail -n +2 \
   | jq '.config.bedrockBlock = 1149019' > boba.json
 
-docker run --rm ghcr.io/paradigmxyz/op-reth:v1.10.2 dump-genesis --chain boba-sepolia 2>/dev/null \
+docker run --rm us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth:v2.2.1 dump-genesis --chain boba-sepolia 2>/dev/null \
   | tail -n +2 \
   | jq '.config.bedrockBlock = 511' > boba-sepolia.json
 ```
 
-(`tail -n +2` strips the leading log line that `op-reth` writes to stdout before the JSON; the `jq` step fixes the bedrockBlock that paradigm leaves at 0.)
+(`tail -n +2` strips the leading log line that `op-reth` writes to stdout before the JSON; the `jq` step fixes the `bedrockBlock` field that the built-in spec leaves at 0.)
 
-Note: this approach is frozen at v1.10.2 of paradigm's chain spec definitions. For new hardforks added after v1.10.2, the chain spec JSON will need to be edited manually or extracted from a newer source.
+Once the upstream fix lands, these JSON overrides should become unnecessary and `--chain=boba` against the upstream image should work directly. Until then, mount the JSON.
 
 ## Verifying
 
-To confirm a chain spec produces an identical OpChainSpec to the paradigm built-in:
+To confirm the patched chain spec only differs from the upstream built-in spec in the `bedrockBlock` field:
 
 ```bash
-docker run --rm ghcr.io/paradigmxyz/op-reth:v1.10.2 dump-genesis --chain boba | tail -n +2 > /tmp/a.json
+docker run --rm us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth:v2.2.1 dump-genesis --chain boba 2>/dev/null \
+  | tail -n +2 > /tmp/upstream.json
 docker run --rm -v "$PWD:/cs" us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth:v2.2.1 \
-  dump-genesis --chain /cs/boba.json | tail -n +2 > /tmp/b.json
-diff /tmp/a.json /tmp/b.json && echo "OK"
+  dump-genesis --chain /cs/boba.json 2>/dev/null | tail -n +2 > /tmp/ours.json
+diff /tmp/upstream.json /tmp/ours.json
+# Expected: a single hunk replacing "bedrockBlock": 0 with "bedrockBlock": 1149019
 ```
