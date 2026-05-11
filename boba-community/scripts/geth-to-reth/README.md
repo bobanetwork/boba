@@ -107,7 +107,7 @@ If `debug_getRawHeader` is not available, you can use `debug_getRawBlock` and st
 
 ## Step 4: Initialize op-reth
 
-The chain spec is supplied via the JSON files in [`../../chainspecs/`](../../chainspecs/) (Boba is no longer built into upstream op-reth — see that directory's README for context).
+The chain spec is supplied via the JSON files in [`../../chainspecs/`](../../chainspecs/) — they patch a buggy `bedrockBlock` in the upstream-bundled Boba config. See that directory's README for context.
 
 ```bash
 # Generate a JWT secret for Engine API authentication

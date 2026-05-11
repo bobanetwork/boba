@@ -15,9 +15,11 @@ version: '3.4'
 #      ETH2_HTTP=<L1 beacon URL>
 #      OP_NODE_VERSION=<op-node image tag>
 #
-# Boba is no longer built into upstream op-reth (since v1.11.0 when ownership
-# moved to OP Labs), so the chain spec is supplied at runtime via a mounted
-# JSON file. See chainspecs/README.md for details.
+# Boba is bundled in the upstream OP Labs op-reth image, but with a buggy
+# bedrockBlock=0 (only OP Mainnet gets its real bedrock block; every other
+# migrated chain is hardcoded to 0, which silently disables historical RPC
+# forwarding). The chain spec is supplied via a mounted JSON file that
+# patches bedrockBlock to the correct value. See chainspecs/README.md.
 
 services:
   # One-time initialization: import state dump into op-reth.
