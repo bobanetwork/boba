@@ -11,11 +11,11 @@
     "petersburgBlock": 0,
     "istanbulBlock": 0,
     "muirGlacierBlock": 0,
-    "berlinBlock": 0,
-    "londonBlock": 0,
-    "arrowGlacierBlock": 0,
-    "grayGlacierBlock": 0,
-    "mergeNetsplitBlock": 0,
+    "berlinBlock": 1149019,
+    "londonBlock": 1149019,
+    "arrowGlacierBlock": 1149019,
+    "grayGlacierBlock": 1149019,
+    "mergeNetsplitBlock": 1149019,
     "shanghaiTime": 1713302879,
     "cancunTime": 1713302880,
     "terminalTotalDifficulty": 0,
@@ -32,7 +32,7 @@
       "eip1559DenominatorCanyon": 250,
       "eip1559Elasticity": 6
     },
-    "regolithTime": 0
+    "regolithTime": 1713302879
   },
   "nonce": "0x0",
   "timestamp": "0x0",
