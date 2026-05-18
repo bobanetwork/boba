@@ -2,7 +2,7 @@
   "network": "sepolia",
   "contracts": {
     "LightBridge": {
-      "address": "0x6550b0B7e3D2dD0E0382E0638B0f56F614921CA5",
+      "address": "0xaeE12b8D99BBff7ED47866DF868CF5b4b3F73ffF",
       "startBlock": 5281258
     }
   }
