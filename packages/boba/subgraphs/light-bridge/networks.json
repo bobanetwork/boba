@@ -44,7 +44,7 @@
   "arbitrum-sepolia": {
     "LightBridge": {
       "address": "0x3fc06c53aa3Ef19ad7830f5F18C9186C676EdE29",
-      "startBlock": 0
+      "startBlock": 28263919
     }
   },
   "arbitrum-one": {
