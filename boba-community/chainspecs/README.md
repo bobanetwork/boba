@@ -7,7 +7,9 @@ These JSON files are op-reth chain specifications for Boba networks, in the form
 | `boba.json` | 288 | Boba Mainnet |
 | `boba-sepolia.json` | 28882 | Boba Sepolia Testnet |
 
-Each file is a complete `Genesis` JSON. The only fields we override versus the upstream OP Labs op-reth's built-in spec is `bedrockBlock` (the L2 block at which Boba migrated from OVM to EVM — 1149019 for mainnet, 511 for sepolia). Everything else (chainId, hardfork timestamps, OP Stack `optimism` config, OVM-era genesis block 0 metadata) is left at the upstream default.
+Each file is a genesis configuration — the chain config and OVM-era genesis block 0 header metadata that op-reth needs to construct an `OpChainSpec`. These are *not* full L2 genesis files: they do not contain an `alloc` section with initial account states. The L2 state is imported separately via `op-reth init-state` from a state dump (see [`../scripts/geth-to-reth/`](../scripts/geth-to-reth/)).
+
+The only field we override versus the upstream OP Labs op-reth's built-in spec is `bedrockBlock` (the L2 block at which Boba migrated from OVM to EVM — 1149019 for mainnet, 511 for sepolia). Everything else (chainId, hardfork timestamps, OP Stack `optimism` config, OVM-era genesis block 0 metadata) is left at the upstream default.
 
 ## Why these files exist
 
