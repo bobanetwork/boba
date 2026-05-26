@@ -65,13 +65,13 @@ sha256sum <filename>
 * BOBA Mainnet
 
   ```bash
-  curl -o boba-mainnet-reth-db-20260320.tar.zst -sL https://boba-db.s3.us-east-2.amazonaws.com/mainnet/boba-mainnet-reth-db-20260320.tar.zst
+  curl -o boba-mainnet-reth-db-20260526.tar.zst -sL https://boba-db.s3.us-east-2.amazonaws.com/mainnet/boba-mainnet-reth-db-20260526.tar.zst
   ```
 
 * BOBA Sepolia
 
   ```bash
-  curl -o boba-sepolia-reth-db-20260415.tar.zst -sL https://boba-db.s3.us-east-2.amazonaws.com/sepolia/boba-sepolia-reth-db-20260415.tar.zst
+  curl -o boba-sepolia-reth-db-20260526.tar.zst -sL https://boba-db.s3.us-east-2.amazonaws.com/sepolia/boba-sepolia-reth-db-20260526.tar.zst
   ```
 
 Extract the snapshot into a `reth-data` directory:

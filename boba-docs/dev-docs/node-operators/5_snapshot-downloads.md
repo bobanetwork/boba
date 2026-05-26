@@ -10,6 +10,7 @@ Always verify snapshots by comparing the sha256sum of the downloaded file to the
 
 | Client | Snapshot Date | Size     | Download Link                                                | Sha256sum                                                    |
 | ------ | ------------- | -------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Reth   | 2026-05-26    | 13.9GB   | [Link](https://boba-db.s3.us-east-2.amazonaws.com/mainnet/boba-mainnet-reth-db-20260526.tar.zst) | `0276acb420241fd24cdd3a1eb7172b33ca89e087b790dd83b92345000ef3c3ec` |
 | Reth   | 2026-03-20    | -        | [Link](https://boba-db.s3.us-east-2.amazonaws.com/mainnet/boba-mainnet-reth-db-20260320.tar.zst) | `ed8dbdab30d01612b2797276274315579be60413a3509e783f1ee462fa1b6f80` |
 | Reth   | initial (block 1149019) | 74MB     | [Link](https://boba-db.s3.us-east-2.amazonaws.com/mainnet/boba-mainnet-reth-db-initial.tar.zst) | `22b26c59ecbfc7b8f77525dc210d1780aa2bbf072084aae2b9d2e88b1f1d3301` |
 | Erigon | 2024-04-16    | 1016.4MB | [Link](https://boba-db.s3.us-east-2.amazonaws.com/mainnet/boba-mainnet-erigon-db-1149019.tgz) | `98bfd73716585f412a6388bb51a8bfb945170d0d228efb4d218d98d523d76168` |
@@ -36,6 +37,7 @@ These are the source artifacts used to generate the initial reth database via `o
 
 | Client | Snapshot Date | Size  | Download Link                                                | Sha256sum                                                    |
 | ------ | ------------- | ----- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Reth   | 2026-05-26    | 13.3GB | [Link](https://boba-db.s3.us-east-2.amazonaws.com/sepolia/boba-sepolia-reth-db-20260526.tar.zst) | `93ab067e716662364a56d510a008ca5b3e26d1f89bf79cfee756d5c9f50425c5` |
 | Reth   | 2026-04-15    | -     | [Link](https://boba-db.s3.us-east-2.amazonaws.com/sepolia/boba-sepolia-reth-db-20260415.tar.zst) | `56b5deb405c74d294e4ddbf6f32ce59f812f12dd5047e053e175828eda8e2c15` |
 | Reth   | initial (block 511) | 343KB | [Link](https://boba-db.s3.us-east-2.amazonaws.com/sepolia/boba-sepolia-reth-db-initial.tar.zst) | `703cb2c0c33a4689d7cfabb10483e7ec0900068f597da9455db0dcba06a9d8bf` |
 | Erigon | 2024-01-18    | 912KB | [Link](https://boba-db.s3.us-east-2.amazonaws.com/sepolia/boba-sepolia-erigon-db.tgz) | `b887d2e0318e9299e844da7d39ca32040e3d0fb6a9d7abe2dd2f8624eca1cade` |
