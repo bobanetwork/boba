@@ -107,13 +107,15 @@ If `debug_getRawHeader` is not available, you can use `debug_getRawBlock` and st
 
 ## Step 4: Initialize op-reth
 
+The chain spec is supplied via the JSON files in [`../../chainspecs/`](../../chainspecs/) — they patch a buggy `bedrockBlock` in the upstream-bundled Boba config. See that directory's README for context.
+
 ```bash
 # Generate a JWT secret for Engine API authentication
 openssl rand -hex 32 > jwt.hex
 
 # For Boba Sepolia:
 op-reth init-state \
-  --chain=boba-sepolia \
+  --chain=../../chainspecs/boba-sepolia.json \
   --datadir=./reth-data \
   --without-ovm \
   --header=header-511.rlp \
@@ -121,7 +123,7 @@ op-reth init-state \
 
 # For Boba Mainnet:
 op-reth init-state \
-  --chain=boba \
+  --chain=../../chainspecs/boba.json \
   --datadir=./reth-data \
   --without-ovm \
   --header=header-1149019.rlp \
@@ -139,7 +141,7 @@ The `--without-ovm` flag tells op-reth to:
 
 ```bash
 op-reth node \
-  --chain=boba-sepolia \
+  --chain=../../chainspecs/boba-sepolia.json \
   --datadir=./reth-data \
   --http --http.port=8545 \
   --authrpc.port=8551 \
@@ -158,12 +160,12 @@ op-node \
   --l1.beacon=<L1_BEACON_URL> \
   --l2=http://localhost:8551 \
   --l2.jwt-secret=jwt.hex \
-  --network=boba-sepolia \
+  --rollup.config=../../rollup-configs/boba-sepolia.json \
   --rpc.addr=0.0.0.0 \
   --rpc.port=9545
 ```
 
-For mainnet, use `--network=boba-mainnet` (or `--rollup.config=<path>` with a rollup config JSON).
+For mainnet, use `--rollup.config=../../rollup-configs/boba-mainnet.json`.
 
 ## Step 7: Verify
 

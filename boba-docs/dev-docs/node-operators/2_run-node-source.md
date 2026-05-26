@@ -129,7 +129,7 @@ Using the following command to start `op-node` in a default configuration. The J
   --l1=$L1_RPC_URL \
   --l2=http://localhost:8551 \
   --l2.jwt-secret=./jwt.txt \
-  --network=boba-sepolia \
+  --rollup.config=/path/to/boba-community/rollup-configs/boba-sepolia.json \
   --rpc.addr=0.0.0.0 \
   --rpc.port=8545
 ```
