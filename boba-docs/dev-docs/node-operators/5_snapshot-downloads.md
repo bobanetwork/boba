@@ -6,6 +6,8 @@ This page has a list of important snapshots for node operators. Data directories
 
 Always verify snapshots by comparing the sha256sum of the downloaded file to the sha256sum listed on this page. Check the sha256sum of the downloaded file by running `sha256sum <filename>`in a terminal.
 
+> **op-reth is the only supported execution client.** Use the **Reth** snapshots below. The **Geth** and **Erigon** rows are unsupported historical artifacts, retained only for operators migrating an existing database to op-reth (see the [migration guide](https://github.com/bobanetwork/boba/tree/develop/boba-community/scripts/geth-to-reth)). The **Legacy** snapshots are for the optional pre-Anchorage l2geth node.
+
 ### BOBA Mainnet (Archive Node)
 
 | Client | Snapshot Date | Size     | Download Link                                                | Sha256sum                                                    |
