@@ -123,7 +123,15 @@ docker compose -f docker-compose-boba-mainnet.yml --profile legacy up -d
 docker compose -f docker-compose-boba-sepolia.yml --profile legacy up -d
 ```
 
-op-reth serves its JSON-RPC on `8545` (HTTP) and `8546` (WS); op-node's rollup RPC is on `9545`. The optional legacy node defaults to `8547` (HTTP) / `8548` (WS) so it can run alongside op-reth.
+When you run the legacy node, point op-reth at your local replica so pre-Anchorage queries are served by it instead of the public endpoint. Set the following in your `.env` before starting:
+
+```bash
+HISTORICAL_RPC=http://legacy-l2:8545
+```
+
+op-reth reaches the legacy node by its service name (`legacy-l2`) on the compose network — `8545` is the legacy node's *in-container* RPC port, independent of the host port below.
+
+op-reth serves its JSON-RPC on `8545` (HTTP) and `8546` (WS); op-node's rollup RPC is on `9545`. The optional legacy node defaults to host ports `8547` (HTTP) / `8548` (WS) so it can run alongside op-reth.
 
 ## Operating the Node
 

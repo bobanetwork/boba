@@ -29,6 +29,9 @@ version: '3.4'
 # historical blocks. It is disabled by default; enable it with the "legacy"
 # profile:
 #   docker compose -f docker-compose-boba-mainnet.yml --profile legacy up -d
+# When running the legacy node, set HISTORICAL_RPC=http://legacy-l2:8545 in
+# your .env so op-reth forwards pre-Anchorage queries to your local replica
+# rather than defaulting to the public endpoint.
 
 services:
   # One-time initialization: import state dump into op-reth.

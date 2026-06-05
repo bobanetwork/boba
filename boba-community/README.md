@@ -48,4 +48,12 @@ Due to the Anchorage migration, the modern client does not support some RPC requ
 docker compose -f docker-compose-boba-sepolia.yml --profile legacy up -d
 ```
 
-The legacy Geth database can be downloaded from the [snapshot page](https://docs.boba.network/for-developers/node-operators/snapshot-downloads); extract it into `LEGACY_DATA_DIR` (default `./legacy-data`). op-reth serves its JSON-RPC on `8545` (HTTP) / `8546` (WS); the legacy node defaults to `8547` (HTTP) / `8548` (WS) so the two can run side by side.
+The legacy Geth database can be downloaded from the [snapshot page](https://docs.boba.network/for-developers/node-operators/snapshot-downloads); extract it into `LEGACY_DATA_DIR` (default `./legacy-data`). op-reth serves its JSON-RPC on `8545` (HTTP) / `8546` (WS); the legacy node defaults to host ports `8547` (HTTP) / `8548` (WS) so the two can run side by side.
+
+To make op-reth forward pre-Anchorage queries to your local legacy replica instead of the public endpoint, set this in your `.env` before starting:
+
+```bash
+HISTORICAL_RPC=http://legacy-l2:8545
+```
+
+op-reth reaches the legacy node by its compose service name (`legacy-l2`) over the internal network; `8545` there is the legacy node's in-container RPC port, not the host port.
