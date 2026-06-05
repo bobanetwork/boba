@@ -3,9 +3,13 @@ version: '3.4'
 # Boba Sepolia node using op-reth (execution) + op-node (consensus)
 #
 # Prerequisites:
-#   1. Download and extract the reth snapshot (see boba-docs snapshot-downloads page).
-#      Alternatively, generate the database from scratch using the init service below
-#      and the scripts in scripts/geth-to-reth/.
+#   1. Seed the data directory with a snapshot. The easiest way is the one-shot
+#      "seed-database" helper, which downloads and extracts the published reth
+#      snapshot for you:
+#        docker compose -f docker-compose-boba-sepolia.yml --profile seed run --rm seed-database
+#      Or download/extract a snapshot manually (see the boba-docs
+#      snapshot-downloads page), or generate the database from scratch using the
+#      "init" service below plus the scripts in scripts/geth-to-reth/.
 #
 #   2. Create a shared JWT secret:
 #      openssl rand -hex 32 > jwt-secret.txt
@@ -34,9 +38,48 @@ version: '3.4'
 # rather than defaulting to the public endpoint.
 
 services:
-  # One-time initialization: import state dump into op-reth.
-  # Place your reth-state.jsonl and header.rlp in the reth-data directory first.
-  # Run: docker compose -f docker-compose-boba-sepolia.yml run --rm init
+  # One-shot snapshot seeder. Downloads the published reth snapshot and extracts
+  # it into the data directory. This is the easy way to prime a fresh node: the
+  # "init container" pattern, but invoked explicitly so it behaves the same under
+  # docker compose and podman-compose (the latter lacks init-style ordering).
+  # Run against an EMPTY data directory:
+  #   docker compose -f docker-compose-boba-sepolia.yml --profile seed run --rm seed-database
+  # Override SNAPSHOT_URL / SNAPSHOT_SHA256 in .env to pin a different snapshot;
+  # keep them in sync with the snapshot-downloads docs page.
+  seed-database:
+    profiles:
+      - seed
+    image: alpine:3.20
+    environment:
+      SNAPSHOT_URL: ${SNAPSHOT_URL:-https://boba-db.s3.us-east-2.amazonaws.com/sepolia/boba-sepolia-reth-db-20260526.tar.zst}
+      SNAPSHOT_SHA256: ${SNAPSHOT_SHA256:-93ab067e716662364a56d510a008ca5b3e26d1f89bf79cfee756d5c9f50425c5}
+    command:
+      - sh
+      - -ec
+      - |
+        apk add --no-cache curl zstd >/dev/null
+        if [ -n "$$(ls -A /db 2>/dev/null)" ]; then
+          echo "ERROR: data directory is not empty; refusing to overwrite." >&2
+          echo "Clear it (or point DATA_DIR at a fresh path) and re-run." >&2
+          exit 1
+        fi
+        echo "Downloading snapshot: $$SNAPSHOT_URL"
+        curl -fSL --retry 3 "$$SNAPSHOT_URL" -o /tmp/snapshot.tar.zst
+        if [ -n "$$SNAPSHOT_SHA256" ]; then
+          echo "Verifying sha256 checksum..."
+          echo "$$SNAPSHOT_SHA256  /tmp/snapshot.tar.zst" | sha256sum -c -
+        fi
+        echo "Extracting into the data directory..."
+        zstd -dc /tmp/snapshot.tar.zst | tar -xf - -C /db
+        rm -f /tmp/snapshot.tar.zst
+        echo "Snapshot seeded successfully. You can now start the node."
+    volumes:
+      - ${DATA_DIR:-./boba-sepolia-reth-datadir}:/db
+
+  # One-time initialization: import a state dump into op-reth (used to
+  # regenerate the database from scratch instead of downloading a snapshot).
+  # Place your reth-state.jsonl and header.rlp in the data directory first.
+  # Run: docker compose -f docker-compose-boba-sepolia.yml --profile init run --rm init
   init:
     image: ${RETH_IMAGE:-us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth}:${RETH_VERSION:-v2.2.1}
     command: >
@@ -48,7 +91,7 @@ services:
       /db/reth-state.jsonl
     volumes:
       - ./chainspecs/boba-sepolia.json:/config/boba-sepolia.json:ro
-      - ${DATA_DIR:-./reth-data}:/db
+      - ${DATA_DIR:-./boba-sepolia-reth-datadir}:/db
     profiles:
       - init
 
@@ -81,7 +124,7 @@ services:
     volumes:
       - ./jwt-secret.txt:/config/jwt-secret.txt
       - ./chainspecs/boba-sepolia.json:/config/boba-sepolia.json:ro
-      - ${DATA_DIR:-./reth-data}:/db
+      - ${DATA_DIR:-./boba-sepolia-reth-datadir}:/db
 
   op-node:
     depends_on:

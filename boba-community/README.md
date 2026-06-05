@@ -21,6 +21,15 @@ There is now a single compose file per network:
 
 See the [running a node with Docker](../boba-docs/dev-docs/node-operators/1_run-node-docker.md) guide for full setup instructions including snapshot downloads, configuration, and starting the node.
 
+The quickest way to prime a fresh node is the bundled one-shot `seed-database` helper, which downloads and extracts the latest published snapshot into the data directory:
+
+```bash
+docker compose -f docker-compose-boba-mainnet.yml --profile seed run --rm seed-database
+docker compose -f docker-compose-boba-mainnet.yml up -d
+```
+
+The data directory defaults to `./boba-<network>-reth-datadir` (override with `DATA_DIR` in `.env`). The `--profile seed` flag is required even with `run`, so the helper works identically under `docker compose` and `podman-compose`.
+
 ### The initial synchronization
 
 During the initial synchronization, you get log messages from the consensus node, and nothing else appears to happen.

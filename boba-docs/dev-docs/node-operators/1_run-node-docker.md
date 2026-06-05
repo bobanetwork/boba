@@ -54,50 +54,48 @@ Open the `.env` in your directory and set the variables inside. Read the descrip
 openssl rand -hex 32 > jwt-secret.txt
 ```
 
-### Download Snapshots
+### Seed the Database
 
-Download the database snapshot for the client and network you wish to run. Always verify snapshots by comparing the sha256sum of the downloaded file to the sha256sum listed on the [snapshot downloads](snapshot-downloads) page.
+A fresh node needs a database before it can sync. The reth snapshots contain a pre-initialized database built from the op-geth state at the Bedrock migration block (block 1149019 for mainnet, block 511 for sepolia), so you do not need a manual `init-state` step — just get the snapshot into the data directory.
 
-```bash
-sha256sum <filename>
-```
+By default the database lives in `./boba-mainnet-reth-datadir` or `./boba-sepolia-reth-datadir` (next to the compose file). Set `DATA_DIR` in your `.env` to relocate it.
 
-* BOBA Mainnet
+#### Option A — automated seeder (recommended)
 
-  ```bash
-  curl -o boba-mainnet-reth-db-20260526.tar.zst -sL https://boba-db.s3.us-east-2.amazonaws.com/mainnet/boba-mainnet-reth-db-20260526.tar.zst
-  ```
-
-* BOBA Sepolia
-
-  ```bash
-  curl -o boba-sepolia-reth-db-20260526.tar.zst -sL https://boba-db.s3.us-east-2.amazonaws.com/sepolia/boba-sepolia-reth-db-20260526.tar.zst
-  ```
-
-Extract the snapshot into a `reth-data` directory:
+The compose files include a one-shot `seed-database` helper that downloads and extracts the latest published snapshot for you. Run it once against an empty data directory before starting the node:
 
 ```bash
-mkdir -p reth-data
-tar --zstd -xf boba-{network}-reth-db-20260526.tar.zst -C reth-data
+# BOBA Mainnet
+docker compose -f docker-compose-boba-mainnet.yml --profile seed run --rm seed-database
+
+# BOBA Sepolia
+docker compose -f docker-compose-boba-sepolia.yml --profile seed run --rm seed-database
 ```
 
-These snapshots contain a pre-initialized reth database built from the op-geth state at the Bedrock migration block (block 1149019 for mainnet, block 511 for sepolia). No manual `init-state` step is needed — just extract and run. To regenerate the database from scratch, see the [migration guide](https://github.com/bobanetwork/boba/tree/develop/boba-community/scripts/geth-to-reth).
+The helper verifies the snapshot's sha256 checksum automatically and refuses to overwrite a non-empty data directory. To pin a specific snapshot, set `SNAPSHOT_URL` and `SNAPSHOT_SHA256` in your `.env` (see the [snapshot downloads](snapshot-downloads) page for the values).
 
-Set the `DATA_DIR` in your `.env` to point to this directory (or leave it blank to use the default `./reth-data`).
+> **Note:** the `--profile seed` flag is required — including with `run` — under both `docker compose` and `podman-compose`. podman-compose does not auto-enable a service's profile the way `docker compose run` does.
 
-### Modify Volume Location
+#### Option B — download manually
 
-The volumes of l2 and op-node should be modified to your file locations.
+Download the snapshot for your network and always verify its sha256sum against the [snapshot downloads](snapshot-downloads) page (`sha256sum <filename>`):
 
-```yaml
-l2:
-  volumes:
-    - ./jwt-secret.txt:/config/jwt-secret.txt
-    - DATA_DIR:/db
-op-node:
-  volumes:
-  	- ./jwt-secret.txt:/config/jwt-secret.txt
+```bash
+# BOBA Mainnet
+curl -o boba-mainnet-reth-db-20260526.tar.zst -sL https://boba-db.s3.us-east-2.amazonaws.com/mainnet/boba-mainnet-reth-db-20260526.tar.zst
+
+# BOBA Sepolia
+curl -o boba-sepolia-reth-db-20260526.tar.zst -sL https://boba-db.s3.us-east-2.amazonaws.com/sepolia/boba-sepolia-reth-db-20260526.tar.zst
 ```
+
+Extract it into the data directory (create it first if needed):
+
+```bash
+mkdir -p boba-mainnet-reth-datadir
+tar --zstd -xf boba-mainnet-reth-db-20260526.tar.zst -C boba-mainnet-reth-datadir
+```
+
+To regenerate the database from scratch instead of using a snapshot, see the [migration guide](https://github.com/bobanetwork/boba/tree/develop/boba-community/scripts/geth-to-reth).
 
 ## Run the Node
 
