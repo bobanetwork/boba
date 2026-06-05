@@ -46,6 +46,9 @@ services:
   #   docker compose -f docker-compose-boba-mainnet.yml --profile seed run --rm seed-database
   # Override SNAPSHOT_URL / SNAPSHOT_SHA256 in .env to pin a different snapshot;
   # keep them in sync with the snapshot-downloads docs page.
+  # The download is staged inside the data directory (/db) rather than the
+  # container's /tmp, so only the data disk needs free space (~2x the snapshot
+  # size during extraction) — the container storage disk is not used for it.
   seed-database:
     profiles:
       - seed
@@ -64,14 +67,14 @@ services:
           exit 1
         fi
         echo "Downloading snapshot: $$SNAPSHOT_URL"
-        curl -fSL --retry 3 "$$SNAPSHOT_URL" -o /tmp/snapshot.tar.zst
+        curl -fSL --retry 3 "$$SNAPSHOT_URL" -o /db/snapshot.tar.zst
         if [ -n "$$SNAPSHOT_SHA256" ]; then
           echo "Verifying sha256 checksum..."
-          echo "$$SNAPSHOT_SHA256  /tmp/snapshot.tar.zst" | sha256sum -c -
+          echo "$$SNAPSHOT_SHA256  /db/snapshot.tar.zst" | sha256sum -c -
         fi
         echo "Extracting into the data directory..."
-        zstd -dc /tmp/snapshot.tar.zst | tar -xf - -C /db
-        rm -f /tmp/snapshot.tar.zst
+        zstd -dc /db/snapshot.tar.zst | tar -xf - -C /db
+        rm -f /db/snapshot.tar.zst
         echo "Snapshot seeded successfully. You can now start the node."
     volumes:
       - ${DATA_DIR:-./boba-mainnet-reth-datadir}:/db

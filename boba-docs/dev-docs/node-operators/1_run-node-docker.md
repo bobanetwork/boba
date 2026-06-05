@@ -72,9 +72,11 @@ docker compose -f docker-compose-boba-mainnet.yml --profile seed run --rm seed-d
 docker compose -f docker-compose-boba-sepolia.yml --profile seed run --rm seed-database
 ```
 
-The helper verifies the snapshot's sha256 checksum automatically and refuses to overwrite a non-empty data directory. To pin a specific snapshot, set `SNAPSHOT_URL` and `SNAPSHOT_SHA256` in your `.env` (see the [snapshot downloads](snapshot-downloads) page for the values).
+The helper verifies the snapshot's sha256 checksum automatically and refuses to overwrite a non-empty data directory. It stages the download inside the data directory itself (not the container's `/tmp`), so only the data disk needs free space — roughly twice the snapshot size during extraction. To pin a specific snapshot, set `SNAPSHOT_URL` and `SNAPSHOT_SHA256` in your `.env` (see the [snapshot downloads](snapshot-downloads) page for the values).
 
 > **Note:** the `--profile seed` flag is required — including with `run` — under both `docker compose` and `podman-compose`. podman-compose does not auto-enable a service's profile the way `docker compose run` does.
+
+> **Note:** files in the data directory are written by the container and are therefore owned by the container's user, not your host user. Under rootless podman this is a mapped sub-UID, so to inspect or delete the data directory directly you'll need `podman unshare rm -rf <dir>` (or `sudo`). The node itself reads and writes it fine.
 
 #### Option B — download manually
 
