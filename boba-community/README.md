@@ -4,20 +4,31 @@
 
 Instructions for running a Boba replica node for Mainnet or Testnet.
 
-### Choose your execution client
+### Execution client
 
-Boba supports multiple execution clients:
+**op-reth is the only supported execution client.** op-geth and op-erigon reached end-of-life on 2026-05-31 and are no longer supported; if you are still running one, migrate to op-reth using the [migration guide](scripts/geth-to-reth/README.md).
 
-| Compose file | Execution | Consensus | Status |
+There is now a single compose file per network:
+
+| Compose file | Execution | Consensus | Optional |
 |---|---|---|---|
-| `docker-compose-boba-{network}-reth.yml` | **op-reth** | **op-node** | Recommended |
-| `docker-compose-boba-{network}-geth.yml` | op-geth | op-node | Deprecated (removal 2026-05-31) |
+| `docker-compose-boba-mainnet.yml` | **op-reth** | **op-node** | legacy l2geth (`--profile legacy`) |
+| `docker-compose-boba-sepolia.yml` | **op-reth** | **op-node** | legacy l2geth (`--profile legacy`) |
 
 > **Note:** The op-reth snapshots contain a pre-initialized reth database built from the op-geth state at the Bedrock migration block. Download, extract, and run — no manual `init-state` step is needed. To regenerate the database from scratch, see the [migration guide](scripts/geth-to-reth/README.md).
 
 ### Getting started
 
 See the [running a node with Docker](../boba-docs/dev-docs/node-operators/1_run-node-docker.md) guide for full setup instructions including snapshot downloads, configuration, and starting the node.
+
+The quickest way to prime a fresh node is the bundled one-shot `seed-database` helper, which downloads and extracts the latest published snapshot into the data directory:
+
+```bash
+docker compose -f docker-compose-boba-mainnet.yml --profile seed run --rm seed-database
+docker compose -f docker-compose-boba-mainnet.yml up -d
+```
+
+The data directory defaults to `./boba-<network>-reth-datadir` (override with `DATA_DIR` in `.env`). The `--profile seed` flag is required even with `run`, so the helper works identically under `docker compose` and `podman-compose`.
 
 ### The initial synchronization
 
@@ -34,16 +45,24 @@ INFO [08-04|16:36:01.204] Found next batch                         epoch=44e203.
 INFO [08-04|16:36:01.205] generated attributes in payload queue    txs=2  timestamp=1,673,567,518
 ```
 
-### Migrating from op-geth to op-reth
+### Migrating from op-geth or op-erigon to op-reth
 
-See the [migration guide](scripts/geth-to-reth/README.md) for instructions on generating a reth database from an existing op-geth or op-erigon node.
+op-geth and op-erigon are no longer supported. See the [migration guide](scripts/geth-to-reth/README.md) for instructions on generating a reth database from an existing op-geth or op-erigon node.
 
 ### Optional: Run the legacy node
 
-Due to the anchorage migration, the new client does not support some RPC requests for the legacy blocks, such as `debug_transaction`. You can start the legacy node by running:
+Due to the Anchorage migration, the modern client does not support some RPC requests for pre-Anchorage blocks, such as `debug_traceTransaction`. The legacy l2geth node is bundled into the same compose file behind the `legacy` profile (disabled by default). Enable it with:
 
 ```bash
-docker compose -f docker-compose-boba-sepolia-legacy.yml up -d
+docker compose -f docker-compose-boba-sepolia.yml --profile legacy up -d
 ```
 
-The legacy Geth database can be downloaded from the [snapshot page](https://docs.boba.network/for-developers/node-operators/snapshot-downloads).
+The legacy Geth database can be downloaded from the [snapshot page](https://docs.boba.network/for-developers/node-operators/snapshot-downloads); extract it into `LEGACY_DATA_DIR` (default `./legacy-data`). op-reth serves its JSON-RPC on `8545` (HTTP) / `8546` (WS); the legacy node defaults to host ports `8547` (HTTP) / `8548` (WS) so the two can run side by side.
+
+To make op-reth forward pre-Anchorage queries to your local legacy replica instead of the public endpoint, set this in your `.env` before starting:
+
+```bash
+HISTORICAL_RPC=http://legacy-l2:8545
+```
+
+op-reth reaches the legacy node by its compose service name (`legacy-l2`) over the internal network; `8545` there is the legacy node's in-container RPC port, not the host port.

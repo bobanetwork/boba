@@ -2,16 +2,18 @@
 
 This tutorial will walk you through the process of using Docker to run an BOBA Sepolia node, OP Mainnet node and OP Sepolia node. You can find all Docker Compose files [here](https://github.com/bobanetwork/boba/tree/develop/boba-community).
 
-## Choose Your Execution Client
+## Execution Client
 
-Boba supports multiple execution clients. Pick the one that suits your needs:
+**op-reth is the only supported execution client.** op-geth and op-erigon reached end-of-life on 2026-05-31 and are no longer supported. If you are still running one, see the [migration guide](https://github.com/bobanetwork/boba/tree/develop/boba-community/scripts/geth-to-reth) to generate a reth database from your existing data.
 
-| Compose File | Execution Client | Consensus Client | Status |
+There is a single compose file per network:
+
+| Compose File | Execution Client | Consensus Client | Optional |
 |---|---|---|---|
-| `docker-compose-boba-{network}-reth.yml` | **op-reth** | **op-node** | Recommended |
-| `docker-compose-boba-{network}-geth.yml` | op-geth | op-node | Deprecated (removal 2026-05-31) |
+| `docker-compose-boba-mainnet.yml` | **op-reth** | **op-node** | legacy l2geth (`--profile legacy`) |
+| `docker-compose-boba-sepolia.yml` | **op-reth** | **op-node** | legacy l2geth (`--profile legacy`) |
 
-> **op-reth** is the recommended execution client for new deployments. It uses the upstream [OP Labs op-reth](https://github.com/ethereum-optimism/op-reth) image. The Boba chain spec is supplied at runtime via a JSON file mounted from `boba-community/chainspecs/` — no custom op-reth build is required. See [`boba-community/chainspecs/README.md`](https://github.com/bobanetwork/boba/blob/develop/boba-community/chainspecs/README.md) for background on why this is required and how to regenerate the chain spec files.
+> **op-reth** uses the upstream [OP Labs op-reth](https://github.com/ethereum-optimism/op-reth) image. The Boba chain spec is supplied at runtime via a JSON file mounted from `boba-community/chainspecs/` — no custom op-reth build is required. See [`boba-community/chainspecs/README.md`](https://github.com/bobanetwork/boba/blob/develop/boba-community/chainspecs/README.md) for background on why this is required and how to regenerate the chain spec files.
 
 ## Prerequisites
 
@@ -52,88 +54,84 @@ Open the `.env` in your directory and set the variables inside. Read the descrip
 openssl rand -hex 32 > jwt-secret.txt
 ```
 
-### Download Snapshots
+### Seed the Database
 
-Download the database snapshot for the client and network you wish to run. Always verify snapshots by comparing the sha256sum of the downloaded file to the sha256sum listed on the [snapshot downloads](snapshot-downloads) page.
+A fresh node needs a database before it can sync. The reth snapshots contain a pre-initialized database built from the op-geth state at the Bedrock migration block (block 1149019 for mainnet, block 511 for sepolia), so you do not need a manual `init-state` step — just get the snapshot into the data directory.
 
-```bash
-sha256sum <filename>
-```
+By default the database lives in `./boba-mainnet-reth-datadir` or `./boba-sepolia-reth-datadir` (next to the compose file). Set `DATA_DIR` in your `.env` to relocate it.
 
-#### op-reth (Recommended)
+#### Option A — automated seeder (recommended)
 
-* BOBA Mainnet
-
-  ```bash
-  curl -o boba-mainnet-reth-db-20260526.tar.zst -sL https://boba-db.s3.us-east-2.amazonaws.com/mainnet/boba-mainnet-reth-db-20260526.tar.zst
-  ```
-
-* BOBA Sepolia
-
-  ```bash
-  curl -o boba-sepolia-reth-db-20260526.tar.zst -sL https://boba-db.s3.us-east-2.amazonaws.com/sepolia/boba-sepolia-reth-db-20260526.tar.zst
-  ```
-
-Extract the snapshot into a `reth-data` directory:
+The compose files include a one-shot `seed-database` helper that downloads and extracts the latest published snapshot for you. Run it once against an empty data directory before starting the node:
 
 ```bash
-mkdir -p reth-data
-tar --zstd -xf boba-{network}-reth-db-initial.tar.zst -C reth-data
+# BOBA Mainnet
+docker compose -f docker-compose-boba-mainnet.yml --profile seed run --rm seed-database
+
+# BOBA Sepolia
+docker compose -f docker-compose-boba-sepolia.yml --profile seed run --rm seed-database
 ```
 
-These snapshots contain a pre-initialized reth database built from the op-geth state at the Bedrock migration block (block 1149019 for mainnet, block 511 for sepolia). No manual `init-state` step is needed — just extract and run. To regenerate the database from scratch, see the [migration guide](https://github.com/bobanetwork/boba/tree/develop/boba-community/scripts/geth-to-reth).
+The helper verifies the snapshot's sha256 checksum automatically and refuses to overwrite a non-empty data directory. It stages the download inside the data directory itself (not the container's `/tmp`), so only the data disk needs free space — roughly twice the snapshot size during extraction. To pin a specific snapshot, set `SNAPSHOT_URL` and `SNAPSHOT_SHA256` in your `.env` (see the [snapshot downloads](snapshot-downloads) page for the values).
 
-Set the `DATA_DIR` in your `.env` to point to this directory (or leave it blank to use the default `./reth-data`).
+> **Note:** the `--profile seed` flag is required — including with `run` — under both `docker compose` and `podman-compose`. podman-compose does not auto-enable a service's profile the way `docker compose run` does.
 
-#### op-geth (Deprecated)
+> **Note:** files in the data directory are written by the container and are therefore owned by the container's user, not your host user. Under rootless podman this is a mapped sub-UID, so to inspect or delete the data directory directly you'll need `podman unshare rm -rf <dir>` (or `sudo`). The node itself reads and writes it fine.
 
-> **Deprecated:** op-geth support ends 2026-05-31. Migrate to op-reth.
+#### Option B — download manually
 
-See the [snapshot downloads](snapshot-downloads) page for available geth snapshots.
-
-Extract geth snapshots:
+Download the snapshot for your network and always verify its sha256sum against the [snapshot downloads](snapshot-downloads) page (`sha256sum <filename>`):
 
 ```bash
-tar xvf data.tgz
+# BOBA Mainnet
+curl -o boba-mainnet-reth-db-20260526.tar.zst -sL https://boba-db.s3.us-east-2.amazonaws.com/mainnet/boba-mainnet-reth-db-20260526.tar.zst
+
+# BOBA Sepolia
+curl -o boba-sepolia-reth-db-20260526.tar.zst -sL https://boba-db.s3.us-east-2.amazonaws.com/sepolia/boba-sepolia-reth-db-20260526.tar.zst
 ```
 
-### Modify Volume Location
+Extract it into the data directory (create it first if needed):
 
-The volumes of l2 and op-node should be modified to your file locations.
-
-```yaml
-l2:
-  volumes:
-    - ./jwt-secret.txt:/config/jwt-secret.txt
-    - DATA_DIR:/db
-op-node:
-  volumes:
-  	- ./jwt-secret.txt:/config/jwt-secret.txt
+```bash
+mkdir -p boba-mainnet-reth-datadir
+tar --zstd -xf boba-mainnet-reth-db-20260526.tar.zst -C boba-mainnet-reth-datadir
 ```
+
+To regenerate the database from scratch instead of using a snapshot, see the [migration guide](https://github.com/bobanetwork/boba/tree/develop/boba-community/scripts/geth-to-reth).
 
 ## Run the Node
 
 Once you've configured your `.env` file, you can run the node using Docker Compose.
 
-### op-reth (Recommended)
+```bash
+# BOBA Mainnet
+docker compose -f docker-compose-boba-mainnet.yml up -d
+
+# BOBA Sepolia
+docker compose -f docker-compose-boba-sepolia.yml up -d
+```
+
+### Optional: legacy (pre-Anchorage) node
+
+Some RPC methods (e.g. `debug_traceTransaction`) are not available for blocks from before the Anchorage migration. A legacy l2geth node that serves those historical blocks is bundled into the same compose file behind the `legacy` profile, disabled by default. To run it alongside op-reth, download the legacy snapshot from the [snapshot downloads](snapshot-downloads) page, extract it into `LEGACY_DATA_DIR` (default `./legacy-data`), and start with the profile enabled:
 
 ```bash
 # BOBA Mainnet
-docker compose -f docker-compose-boba-mainnet-reth.yml up -d
+docker compose -f docker-compose-boba-mainnet.yml --profile legacy up -d
 
 # BOBA Sepolia
-docker compose -f docker-compose-boba-sepolia-reth.yml up -d
+docker compose -f docker-compose-boba-sepolia.yml --profile legacy up -d
 ```
 
-### op-geth (Deprecated — removal 2026-05-31)
+When you run the legacy node, point op-reth at your local replica so pre-Anchorage queries are served by it instead of the public endpoint. Set the following in your `.env` before starting:
 
 ```bash
-# BOBA Sepolia
-docker compose -f docker-compose-boba-sepolia-geth.yml up -d
-
-# BOBA Mainnet
-docker compose -f docker-compose-boba-mainnet-geth.yml up -d
+HISTORICAL_RPC=http://legacy-l2:8545
 ```
+
+op-reth reaches the legacy node by its service name (`legacy-l2`) on the compose network — `8545` is the legacy node's *in-container* RPC port, independent of the host port below.
+
+op-reth serves its JSON-RPC on `8545` (HTTP) and `8546` (WS); op-node's rollup RPC is on `9545`. The optional legacy node defaults to host ports `8547` (HTTP) / `8548` (WS) so it can run alongside op-reth.
 
 ## Operating the Node
 

@@ -88,7 +88,7 @@ openssl rand -hex 32 > jwt.txt
 
 It's usually simpler to begin with `op-reth` before you start `op-node`. You can start `op-reth` even if `op-node` isn't running yet, but `op-reth` won't get any blocks until `op-node` starts.
 
-Using the following command to start `op-reth` in a default configuration. The JSON-RPC API will become available on port 9545.
+Using the following command to start `op-reth` in a default configuration. The JSON-RPC API will become available on port 8545 (HTTP) and 8546 (WS).
 
 ```bash
 op-reth node \
@@ -96,9 +96,14 @@ op-reth node \
   --datadir=./reth-data \
   --http \
   --http.addr=0.0.0.0 \
-  --http.port=9545 \
+  --http.port=8545 \
   --http.corsdomain="*" \
   --http.api=eth,debug,net,web3 \
+  --ws \
+  --ws.addr=0.0.0.0 \
+  --ws.port=8546 \
+  --ws.origins="*" \
+  --ws.api=eth,debug,net,web3 \
   --authrpc.addr=0.0.0.0 \
   --authrpc.port=8551 \
   --authrpc.jwtsecret=./jwt.txt \
@@ -122,7 +127,7 @@ export L1_RPC_URL=... # URL for the L1 node to sync from
 
 ### Start op-node
 
-Using the following command to start `op-node` in a default configuration. The JSON-RPC API will become available on port 8545.
+Using the following command to start `op-node` in a default configuration. The rollup RPC will become available on port 9545.
 
 ```bash
 ./bin/op-node \
@@ -131,7 +136,7 @@ Using the following command to start `op-node` in a default configuration. The J
   --l2.jwt-secret=./jwt.txt \
   --rollup.config=/path/to/boba-community/rollup-configs/boba-sepolia.json \
   --rpc.addr=0.0.0.0 \
-  --rpc.port=8545
+  --rpc.port=9545
 ```
 
 ## Synchronization

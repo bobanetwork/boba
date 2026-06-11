@@ -16,9 +16,7 @@ The Rollup Node is responsible for taking data from Layer 1 (L1) and use it to c
 
 The Execution Client takes care of running the block information it gets from the Rollup Node. It does this through a common method called JSON-RPC, using a set of rules known as the [Engine API](https://github.com/ethereum/execution-apis/blob/main/src/engine/common.md#engine-api----common-definitions).
 
-Boba supports multiple execution clients:
-- **op-reth** (Recommended) — High-performance Rust-based client. Uses the upstream [OP Labs op-reth](https://github.com/ethereum-optimism/op-reth) image with the Boba chain spec supplied at runtime.
-- **op-geth** — The original Go-based client. Deprecated — support ends 2026-05-31. Migrate to op-reth.
+Boba's only supported execution client is **op-reth** — a high-performance Rust-based client. It uses the upstream [OP Labs op-reth](https://github.com/ethereum-optimism/op-reth) image with the Boba chain spec supplied at runtime. The previously supported op-geth and op-erigon clients reached end-of-life on 2026-05-31 and are no longer supported.
 
 ### Legacy Geth
 
