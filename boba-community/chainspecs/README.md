@@ -44,11 +44,11 @@ If the upstream PR linked above lands and we then push the missing `bedrockBlock
 To regenerate from the upstream bundled spec:
 
 ```bash
-docker run --rm us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth:v2.2.1 dump-genesis --chain boba 2>/dev/null \
+docker run --rm us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth:v2.3.1 dump-genesis --chain boba 2>/dev/null \
   | tail -n +2 \
   | jq '.config.bedrockBlock = 1149019' > boba.json
 
-docker run --rm us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth:v2.2.1 dump-genesis --chain boba-sepolia 2>/dev/null \
+docker run --rm us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth:v2.3.1 dump-genesis --chain boba-sepolia 2>/dev/null \
   | tail -n +2 \
   | jq '.config.bedrockBlock = 511' > boba-sepolia.json
 ```
@@ -60,9 +60,9 @@ docker run --rm us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth:v2.2.1 d
 To diff the patched chain spec against the upstream built-in spec and confirm the only difference is `bedrockBlock`:
 
 ```bash
-docker run --rm us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth:v2.2.1 dump-genesis --chain boba 2>/dev/null \
+docker run --rm us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth:v2.3.1 dump-genesis --chain boba 2>/dev/null \
   | tail -n +2 > /tmp/upstream.json
-docker run --rm -v "$PWD:/cs" us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth:v2.2.1 \
+docker run --rm -v "$PWD:/cs" us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth:v2.3.1 \
   dump-genesis --chain /cs/boba.json 2>/dev/null | tail -n +2 > /tmp/ours.json
 diff /tmp/upstream.json /tmp/ours.json
 # Expected: a single hunk replacing "bedrockBlock": 0 with "bedrockBlock": 1149019

@@ -10,8 +10,8 @@ These are the minimal required versions for node software by network. **op-reth 
 
 | Network          | op-node                                                      | op-reth                                                        |
 | ---------------- | ------------------------------------------------------------ | -------------------------------------------------------------- |
-| Boba Mainnet | [v1.16.5](https://github.com/bobanetwork/boba/releases/tag/op-node/v1.16.5) | [v2.2.1](https://github.com/ethereum-optimism/op-reth/releases) |
-| Boba Sepolia | [v1.16.5](https://github.com/bobanetwork/boba/releases/tag/op-node/v1.16.5) | [v2.2.1](https://github.com/ethereum-optimism/op-reth/releases) |
+| Boba Mainnet | [v1.16.5](https://github.com/bobanetwork/boba/releases/tag/op-node/v1.16.5) | [v2.3.1](https://github.com/ethereum-optimism/op-reth/releases) |
+| Boba Sepolia | [v1.16.5](https://github.com/bobanetwork/boba/releases/tag/op-node/v1.16.5) | [v2.3.1](https://github.com/ethereum-optimism/op-reth/releases) |
 
 > **Note:** op-reth and op-node are both published by OP Labs (`us-docker.pkg.dev/oplabs-tools-artifacts/images/{op-reth,op-node}`). Neither image includes Boba as a built-in network — the Boba chain spec for op-reth is supplied via a mounted JSON file, and the Boba rollup config for op-node likewise. See [`boba-community/chainspecs/`](https://github.com/bobanetwork/boba/tree/develop/boba-community/chainspecs) and [`boba-community/rollup-configs/`](https://github.com/bobanetwork/boba/tree/develop/boba-community/rollup-configs) for the JSON files and their regeneration procedures.
 
