@@ -21,17 +21,21 @@ The `boba-sepolia.json` committed here is the canonical rollup config for Boba
 Sepolia; run op-node against it directly. It should not need regenerating unless
 Boba Sepolia activates a new hardfork.
 
+Both committed files are normalized with keys sorted lexicographically (`jq -S`)
+so that regenerating them produces a minimal, reviewable diff. Keep the `-S`
+when refreshing.
+
 <!-- Maintainer note: the file is refreshed from the RaaS provider endpoint that
      backs Boba's infrastructure. This URL is an internal workflow detail — keep
      it out of operator-facing docs; point operators at the committed file. -->
 
 ```bash
-curl -fsSL https://raas-backend.g.alchemy.com/rollups/boba-sepolia/rollup.json | jq . > boba-sepolia.json
+curl -fsSL https://raas-backend.g.alchemy.com/rollups/boba-sepolia/rollup.json | jq -S . > boba-sepolia.json
 ```
 
 `boba-mainnet.json` was produced from the boba-built op-node and should not need regenerating unless Boba Mainnet activates a new hardfork:
 
 ```bash
 docker run --rm us-docker.pkg.dev/boba-392114/bobanetwork-tools-artifacts/images/op-node:v1.16.5 \
-  op-node networks dump-rollup-config --network=boba-mainnet > boba-mainnet.json
+  op-node networks dump-rollup-config --network=boba-mainnet | jq -S . > boba-mainnet.json
 ```

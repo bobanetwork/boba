@@ -45,6 +45,10 @@ If/when the upstream registry is extended to express these fields and upstream o
 
 ## Regenerating these files
 
+Both committed files are normalized with keys sorted lexicographically (`jq -S`)
+so that regenerating them produces a minimal, reviewable diff. Keep the `-S`
+when refreshing.
+
 ### boba-sepolia.json
 
 The committed `boba-sepolia.json` is the canonical Boba Sepolia chain spec (it is
@@ -57,7 +61,7 @@ hardfork.
      it out of operator-facing docs; point operators at the committed file. -->
 
 ```bash
-curl -fsSL https://raas-backend.g.alchemy.com/rollups/boba-sepolia/genesis.json | jq . > boba-sepolia.json
+curl -fsSL https://raas-backend.g.alchemy.com/rollups/boba-sepolia/genesis.json | jq -S . > boba-sepolia.json
 ```
 
 ### boba.json (mainnet)
@@ -67,7 +71,7 @@ To regenerate the mainnet spec from the upstream bundled spec:
 ```bash
 docker run --rm us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth:v2.3.1 dump-genesis --chain boba 2>/dev/null \
   | tail -n +2 \
-  | jq '.config.bedrockBlock = 1149019' > boba.json
+  | jq -S '.config.bedrockBlock = 1149019' > boba.json
 ```
 
 (`tail -n +2` strips the leading log line that `op-reth` writes to stdout before the JSON; the `jq` step patches in the only field that the upstream bundled config leaves at 0.)
