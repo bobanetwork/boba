@@ -33,6 +33,8 @@
   "fjord_time": 1722297600,
   "granite_time": 1726470000,
   "holocene_time": 1736150400,
+  "isthmus_time": 1787227200,
+  "jovian_time": 1787659200,
   "batch_inbox_address": "0xfff0000000000000000000000000000000028882",
   "deposit_contract_address": "0xb079e6fa9b3eb072febf7f746044834eab308db6",
   "l1_system_config_address": "0xfdc9bce032cef55a71b4fde9b9a2198ad1551965",

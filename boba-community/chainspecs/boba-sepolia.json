@@ -27,6 +27,9 @@
     "fjordTime": 1722297600,
     "graniteTime": 1726470000,
     "holoceneTime": 1736150400,
+    "isthmusTime": 1787227200,
+    "jovianTime": 1787659200,
+    "pragueTime": 1787227200,
     "optimism": {
       "eip1559Denominator": 50,
       "eip1559DenominatorCanyon": 250,

@@ -19,11 +19,17 @@ version: '3.4'
 #      ETH2_HTTP=<L1 beacon URL>
 #      OP_NODE_VERSION=<op-node image tag>
 #
-# Boba is bundled in the upstream OP Labs op-reth image, but with a buggy
-# bedrockBlock=0 (only OP Mainnet gets its real bedrock block; every other
-# migrated chain is hardcoded to 0, which silently disables historical RPC
-# forwarding). The chain spec is supplied via a mounted JSON file that
-# patches bedrockBlock to the correct value. See chainspecs/README.md.
+# Boba is bundled in the upstream OP Labs op-reth / op-node images, but the
+# bundled Boba Sepolia configs are stale: the Isthmus/Jovian/Prague hardfork
+# activation times are not yet in the superchain-registry, and the built-in
+# op-reth spec also has a buggy bedrockBlock=0 (only OP Mainnet gets its real
+# bedrock block; every other migrated chain is hardcoded to 0, which silently
+# disables historical RPC forwarding). Because of the missing fork times,
+# supplying the config via mounted JSON is MANDATORY on Sepolia — do NOT use
+# the built-in `--chain=boba-sepolia` / `--network=boba-sepolia`. The op-reth
+# chain spec (chainspecs/boba-sepolia.json) and op-node rollup config
+# (rollup-configs/boba-sepolia.json) are the canonical Boba Sepolia configs
+# maintained in this repo. See chainspecs/README.md and rollup-configs/README.md.
 #
 # op-reth is the only supported execution client. op-geth and op-erigon
 # reached end-of-life on 2026-05-31 and are no longer supported.
