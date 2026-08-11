@@ -19,11 +19,17 @@ version: '3.4'
 #      ETH2_HTTP=<L1 beacon URL>
 #      OP_NODE_VERSION=<op-node image tag>
 #
-# Boba is bundled in the upstream OP Labs op-reth image, but with a buggy
-# bedrockBlock=0 (only OP Mainnet gets its real bedrock block; every other
-# migrated chain is hardcoded to 0, which silently disables historical RPC
-# forwarding). The chain spec is supplied via a mounted JSON file that
-# patches bedrockBlock to the correct value. See chainspecs/README.md.
+# Boba is bundled in the upstream OP Labs op-reth / op-node images, but the
+# bundled Boba Sepolia configs are stale: the Isthmus/Jovian/Prague hardfork
+# activation times are not yet in the superchain-registry, and the built-in
+# op-reth spec also has a buggy bedrockBlock=0 (only OP Mainnet gets its real
+# bedrock block; every other migrated chain is hardcoded to 0, which silently
+# disables historical RPC forwarding). Because of the missing fork times,
+# supplying the config via mounted JSON is MANDATORY on Sepolia — do NOT use
+# the built-in `--chain=boba-sepolia` / `--network=boba-sepolia`. The op-reth
+# chain spec (chainspecs/boba-sepolia-chainspec.json) and op-node rollup config
+# (rollup-configs/boba-sepolia-rollup.json) are the canonical Boba Sepolia configs
+# maintained in this repo. See chainspecs/README.md and rollup-configs/README.md.
 #
 # op-reth is the only supported execution client. op-geth and op-erigon
 # reached end-of-life on 2026-05-31 and are no longer supported.
@@ -87,13 +93,13 @@ services:
     image: ${RETH_IMAGE:-us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth}:${RETH_VERSION:-v2.3.1}
     command: >
       init-state
-      --chain=/config/boba-sepolia.json
+      --chain=/config/chainspec.json
       --datadir=/db
       --without-ovm
       --header=/db/header.rlp
       /db/reth-state.jsonl
     volumes:
-      - ./chainspecs/boba-sepolia.json:/config/boba-sepolia.json:ro
+      - ./chainspecs/boba-sepolia-chainspec.json:/config/chainspec.json:ro
       - ${DATA_DIR:-./boba-sepolia-reth-datadir}:/db
     profiles:
       - init
@@ -102,7 +108,7 @@ services:
     image: ${RETH_IMAGE:-us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth}:${RETH_VERSION:-v2.3.1}
     command: >
       node
-      --chain=/config/boba-sepolia.json
+      --chain=/config/chainspec.json
       --datadir=/db
       --http
       --http.addr=0.0.0.0
@@ -126,7 +132,7 @@ services:
       - "8551:8551"
     volumes:
       - ./jwt-secret.txt:/config/jwt-secret.txt
-      - ./chainspecs/boba-sepolia.json:/config/boba-sepolia.json:ro
+      - ./chainspecs/boba-sepolia-chainspec.json:/config/chainspec.json:ro
       - ${DATA_DIR:-./boba-sepolia-reth-datadir}:/db
 
   op-node:
@@ -152,7 +158,7 @@ services:
       - "9545:9545"
     volumes:
       - ./jwt-secret.txt:/config/jwt-secret.txt
-      - ./rollup-configs/boba-sepolia.json:/config/rollup.json:ro
+      - ./rollup-configs/boba-sepolia-rollup.json:/config/rollup.json:ro
     #  - ./p2p-node-key.txt:/config/p2p-node-key.txt
     #  - ./discovery:/p2p_discovery_db
     #  - ./peerstore:/p2p_peerstore_db
