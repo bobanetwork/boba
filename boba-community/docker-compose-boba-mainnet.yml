@@ -87,13 +87,13 @@ services:
     image: ${RETH_IMAGE:-us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth}:${RETH_VERSION:-v2.3.1}
     command: >
       init-state
-      --chain=/config/boba.json
+      --chain=/config/chainspec.json
       --datadir=/db
       --without-ovm
       --header=/db/header.rlp
       /db/reth-state.jsonl
     volumes:
-      - ./chainspecs/boba.json:/config/boba.json:ro
+      - ./chainspecs/boba-mainnet-chainspec.json:/config/chainspec.json:ro
       - ${DATA_DIR:-./boba-mainnet-reth-datadir}:/db
     profiles:
       - init
@@ -102,7 +102,7 @@ services:
     image: ${RETH_IMAGE:-us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth}:${RETH_VERSION:-v2.3.1}
     command: >
       node
-      --chain=/config/boba.json
+      --chain=/config/chainspec.json
       --datadir=/db
       --http
       --http.addr=0.0.0.0
@@ -126,7 +126,7 @@ services:
       - "8551:8551"
     volumes:
       - ./jwt-secret.txt:/config/jwt-secret.txt
-      - ./chainspecs/boba.json:/config/boba.json:ro
+      - ./chainspecs/boba-mainnet-chainspec.json:/config/chainspec.json:ro
       - ${DATA_DIR:-./boba-mainnet-reth-datadir}:/db
 
   op-node:
@@ -152,7 +152,7 @@ services:
       - "9545:9545"
     volumes:
       - ./jwt-secret.txt:/config/jwt-secret.txt
-      - ./rollup-configs/boba-mainnet.json:/config/rollup.json:ro
+      - ./rollup-configs/boba-mainnet-rollup.json:/config/rollup.json:ro
     #  - ./p2p-node-key.txt:/config/p2p-node-key.txt
     #  - ./discovery:/p2p_discovery_db
     #  - ./peerstore:/p2p_peerstore_db

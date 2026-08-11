@@ -4,8 +4,8 @@ These JSON files are op-node rollup configurations for Boba networks, in the for
 
 | File | Chain ID | Network |
 |---|---|---|
-| `boba-mainnet.json` | 288 | Boba Mainnet |
-| `boba-sepolia.json` | 28882 | Boba Sepolia Testnet |
+| `boba-mainnet-rollup.json` | 288 | Boba Mainnet |
+| `boba-sepolia-rollup.json` | 28882 | Boba Sepolia Testnet |
 
 Each file describes the rollup's L1/L2 genesis anchor, hardfork timestamps, batch inbox address, sequencer window size, and other parameters that op-node needs to derive L2 blocks from L1 data.
 
@@ -17,7 +17,7 @@ For **Boba Sepolia**, supplying this file is now **mandatory**, not just a conve
 
 ## Regenerating these files
 
-The `boba-sepolia.json` committed here is the canonical rollup config for Boba
+The `boba-sepolia-rollup.json` committed here is the canonical rollup config for Boba
 Sepolia; run op-node against it directly. It should not need regenerating unless
 Boba Sepolia activates a new hardfork.
 
@@ -30,12 +30,12 @@ when refreshing.
      it out of operator-facing docs; point operators at the committed file. -->
 
 ```bash
-curl -fsSL https://raas-backend.g.alchemy.com/rollups/boba-sepolia/rollup.json | jq -S . > boba-sepolia.json
+curl -fsSL https://raas-backend.g.alchemy.com/rollups/boba-sepolia/rollup.json | jq -S . > boba-sepolia-rollup.json
 ```
 
-`boba-mainnet.json` was produced from the boba-built op-node and should not need regenerating unless Boba Mainnet activates a new hardfork:
+`boba-mainnet-rollup.json` was produced from the boba-built op-node and should not need regenerating unless Boba Mainnet activates a new hardfork:
 
 ```bash
 docker run --rm us-docker.pkg.dev/boba-392114/bobanetwork-tools-artifacts/images/op-node:v1.16.5 \
-  op-node networks dump-rollup-config --network=boba-mainnet | jq -S . > boba-mainnet.json
+  op-node networks dump-rollup-config --network=boba-mainnet | jq -S . > boba-mainnet-rollup.json
 ```
