@@ -126,10 +126,15 @@ services:
       --rollup.sequencer-http=https://sepolia.boba.network
       --rollup.disable-tx-pool-gossip
       --rollup.historicalrpc=${HISTORICAL_RPC:-https://sepolia.boba.network}
+      --bootnodes="enode://ac9f697ab2692b0acb5a4624336d14def4c981796e5d351c654135754c646c6d1a31cbbdb06f5d04156489bd10aa1fa8416eec75839a50020064f5a9f530bb3a@54.242.254.87:0?discport=30301,enode://d6adc6552cccd68b5216f5279a6c4f6766ef0ad1b5056d73b5d846260c04c039537a731479d6854d9d275f8e6efe7346d6a5ecc11259ecc655d12f040415eaa8@18.211.99.160:0?discport=30301"
     ports:
       - "8545:8545"
       - "8546:8546"
       - "8551:8551"
+      # devp2p port for execution-layer sync. Publish (and forward through your
+      # firewall/NAT) so op-reth can discover and peer with the EL network.
+      - "30303:30303/tcp"
+      - "30303:30303/udp"
     volumes:
       - ./jwt-secret.txt:/config/jwt-secret.txt
       - ./chainspecs/boba-sepolia-chainspec.json:/config/chainspec.json:ro
@@ -146,9 +151,10 @@ services:
       --l2=http://l2:8551
       --l2.jwt-secret=/config/jwt-secret.txt
       --rollup.config=/config/rollup.json
+      --syncmode=execution-layer
       --rpc.addr=0.0.0.0
       --rpc.port=9545
-      --p2p.bootnodes="enode://0d9f376f90b72f65c8cbeae4c7d34732678822109412c7e8253952b207618733a736f20b43c4c7c62e95b7e6389f04cc9e9e8dbe79ba75af884b0fcf5d580a3d@54.87.50.241:0?discport=30301,enode://48eb348c252f9c527ae40dee64995a65a5a6100725b1462184bb5b86cfbe817864e8ff90b52a78124289a476a1d805b27173d8f01722160c08159fa8880c47c0@13.220.237.71:0?discport=30301"
+      --p2p.bootnodes="enode://b3d3f7d947461138e850b5fa0c417b8c1c498d3d7edb17f662b2e2c99f096b756be238b07002e98a0a373ae23ff87054b68a9c6bb0ca55fb852d9969debfa6cd@52.201.174.220:0?discport=30301,enode://b75a091361d9ed31e2eac8e64b06ae26708f828042dde7dbed21b74869ecfead030ee25570c758e54ae7462d22f61afabec75e24d48a494a990b25bde009d5c5@3.230.114.57:0?discport=30301"
     # Optional flags
     #  --p2p.ban.peers=false
     #  --p2p.priv.path=/config/p2p-node-key.txt
