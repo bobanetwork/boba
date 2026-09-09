@@ -13,6 +13,7 @@ Learn more about Boba through the following documentation:
 - [Hybrid Compute](./hc/index) walks through how to integrate off-chain computation in your smart contracts through Boba's Hybrid Compute.
 - [Node Operators](./node-operators/0_index.md) explains node architecture and maintenance.
 - [Indexers](./indexers/subgraph) discusses how to integrate with supported data indexers.
+- [Oracles](./oracles/1_dia.md) explains how to read DIA asset prices on Boba Network.
 - [Fees](./fees/fee-scheme) discusses the fees and custom fee tokens involved with Boba.
 - [Contract and Token Addresses](./addresses/index) lists all boba-related contract and token addresses.
 - [Testnet Faucets](./faucets) lists the faucets availabe for use on Sepolia and Boba networks.
