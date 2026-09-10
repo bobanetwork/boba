@@ -103,10 +103,6 @@ DIA documents the following configuration for Boba:
 
 These settings describe the intended update triggers. Applications should still check the returned timestamp; the heartbeat is not a guarantee that a fresh value is always available.
 
-## Feed funding
-
-For teams responsible for operating the feed, DIA's migrated oracle uses the **oracle contract's balance** to pay for updates. Maintain funding on the oracle contract for the relevant network, following the deployment-specific instructions supplied by DIA. Contact [DIA support](https://t.me/diadata_org) for funding details. Keep the oracle and asset adapter addresses distinct when managing the feed.
-
 ## Resources
 
 - [DIA's Boba Network guide](https://www.diadata.org/docs/guides/chain-specific-guide/boba-network)
