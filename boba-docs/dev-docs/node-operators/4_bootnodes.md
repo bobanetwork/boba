@@ -15,7 +15,7 @@ Consensus-layer bootnodes can be specified to op-node with either the `--p2p.boo
 ### Boba Mainnet
 
 ```
-enode://a38db98391708094dd679aacdd356efdbe10ad7c9ba4b87d8f4b79eb24ac26328e7fdf911f8c5c3b7786c2505bc77d896a0ecd1816bd56107592f728dcff3945@35.153.183.193:0?discport=30301,enode://a92b84bac2893ef868659364a6784a6eeb146cb04ec0bb3b1e9925f5bb895af9e1c50deaf0703ab26db366a3d82272e710e06d925cb0b7245129ed76d54ccac9@13.221.254.11:0?discport=30301
+enode://ef3def930e1c9be05b2c2b6c0de35555e1bc283feb6edf1f0f4d7385f82a011ae88c14c4691555d6f5f3887c3e8e69d2aee4ccc39b96dc045c9e25181eaad0ec@100.58.145.205:0?discport=30301,enode://cae574d3aada643b6dea04d3f3fa737f42c38631ffee609b63aada6558c19fdf30bfcba86c877678dbc70828bdff281bd8cc5109a69134d630782fb8d93aded1@3.217.241.101:0?discport=30301
 ```
 
 ### Boba Sepolia Testnet
@@ -27,6 +27,12 @@ enode://b3d3f7d947461138e850b5fa0c417b8c1c498d3d7edb17f662b2e2c99f096b756be238b0
 ## Execution layer (op-reth)
 
 Execution-layer bootnodes let op-reth discover peers on its own P2P network. This is required for [execution-layer sync](https://docs.optimism.io/operators/node-operators/management/snap-sync), where op-node tells the execution client to sync toward the tip of the chain (op-node's `--syncmode=execution-layer`) rather than importing every block itself. Execution-layer bootnodes can be specified to op-reth with the `--bootnodes` flag.
+
+### Boba Mainnet
+
+```
+enode://ea3452bc663cde356b8b4a6e8c4a4953d4fd10fb8589d5e2955569853121700e8f3c157634253b1238496e923108206fddff2dc55f7ba280a49ddf7e782a09d4@3.214.7.247:0?discport=30301,enode://5f34742bd61a953fde88dfae2d6e0ddded36babe72211019c5988410e1041870bc6542045fa397a280e101ca26b4721e1738a8f9618dedcb45f027b0c066f806@100.50.243.238:0?discport=30301
+```
 
 ### Boba Sepolia Testnet
 
