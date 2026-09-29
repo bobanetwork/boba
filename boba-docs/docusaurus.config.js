@@ -81,6 +81,12 @@ const config = {
   ],
 
   plugins: [
+    // Fetches the published snapshot manifests at build time so the node
+    // snapshot page shows current figures without anyone editing markdown.
+    // Reads public, anonymous URLs -- no credential lives in this repo. The
+    // snapshot publisher POSTs a Vercel deploy hook after a successful publish,
+    // so a rebuild happens when there is something new rather than on a timer.
+    require.resolve('./plugins/snapshot-manifests'),
     [
       '@docusaurus/plugin-content-docs',
       {
