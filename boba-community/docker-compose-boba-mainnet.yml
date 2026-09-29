@@ -44,8 +44,14 @@ services:
   # docker compose and podman-compose (the latter lacks init-style ordering).
   # Run against an EMPTY data directory:
   #   docker compose -f docker-compose-boba-mainnet.yml --profile seed run --rm seed-database
-  # Override SNAPSHOT_URL / SNAPSHOT_SHA256 in .env to pin a different snapshot;
-  # keep them in sync with the snapshot-downloads docs page.
+  # By default this resolves the current snapshot from the published manifest at
+  # MANIFEST_URL, so it is never out of date and there is nothing to keep in sync
+  # by hand. The manifest carries the download URL and its sha256, and the
+  # checksum is always verified.
+  #
+  # Set SNAPSHOT_URL in .env to pin a specific snapshot instead; set
+  # SNAPSHOT_SHA256 alongside it, since a pinned URL has no manifest to take the
+  # checksum from.
   # The download is staged inside the data directory (/db) rather than the
   # container's /tmp, so only the data disk needs free space (~2x the snapshot
   # size during extraction) — the container storage disk is not used for it.
@@ -54,23 +60,48 @@ services:
       - seed
     image: alpine:3.20
     environment:
-      SNAPSHOT_URL: ${SNAPSHOT_URL:-https://boba-db.s3.us-east-2.amazonaws.com/mainnet/boba-mainnet-reth-db-20260526.tar.zst}
-      SNAPSHOT_SHA256: ${SNAPSHOT_SHA256:-0276acb420241fd24cdd3a1eb7172b33ca89e087b790dd83b92345000ef3c3ec}
+      MANIFEST_URL: ${MANIFEST_URL:-https://snapshots.boba.network/boba-mainnet/latest.json}
+      SNAPSHOT_URL: ${SNAPSHOT_URL:-}
+      SNAPSHOT_SHA256: ${SNAPSHOT_SHA256:-}
     command:
       - sh
       - -ec
       - |
-        apk add --no-cache curl zstd >/dev/null
+        apk add --no-cache curl zstd jq >/dev/null
         if [ -n "$$(ls -A /db 2>/dev/null)" ]; then
           echo "ERROR: data directory is not empty; refusing to overwrite." >&2
           echo "Clear it (or point DATA_DIR at a fresh path) and re-run." >&2
           exit 1
         fi
+
+        # Resolve the current snapshot unless one was pinned explicitly. The
+        # manifest is the same artifact the docs page is generated from, so this
+        # always matches what is published.
+        if [ -z "$$SNAPSHOT_URL" ]; then
+          echo "Resolving current snapshot from $$MANIFEST_URL"
+          curl -fsSL --retry 3 "$$MANIFEST_URL" -o /tmp/manifest.json
+          SNAPSHOT_URL=$$(jq -r '.url // empty' /tmp/manifest.json)
+          SNAPSHOT_SHA256=$$(jq -r '.sha256 // empty' /tmp/manifest.json)
+          if [ -z "$$SNAPSHOT_URL" ] || [ -z "$$SNAPSHOT_SHA256" ]; then
+            echo "ERROR: manifest did not contain a url and sha256." >&2
+            exit 1
+          fi
+          BLOCK=$$(jq -r '.block_number // "unknown"' /tmp/manifest.json)
+          SIZE=$$(jq -r '(.size_compressed_bytes // 0) / 1073741824 | floor' /tmp/manifest.json)
+          echo "Snapshot at block $$BLOCK (~$${SIZE}GiB compressed)"
+        fi
+
         echo "Downloading snapshot: $$SNAPSHOT_URL"
-        curl -fSL --retry 3 "$$SNAPSHOT_URL" -o /db/snapshot.tar.zst
+        curl -fSL --retry 3 --continue-at - "$$SNAPSHOT_URL" -o /db/snapshot.tar.zst
+
+        # Never skipped when resolved from a manifest, and strongly recommended
+        # when pinning: a truncated or corrupted download otherwise surfaces as
+        # an unexplained extraction failure much later.
         if [ -n "$$SNAPSHOT_SHA256" ]; then
           echo "Verifying sha256 checksum..."
           echo "$$SNAPSHOT_SHA256  /db/snapshot.tar.zst" | sha256sum -c -
+        else
+          echo "WARNING: no sha256 available; skipping verification." >&2
         fi
         echo "Extracting into the data directory..."
         zstd -dc /db/snapshot.tar.zst | tar -xf - -C /db
