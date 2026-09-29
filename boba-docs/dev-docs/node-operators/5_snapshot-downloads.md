@@ -6,8 +6,14 @@ This page has a list of important snapshots for node operators. Data directories
 
 ## Current snapshots
 
-These are the snapshots to use. They are published weekly and the entries below
-are generated from what was actually published, so they do not go stale.
+These are the snapshots to use. They are published weekly, and the entries below
+are regenerated from what was actually published — so this page always shows the
+current snapshot.
+
+Each URL is immutable: it always serves the exact bytes listed beside it, which
+means an interrupted download can be resumed safely. Only the most recent couple
+of snapshots are retained, though, so **do not hardcode a URL** — resolve it at
+download time (see [below](#scripted-downloads)) or come back to this page.
 
 Always verify a download against the `sha256sum` shown with it:
 
@@ -22,6 +28,53 @@ sha256sum <filename>
 ### BOBA Sepolia Testnet
 
 <SnapshotTable chain="boba-sepolia" />
+
+## Scripted downloads
+
+Every snapshot is published with a small JSON manifest, and `latest.json` always
+points at the current one:
+
+```
+https://snapshots.boba.network/boba-mainnet/latest.json
+https://snapshots.boba.network/boba-sepolia/latest.json
+```
+
+It carries the download URL, its `sha256`, the block the snapshot was taken at,
+and its size — so a script can fetch and verify without anything hardcoded:
+
+```bash
+CHAIN=boba-mainnet   # or boba-sepolia
+
+MANIFEST=$(curl -fsSL "https://snapshots.boba.network/$CHAIN/latest.json")
+URL=$(echo "$MANIFEST" | jq -r .url)
+SHA=$(echo "$MANIFEST" | jq -r .sha256)
+
+echo "$MANIFEST" | jq -r '"block \(.block_number), \(.size_compressed_bytes/1073741824|floor) GiB"'
+
+# --continue-at - resumes if the download is interrupted
+curl -fL --retry 3 --continue-at - "$URL" -o snapshot.tar.zst
+echo "$SHA  snapshot.tar.zst" | sha256sum -c -
+
+zstd -dc snapshot.tar.zst | tar -xf - -C /path/to/datadir
+```
+
+The [`boba-community` docker-compose setup](https://github.com/bobanetwork/boba/tree/develop/boba-community)
+does exactly this for you — `docker compose --profile seed run --rm seed-database`
+resolves, downloads, verifies and extracts the current snapshot.
+
+### Manifest fields
+
+| Field | Meaning |
+| --- | --- |
+| `url` | Download URL for this snapshot |
+| `sha256` | Checksum of the archive, as `sha256sum` reports it |
+| `block_number`, `block_hash` | The chain head the snapshot was taken at |
+| `block_timestamp_utc` | Timestamp of that block |
+| `size_compressed_bytes` | Download size |
+| `size_uncompressed_bytes` | Disk needed after extraction |
+| `reth_image` | The op-reth build that produced it |
+| `includes_proofsdb` | Whether a proofs database is included |
+| `proofs_history_window_blocks` | How many blocks of `eth_getProof` history it covers |
 
 ## Bootstrapping from genesis
 
