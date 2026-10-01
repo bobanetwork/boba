@@ -115,7 +115,7 @@ services:
   # Place your reth-state.jsonl and header.rlp in the data directory first.
   # Run: docker compose -f docker-compose-boba-mainnet.yml --profile init run --rm init
   init:
-    image: ${RETH_IMAGE:-us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth}:${RETH_VERSION:-v2.3.1}
+    image: ${RETH_IMAGE:-us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth}:${RETH_VERSION:-v2.4.4}
     command: >
       init-state
       --chain=/config/chainspec.json
@@ -130,7 +130,7 @@ services:
       - init
 
   l2:
-    image: ${RETH_IMAGE:-us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth}:${RETH_VERSION:-v2.3.1}
+    image: ${RETH_IMAGE:-us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth}:${RETH_VERSION:-v2.4.4}
     command: >
       node
       --chain=/config/chainspec.json
@@ -168,7 +168,7 @@ services:
   op-node:
     depends_on:
       - l2
-    image: ${OP_NODE_IMAGE:-us-docker.pkg.dev/oplabs-tools-artifacts/images/op-node}:${OP_NODE_VERSION:-v1.19.0}
+    image: ${OP_NODE_IMAGE:-us-docker.pkg.dev/oplabs-tools-artifacts/images/op-node}:${OP_NODE_VERSION:-v1.19.7}
     command: >
       op-node
       --l1=${ETH1_HTTP:-https://mainnet.gateway.tenderly.co}
