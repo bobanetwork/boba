@@ -30,22 +30,24 @@ The diagram below explains how three parts - the Rollup Node, Execution Client, 
 
 ```mermaid
 flowchart LR
-    User["User / dApp"]
-    P2P(["Boba peer-to-peer<br/>network"])
     L1["Ethereum (L1)"]
+    P2P(["Boba peer-to-peer<br/>network"])
 
     subgraph BobaNode["Boba Node"]
-        reth["op-reth<br/>(Execution Client)"]
+        direction TB
         opnode["op-node<br/>(Rollup Node)"]
+        reth["op-reth<br/>(Execution Client)"]
         legacy["l2geth (Legacy)<br/>optional"]
         opnode <-->|Engine API| reth
-        reth -->|pre-Anchorage RPC| legacy
+        reth -->|historical RPC| legacy
     end
 
-    User <-->|JSON-RPC| reth
-    L1 -->|block derivation| opnode
-    P2P <-->|EL discovery and sync| reth
-    P2P <-->|CL block gossip| opnode
+    User["User / dApp"]
+
+    L1 -->|derivation| opnode
+    P2P <-->|CL gossip| opnode
+    P2P <-->|EL discovery| reth
+    reth <-->|JSON-RPC| User
 ```
 
 ### Software Release
