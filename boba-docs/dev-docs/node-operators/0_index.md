@@ -28,7 +28,25 @@ You don't always need Legacy Geth, though. It's mainly for those who want to kee
 
 The diagram below explains how three parts - the Rollup Node, Execution Client, and Legacy Geth - fit together to make a full Boba node. It uses `op-node` for the Rollup Node and `op-reth` for the Execution Client.
 
-![image](../../assets/diagrams/node-operator.png)
+```mermaid
+flowchart LR
+    User["User / dApp"]
+    P2P(["Boba peer-to-peer<br/>network"])
+    L1["Ethereum (L1)"]
+
+    subgraph BobaNode["Boba Node"]
+        reth["op-reth<br/>(Execution Client)"]
+        opnode["op-node<br/>(Rollup Node)"]
+        legacy["l2geth (Legacy)<br/>optional"]
+        opnode <-->|Engine API| reth
+        reth -->|pre-Anchorage RPC| legacy
+    end
+
+    User <-->|JSON-RPC| reth
+    L1 -->|block derivation| opnode
+    P2P <-->|EL discovery and sync| reth
+    P2P <-->|CL block gossip| opnode
+```
 
 ### Software Release
 
