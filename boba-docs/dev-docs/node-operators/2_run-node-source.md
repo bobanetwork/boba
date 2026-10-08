@@ -1,164 +1,23 @@
 # Running a Node from Source
 
-Docker images make it very simple to run a Boba node, but you can also create your own node using the source code. You might choose to do this if you need the node to work on a specific architecture or if you want to look closely at the node's code. This guide will show you how to build and run a node from scratch.
+Running a Boba node with the [Docker images](1_run-node-docker.md) is the recommended path. Boba runs the **upstream** op-reth and op-node binaries unmodified — the network is configured entirely through runtime files, not a custom build — so there is normally no reason to build from source. Build from source only if you have a specific need, such as targeting an unusual architecture.
 
-## Software Dependencies
+If you do, build the upstream binaries from their own documentation, then apply the Boba-specific runtime configuration below.
 
-| Dependency                                                   | Version  | Version Check Command |
-| ------------------------------------------------------------ | -------- | --------------------- |
-| [git](https://git-scm.com)                                   | `^2`     | `git --version`       |
-| [go](https://go.dev)                                         | `^1.21`  | `go --version`        |
-| [node](https://nodejs.org/en/)                               | `^20`    | `node --version`      |
-| [pnpm](https://pnpm.io/installation)                         | `^8`     | `pnpm --version`      |
-| [foundry](https://github.com/foundry-rs/foundry#installation) | `^0.2.0` | `forge --version`     |
-| [make](https://linux.die.net/man/1/make)                     | `^4`     | `make --version`      |
+## Build the binaries (upstream)
 
-## Build the Rollup Node
+Boba does not fork either client, so a stock upstream build works:
 
-### Clone the Boba Monorepo
+- **op-reth** (execution client) — build from the OP Labs [op-reth](https://github.com/ethereum-optimism/op-reth) repository, following its build instructions (`cargo build --bin op-reth --release`).
+- **op-node** (rollup / consensus client) — build from the [Optimism monorepo](https://github.com/ethereum-optimism/optimism), following the [op-node README](https://github.com/ethereum-optimism/optimism/tree/develop/op-node) (`make op-node`).
 
-```bash
-git clone https://github.com/bobanetwork/boba.git
-cd boba
-```
+## Configure for Boba
 
-### Check out the required release branch
+The upstream images include **no** built-in Boba network, and the built-in `--chain=boba-sepolia` / `--chain=boba` configs are stale and will make your node **diverge** from the canonical chain. Supply the Boba configuration at runtime, exactly as the compose files in [`boba-community/`](https://github.com/bobanetwork/boba/tree/develop/boba-community) do — those files are the canonical reference for the full command line:
 
-Release branches are created when new versions of the `op-node` are created. Read through the [Releases page](https://github.com/bobanetwork/boba/tags) to determine the correct branch to check out.
+- **op-reth `--chain=<path>`** → `boba-community/chainspecs/boba-sepolia-chainspec.json` (Sepolia) or `boba-mainnet-chainspec.json` (Mainnet). See [`chainspecs/README.md`](https://github.com/bobanetwork/boba/tree/develop/boba-community/chainspecs) for why this is required.
+- **op-node `--rollup.config=<path>`** → `boba-community/rollup-configs/boba-sepolia-rollup.json` or `boba-mainnet-rollup.json`.
+- **Bootnodes** — pass the Boba EL bootnodes to op-reth (`--bootnodes`) and the CL bootnodes to op-node (`--p2p.bootnodes`); see the [Bootnodes](4_bootnodes.md) page.
+- **Remaining flags** — JWT secret, `--l1`, `--l1.beacon`, `--syncmode=execution-layer`, `--rollup.sequencer-http`, and the RPC/p2p ports: copy the values straight from the compose files.
 
-```
-git checkout <name of release branch>
-```
-
-### Install dependencies
-
-Install the Node.js dependencies for the Boba Monorepo.
-
-```bash
-pnpm install
-```
-
-### Build packages
-
-Build the Node.js packages for the Boba Monorepo.
-
-```bash
-pnpm build
-```
-
-### Build op-node
-
-Build the `op-node`.
-
-```bash
-make op-node
-```
-
-## Build the Execution Engine (op-reth)
-
-The only supported execution client is op-reth, built from the OP Labs [op-reth](https://github.com/ethereum-optimism/op-reth) repository.
-
-```bash
-git clone https://github.com/ethereum-optimism/op-reth.git
-cd op-reth
-cargo build --bin op-reth --release
-```
-
-The binary will be at `target/release/op-reth`.
-
-> **Do not run with the built-in `--chain=boba-sepolia` / `--chain=boba` networks.** op-reth's built-in Boba configs are stale and will cause your node to **diverge** from the canonical chain. You must supply the Boba chain spec at runtime via the JSON files maintained in this repo — `boba-community/chainspecs/boba-sepolia-chainspec.json` (Sepolia) or `boba-community/chainspecs/boba-mainnet-chainspec.json` (Mainnet). See [`boba-community/chainspecs/README.md`](https://github.com/bobanetwork/boba/tree/develop/boba-community/chainspecs) for details.
-
-## Download Snapshots
-
-Download the database snapshot for your network from the [snapshot downloads](snapshot-downloads) page. Always verify snapshots by comparing the sha256sum of the downloaded file to the sha256sum listed on that page.
-
-```bash
-sha256sum <filename>
-```
-
-## Create a JWT Secret
-
-`op-reth` and `op-node` communicate over the engine API authrpc. This communication is secured using a shared secret. You will need to generate a shared secret and provide it to both `op-reth` and `op-node` when you start them. In this case, the secret takes the form of a 32 byte hex string.
-
-Run the following command to generate a random 32 byte hex string:
-
-```bash
-openssl rand -hex 32 > jwt.txt
-```
-
-## Start `op-reth`
-
-It's usually simpler to begin with `op-reth` before you start `op-node`. You can start `op-reth` even if `op-node` isn't running yet, but `op-reth` won't get any blocks until `op-node` starts.
-
-Using the following command to start `op-reth` in a default configuration. The JSON-RPC API will become available on port 8545 (HTTP) and 8546 (WS).
-
-```bash
-op-reth node \
-  --chain=/path/to/boba/boba-community/chainspecs/boba-sepolia-chainspec.json \
-  --datadir=./reth-data \
-  --http \
-  --http.addr=0.0.0.0 \
-  --http.port=8545 \
-  --http.corsdomain="*" \
-  --http.api=eth,debug,net,web3 \
-  --ws \
-  --ws.addr=0.0.0.0 \
-  --ws.port=8546 \
-  --ws.origins="*" \
-  --ws.api=eth,debug,net,web3 \
-  --authrpc.addr=0.0.0.0 \
-  --authrpc.port=8551 \
-  --authrpc.jwtsecret=./jwt.txt \
-  --rollup.sequencer-http=https://sepolia.boba.network \
-  --rollup.disable-tx-pool-gossip
-```
-
-For mainnet, use `--chain=/path/to/boba/boba-community/chainspecs/boba-mainnet-chainspec.json` and `--rollup.sequencer-http=https://mainnet.boba.network`.
-
-## Start `op-node`
-
-Once you've started `op-reth`, you can start `op-node`. `op-node` will connect to `op-reth` and begin synchronizing the BOBA network. `op-node` will begin sending block payloads to `op-reth` when it derives enough blocks from Ethereum.
-
-### Set environment variables
-
-Set the following environment variables:
-
-```bash
-export L1_RPC_URL=...    # URL for the L1 execution-layer RPC
-export L1_BEACON_URL=... # URL for the L1 beacon (consensus) API
-```
-
-### Start op-node
-
-Using the following command to start `op-node` in a default configuration. The rollup RPC will become available on port 9545.
-
-```bash
-./bin/op-node \
-  --l1=$L1_RPC_URL \
-  --l1.beacon=$L1_BEACON_URL \
-  --l2=http://localhost:8551 \
-  --l2.jwt-secret=./jwt.txt \
-  --rollup.config=/path/to/boba/boba-community/rollup-configs/boba-sepolia-rollup.json \
-  --syncmode=execution-layer \
-  --p2p.bootnodes="enode://b3d3f7d947461138e850b5fa0c417b8c1c498d3d7edb17f662b2e2c99f096b756be238b07002e98a0a373ae23ff87054b68a9c6bb0ca55fb852d9969debfa6cd@52.201.174.220:0?discport=30301,enode://b75a091361d9ed31e2eac8e64b06ae26708f828042dde7dbed21b74869ecfead030ee25570c758e54ae7462d22f61afabec75e24d48a494a990b25bde009d5c5@3.230.114.57:0?discport=30301" \
-  --rpc.addr=0.0.0.0 \
-  --rpc.port=9545
-```
-
-For mainnet, use `--rollup.config=/path/to/boba/boba-community/rollup-configs/boba-mainnet-rollup.json` and the mainnet consensus-layer bootnodes from the [bootnodes](4_bootnodes.md) page.
-
-## Synchronization
-
-During the initial synchronization, you get log messages from `op-node`, and nothing else appears to happen.
-
-```bash
-INFO [08-04|16:36:07.150] Advancing bq origin                      origin=df76ff..48987e:8301316 originBehind=false
-```
-
-After a few minutes, `op-node` finds the right batch and then it starts synchronizing.
-
-```bash
-INFO [08-04|16:36:01.204] Found next batch                         epoch=44e203..fef9a5:8301309 batch_epoch=8301309                batch_timestamp=1,673,567,518
-INFO [08-04|16:36:01.205] generated attributes in payload queue    txs=2  timestamp=1,673,567,518
-INFO [08-04|16:36:01.265] inserted block                           hash=ee61ee..256300 number=4,069,725 state_root=a582ae..33a7c5 timestamp=1,673,567,518 parent=5b102e..13196c prev_randao=4758ca..11ff3a fee_recipient=0x4200000000000000000000000000000000000011 txs=2  update_safe=true
-```
+Finally, seed the database from a [snapshot](5_snapshot-downloads.md) before starting, the same as for the Docker setup.
