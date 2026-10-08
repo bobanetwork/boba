@@ -17,10 +17,9 @@ These hardforks are not yet included in the [superchain-registry](https://github
 
 Node operators are required to upgrade before the activation dates to avoid chain divergence.
 
-### Update to the latest release
+### Update to a supported release
 
-* op-reth at `v2.3.1` — image `us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth:v2.3.1`
-* op-node at `v1.19.0` — image `us-docker.pkg.dev/oplabs-tools-artifacts/images/op-node:v1.19.0`
+These forks are supported from **op-reth `v2.3.1`** / **op-node `v1.19.0`** onward — run at least these versions. The current recommended versions are **op-reth `v2.4.4`** / **op-node `v1.19.7`**; always check the [Node Software Releases](../node-operators/6_software-release.md) page, which is kept up to date.
 
 :::note
 op-geth and op-erigon reached end-of-life on 2026-05-31 and do not support these upgrades. Operators still running them must migrate to op-reth; see the [op-geth/op-erigon to op-reth migration guide](https://github.com/bobanetwork/boba/blob/develop/boba-community/scripts/geth-to-reth/README.md).
