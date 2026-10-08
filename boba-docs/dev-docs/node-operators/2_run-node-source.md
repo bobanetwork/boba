@@ -1,6 +1,6 @@
 # Running a Node from Source
 
-DDocker images make it very simple to run a BOBA node, but you can also create your own node using the source code. You might choose to do this if you need the node to work on a  specific architecture or if you want to look closely at the node's code. This guide will show you how to build and run a node from scratch.
+Docker images make it very simple to run a Boba node, but you can also create your own node using the source code. You might choose to do this if you need the node to work on a specific architecture or if you want to look closely at the node's code. This guide will show you how to build and run a node from scratch.
 
 ## Software Dependencies
 
@@ -40,7 +40,7 @@ pnpm install
 
 ### Build packages
 
-Builde the Node.js packages for the Boba Monorepo.
+Build the Node.js packages for the Boba Monorepo.
 
 ```bash
 pnpm build
@@ -56,15 +56,17 @@ make op-node
 
 ## Build the Execution Engine (op-reth)
 
-The recommended execution client is op-reth. The upstream [op-reth](https://github.com/paradigmxyz/reth) includes Boba chains as built-in, so you can build directly from upstream.
+The only supported execution client is op-reth, built from the OP Labs [op-reth](https://github.com/ethereum-optimism/op-reth) repository.
 
 ```bash
-git clone https://github.com/paradigmxyz/reth.git
-cd reth
+git clone https://github.com/ethereum-optimism/op-reth.git
+cd op-reth
 cargo build --bin op-reth --release
 ```
 
 The binary will be at `target/release/op-reth`.
+
+> **Do not run with the built-in `--chain=boba-sepolia` / `--chain=boba` networks.** op-reth's built-in Boba configs are stale and will cause your node to **diverge** from the canonical chain. You must supply the Boba chain spec at runtime via the JSON files maintained in this repo — `boba-community/chainspecs/boba-sepolia-chainspec.json` (Sepolia) or `boba-community/chainspecs/boba-mainnet-chainspec.json` (Mainnet). See [`boba-community/chainspecs/README.md`](https://github.com/bobanetwork/boba/tree/develop/boba-community/chainspecs) for details.
 
 ## Download Snapshots
 
@@ -92,7 +94,7 @@ Using the following command to start `op-reth` in a default configuration. The J
 
 ```bash
 op-reth node \
-  --chain=boba-sepolia \
+  --chain=/path/to/boba/boba-community/chainspecs/boba-sepolia-chainspec.json \
   --datadir=./reth-data \
   --http \
   --http.addr=0.0.0.0 \
@@ -111,7 +113,7 @@ op-reth node \
   --rollup.disable-tx-pool-gossip
 ```
 
-For mainnet, use `--chain=boba` and `--rollup.sequencer-http=https://mainnet.boba.network`.
+For mainnet, use `--chain=/path/to/boba/boba-community/chainspecs/boba-mainnet-chainspec.json` and `--rollup.sequencer-http=https://mainnet.boba.network`.
 
 ## Start `op-node`
 
@@ -119,10 +121,11 @@ Once you've started `op-reth`, you can start `op-node`. `op-node` will connect t
 
 ### Set environment variables
 
-Set the following environment variable:
+Set the following environment variables:
 
 ```bash
-export L1_RPC_URL=... # URL for the L1 node to sync from
+export L1_RPC_URL=...    # URL for the L1 execution-layer RPC
+export L1_BEACON_URL=... # URL for the L1 beacon (consensus) API
 ```
 
 ### Start op-node
@@ -132,12 +135,17 @@ Using the following command to start `op-node` in a default configuration. The r
 ```bash
 ./bin/op-node \
   --l1=$L1_RPC_URL \
+  --l1.beacon=$L1_BEACON_URL \
   --l2=http://localhost:8551 \
   --l2.jwt-secret=./jwt.txt \
-  --rollup.config=/path/to/boba-community/rollup-configs/boba-sepolia.json \
+  --rollup.config=/path/to/boba/boba-community/rollup-configs/boba-sepolia-rollup.json \
+  --syncmode=execution-layer \
+  --p2p.bootnodes="enode://b3d3f7d947461138e850b5fa0c417b8c1c498d3d7edb17f662b2e2c99f096b756be238b07002e98a0a373ae23ff87054b68a9c6bb0ca55fb852d9969debfa6cd@52.201.174.220:0?discport=30301,enode://b75a091361d9ed31e2eac8e64b06ae26708f828042dde7dbed21b74869ecfead030ee25570c758e54ae7462d22f61afabec75e24d48a494a990b25bde009d5c5@3.230.114.57:0?discport=30301" \
   --rpc.addr=0.0.0.0 \
   --rpc.port=9545
 ```
+
+For mainnet, use `--rollup.config=/path/to/boba/boba-community/rollup-configs/boba-mainnet-rollup.json` and the mainnet consensus-layer bootnodes from the [bootnodes](4_bootnodes.md) page.
 
 ## Synchronization
 
