@@ -1,6 +1,6 @@
 # Overview
 
-The anchorage now is activate on Boba Mainnet and Boba Sepolia Testnet. For other networks, please refer to [Replica Node (Legacy)](https://github.com/bobanetwork/boba_legacy/blob/develop/boba_community/boba-node/README.md).
+The Anchorage upgrade is now active on Boba Mainnet and Boba Sepolia Testnet. For other networks, please refer to [Replica Node (Legacy)](https://github.com/bobanetwork/boba_legacy/blob/develop/boba_community/boba-node/README.md).
 
 The replica node section is a collection of guides and tutorials help you run your own BOBA node.
 
@@ -26,7 +26,7 @@ You don't always need Legacy Geth, though. It's mainly for those who want to kee
 
 ### Diagram
 
-The diagram below explains how three parts - the Rollup Node, Execution Client, and Legacy Geth - fit together to make a full Boba node. It uses examples called `op-node` for the Rollup Node and `op-reth` for the Execution Client.
+The diagram below explains how three parts - the Rollup Node, Execution Client, and Legacy Geth - fit together to make a full Boba node. It uses `op-node` for the Rollup Node and `op-reth` for the Execution Client.
 
 ![image](../../assets/diagrams/node-operator.png)
 

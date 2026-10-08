@@ -91,6 +91,8 @@ without a synced geth or erigon node.
 
 These are the source artifacts used to generate the initial reth database via `op-reth init-state`. They allow independent verification and reproducibility without needing a synced geth/erigon node.
 
+> Most operators do not need these — use the pre-built **Initial databases** below (or a recent full snapshot), which require no `init-state` step. If you do rebuild from these artifacts with the bundled `init` service, rename them in your data directory to `reth-state.jsonl` and `header.rlp` (the exact names the service reads).
+
 | File | Description | Size | Download Link | Sha256sum |
 | ---- | ----------- | ---- | ------------- | --------- |
 | State dump | All accounts at migration block 1149019 in reth JSONL format | 150MB | [Link](https://boba-db.s3.us-east-2.amazonaws.com/mainnet/boba-mainnet-reth-state-initial.jsonl) | `1b226876bf6de17deed4865226ad87c77fd57dd43f47f67d5c870d937396463a` |

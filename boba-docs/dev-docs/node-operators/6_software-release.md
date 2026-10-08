@@ -2,7 +2,7 @@
 
 This page provides a list of the necessary versions of node software and instructions on how to keep them updated.
 
-Our latest releases, notes and changelogs can be found on Github. `op-node` releases can be found [here](https://github.com/bobanetwork/boba/tags) and `op-reth` releases can be found [here](https://github.com/ethereum-optimism/op-reth/releases).
+Our node clients are the upstream OP Labs images; their releases, notes and changelogs are on GitHub. `op-node` releases can be found [here](https://github.com/ethereum-optimism/optimism/releases?q=op-node) and `op-reth` releases can be found [here](https://github.com/ethereum-optimism/op-reth/releases).
 
 ## Required Version by Network
 
