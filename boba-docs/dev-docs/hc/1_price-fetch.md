@@ -57,4 +57,4 @@ To this, we can add our price fetching logic:
     }
 ```
 
-Note the call `HA.CallOffchain()`; this leverages Hybrid Compute's ability to access data and compute off-chain. This reduces the time and complexity it takes to perform this price fetch, evident in how quickly this fetching happens. You can test this contract with [this app](https://aa-hc-example-fe.onrender.com/), which includes a UI to clearly show the time (or lack thereof) Hybrid Compute takes to fetch the prices.
+Note the call `HA.CallOffchain()`; this leverages Hybrid Compute's ability to access data and compute off-chain. This reduces the time and complexity it takes to perform this price fetch.
