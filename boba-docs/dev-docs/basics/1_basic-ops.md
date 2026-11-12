@@ -15,7 +15,7 @@ To see examples of how to perform dozens of basic operations on Boba, you can al
 The Gas Price on L2 changes as part of the chain derivation protocol. The exact derivation is described in the [protocol documentation](https://github.com/ethereum-optimism/specs/blob/298e745a7aa2e0aa78b6f18eb88bf1c484c00c4a/specs/protocol/predeploys.md#gaspriceoracle). Like on Mainnet, the current gas price can be obtained via `.getGasPrice()`:
 
 ```javascript
-  this.L2Provider = new ethers.providers.StaticJsonRpcProvider('mainnet.boba.network')
+  this.L2Provider = new ethers.providers.StaticJsonRpcProvider('https://mainnet.boba.network')
 
   const gasPrice = await this.L2Provider.getGasPrice()
 
