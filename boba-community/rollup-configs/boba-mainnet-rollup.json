@@ -35,6 +35,8 @@
   },
   "granite_time": 1729753200,
   "holocene_time": 1738785600,
+  "isthmus_time": 1796058000,
+  "jovian_time": 1796230800,
   "l1_chain_id": 1,
   "l1_system_config_address": "0x158fd5715f16ac1f2dc959a299b383aaaf9b59eb",
   "l2_chain_id": 288,
