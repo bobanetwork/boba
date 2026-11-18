@@ -2,7 +2,7 @@
 
 This page provides a list of the necessary versions of node software and instructions on how to keep them updated.
 
-Our node clients are the upstream OP Labs images; their releases, notes and changelogs are on GitHub. `op-node` releases can be found [here](https://github.com/ethereum-optimism/optimism/releases?q=op-node) and `op-reth` releases can be found [here](https://github.com/ethereum-optimism/op-reth/releases).
+Our node clients are the upstream OP Labs images; their releases, notes and changelogs are on GitHub. `op-node` releases can be found [here](https://github.com/ethereum-optimism/optimism/releases?q=op-node) and `op-reth` releases can be found [here](https://github.com/ethereum-optimism/optimism/releases?q=op-reth).
 
 ## Required Version by Network
 
@@ -10,8 +10,8 @@ These are the minimal required versions for node software by network. **op-reth 
 
 | Network          | op-node                                                      | op-reth                                                        |
 | ---------------- | ------------------------------------------------------------ | -------------------------------------------------------------- |
-| Boba Mainnet | [v1.19.7](https://github.com/ethereum-optimism/optimism/releases/tag/op-node/v1.19.7) | [v2.4.4](https://github.com/ethereum-optimism/op-reth/releases) |
-| Boba Sepolia | [v1.19.7](https://github.com/ethereum-optimism/optimism/releases/tag/op-node/v1.19.7) | [v2.4.4](https://github.com/ethereum-optimism/op-reth/releases) |
+| Boba Mainnet | [v1.20.1](https://github.com/ethereum-optimism/optimism/releases/tag/op-node/v1.20.1) | [v2.8.1](https://github.com/ethereum-optimism/optimism/releases/tag/op-reth/v2.8.1) |
+| Boba Sepolia | [v1.20.1](https://github.com/ethereum-optimism/optimism/releases/tag/op-node/v1.20.1) | [v2.8.1](https://github.com/ethereum-optimism/optimism/releases/tag/op-reth/v2.8.1) |
 
 > **Note:** op-reth and op-node are both published by OP Labs (`us-docker.pkg.dev/oplabs-tools-artifacts/images/{op-reth,op-node}`). Neither image includes Boba as a built-in network — the Boba chain spec for op-reth is supplied via a mounted JSON file, and the Boba rollup config for op-node likewise. See [`boba-community/chainspecs/`](https://github.com/bobanetwork/boba/tree/develop/boba-community/chainspecs) and [`boba-community/rollup-configs/`](https://github.com/bobanetwork/boba/tree/develop/boba-community/rollup-configs) for the JSON files and their regeneration procedures.
 
