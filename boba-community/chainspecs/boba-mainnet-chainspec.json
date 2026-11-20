@@ -22,6 +22,8 @@
     "holoceneTime": 1738785600,
     "homesteadBlock": 0,
     "istanbulBlock": 0,
+    "isthmusTime": 1796058000,
+    "jovianTime": 1796230800,
     "londonBlock": 0,
     "mergeNetsplitBlock": 0,
     "muirGlacierBlock": 0,
@@ -31,6 +33,7 @@
       "eip1559Elasticity": 6
     },
     "petersburgBlock": 0,
+    "pragueTime": 1796058000,
     "regolithTime": 0,
     "shanghaiTime": 1713302879,
     "terminalTotalDifficulty": 0,

@@ -9,13 +9,18 @@ These JSON files are op-reth chain specifications for Boba networks, in the form
 
 Each file is a genesis configuration — the chain config and OVM-era genesis block 0 header metadata that op-reth needs to construct an `OpChainSpec`. These are *not* full L2 genesis files: they do not contain an `alloc` section with initial account states. The L2 state is imported separately via `op-reth init-state` from a state dump (see [`../scripts/geth-to-reth/`](../scripts/geth-to-reth/)).
 
-For **`boba-mainnet-chainspec.json` (mainnet)**, the only field we override versus the upstream OP Labs op-reth's built-in spec is `bedrockBlock` (the L2 block at which Boba migrated from OVM to EVM — 1149019). Everything else (chainId, hardfork timestamps, OP Stack `optimism` config, OVM-era genesis block 0 metadata) is left at the upstream default.
+Both files override `bedrockBlock` (the L2 block at which Boba migrated from OVM to EVM — 1149019 on mainnet, 511 on Sepolia) and also carry the **Isthmus, Jovian, and Prague hardfork activation times** (`isthmusTime` / `jovianTime` / `pragueTime`). These forks have not yet been merged into the [superchain-registry](https://github.com/ethereum-optimism/superchain-registry), so the upstream image's built-in `--chain=boba` / `--chain=boba-sepolia` specs do **not** contain them. Supplying these files is therefore **mandatory** on both networks: a node started with the built-in spec would run against a stale fork schedule and diverge at the fork boundary. The committed files are the canonical specs; run op-reth against them directly (see [Regenerating these files](#regenerating-these-files) for how they are produced).
 
-For **`boba-sepolia-chainspec.json`**, in addition to `bedrockBlock` (511) we also carry the **Isthmus, Jovian, and Prague hardfork activation times** (`isthmusTime` / `jovianTime` / `pragueTime`). These forks have not yet been merged into the [superchain-registry](https://github.com/ethereum-optimism/superchain-registry), so the upstream image's built-in `--chain=boba-sepolia` spec does **not** contain them. Supplying this file is therefore **mandatory** on Sepolia — a node started with `--chain=boba-sepolia` would run against a stale fork schedule and diverge at the fork boundary. The committed `boba-sepolia-chainspec.json` is the canonical spec; run op-reth against it directly (see [Regenerating these files](#regenerating-these-files) for how it is produced).
+| Network | Isthmus / Prague | Jovian |
+|---|---|---|
+| Boba Mainnet | `1796058000` (2026-11-30 17:00 UTC) | `1796230800` (2026-12-02 17:00 UTC) |
+| Boba Sepolia | `1787227200` (2026-08-20 12:00 UTC) | `1787659200` (2026-08-25 12:00 UTC) |
+
+On mainnet, everything else (chainId, earlier hardfork timestamps, OP Stack `optimism` config, OVM-era genesis block 0 metadata) matches the upstream default.
 
 ## Why these files exist
 
-Boba is bundled in the upstream OP Labs op-reth image (`us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth`) — its `superchain-configs.tar` includes the Boba mainnet and sepolia configs. On mainnet, `--chain=boba` works out of the box for everything except `bedrockBlock`. On sepolia, `--chain=boba-sepolia` is additionally missing the pending Isthmus/Jovian/Prague fork times (see above), so the bundled spec cannot be used at all until those land in the registry.
+Boba is bundled in the upstream OP Labs op-reth image (`us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth`) — its `superchain-configs.tar` includes the Boba mainnet and sepolia configs. On both networks the bundled spec has the wrong `bedrockBlock` and is missing the pending Isthmus/Jovian/Prague fork times (see above), so it cannot be used at all until those land in the registry.
 
 `bedrockBlock` marks the L2 block where Boba migrated from the legacy OVM to the EVM under Bedrock. Pre-bedrock blocks cannot be executed by op-reth's EVM and require a separate l2geth (OVM) process to serve them. When `--rollup.historicalrpc=<legacy-l2geth-url>` is set, op-reth uses `bedrockBlock` to decide which requests to forward: requests for blocks before `bedrockBlock` go to the legacy node, the rest are served locally.
 
@@ -39,9 +44,12 @@ If/when the upstream registry is extended to express these fields and upstream o
 
 ### Path to deleting these files
 
-**`boba-mainnet-chainspec.json` (mainnet):** if the upstream PR linked above lands and we then push the missing `bedrockBlock` mapping into the [superchain-registry](https://github.com/ethereum-optimism/superchain-registry) (it's already there as `genesis.l2.number` — the PR just teaches op-reth to read it), upstream op-reth will produce the correct chain spec from `--chain=boba` directly and this JSON file can be retired.
+Both files can be retired once two things have happened:
 
-**`boba-sepolia-chainspec.json`:** in addition to the above, the Isthmus/Jovian/Prague fork times must first be merged into the superchain-registry and the upstream op-reth image rebuilt against it. Until then this file cannot be retired.
+1. The upstream PR linked above lands (the `bedrockBlock` mapping is already in the [superchain-registry](https://github.com/ethereum-optimism/superchain-registry) as `genesis.l2.number` — the PR just teaches op-reth to read it).
+2. The Isthmus/Jovian/Prague fork times are merged into the superchain-registry for the network.
+
+The upstream op-reth image then has to be rebuilt against both. After that, `--chain=boba` / `--chain=boba-sepolia` produces the correct chain spec directly.
 
 ## Regenerating these files
 
@@ -53,7 +61,7 @@ when refreshing.
 
 The committed `boba-sepolia-chainspec.json` is the canonical Boba Sepolia chain spec (it is
 already in the `--chain=<path>` genesis format op-reth expects, with an empty
-`alloc`). It should not need regenerating unless Boba Sepolia activates a new
+`alloc`). It should not need regenerating unless Boba Sepolia schedules a new
 hardfork.
 
 <!-- Maintainer note: the file is refreshed from the RaaS provider endpoint that
@@ -66,19 +74,25 @@ curl -fsSL https://raas-backend.g.alchemy.com/rollups/boba-sepolia/genesis.json 
 
 ### boba-mainnet-chainspec.json (mainnet)
 
-To regenerate the mainnet spec from the upstream bundled spec:
+The committed `boba-mainnet-chainspec.json` is the canonical Boba Mainnet chain spec,
+supplied by the Boba team with the scheduled Isthmus/Jovian/Prague times. It should
+not need regenerating unless Boba Mainnet schedules a new hardfork. To rebuild it
+from the upstream bundled spec:
 
 ```bash
 docker run --rm us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth:v2.3.1 dump-genesis --chain boba 2>/dev/null \
   | tail -n +2 \
-  | jq -S '.config.bedrockBlock = 1149019' > boba-mainnet-chainspec.json
+  | jq -S '.config.bedrockBlock = 1149019
+          | .config.isthmusTime = 1796058000
+          | .config.pragueTime  = 1796058000
+          | .config.jovianTime  = 1796230800' > boba-mainnet-chainspec.json
 ```
 
-(`tail -n +2` strips the leading log line that `op-reth` writes to stdout before the JSON; the `jq` step patches in the only field that the upstream bundled config leaves at 0.)
+(`tail -n +2` strips the leading log line that `op-reth` writes to stdout before the JSON; the `jq` step patches in `bedrockBlock`, which the upstream bundled config leaves at 0, plus the fork times the registry doesn't carry yet.)
 
 ## Verifying (mainnet)
 
-To diff the patched mainnet chain spec against the upstream built-in spec and confirm the only difference is `bedrockBlock`:
+To diff the patched mainnet chain spec against the upstream built-in spec and confirm the only differences are `bedrockBlock` and the pending fork times:
 
 ```bash
 docker run --rm us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth:v2.3.1 dump-genesis --chain boba 2>/dev/null \
@@ -86,5 +100,6 @@ docker run --rm us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth:v2.3.1 d
 docker run --rm -v "$PWD:/cs" us-docker.pkg.dev/oplabs-tools-artifacts/images/op-reth:v2.3.1 \
   dump-genesis --chain /cs/boba-mainnet-chainspec.json 2>/dev/null | tail -n +2 > /tmp/ours.json
 diff /tmp/upstream.json /tmp/ours.json
-# Expected: a single hunk replacing "bedrockBlock": 0 with "bedrockBlock": 1149019
+# Expected: "bedrockBlock": 0 -> 1149019, plus added isthmusTime/pragueTime (1796058000)
+# and jovianTime (1796230800)
 ```

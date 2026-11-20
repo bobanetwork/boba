@@ -13,13 +13,18 @@ Each file describes the rollup's L1/L2 genesis anchor, hardfork timestamps, batc
 
 These rollup configs let us run the **upstream OP Labs op-node image** (`us-docker.pkg.dev/oplabs-tools-artifacts/images/op-node`) with Boba — Boba is not in op-node's built-in network list, so the rollup config is supplied at runtime via `--rollup.config=<path>` instead of `--network=boba-{mainnet,sepolia}`.
 
-For **Boba Sepolia**, supplying this file is now **mandatory**, not just a convenience: the Isthmus and Jovian hardfork activation times have not yet been merged into the [superchain-registry](https://github.com/ethereum-optimism/superchain-registry). Neither the upstream `--network=boba-sepolia` config nor the Boba-built op-node's built-in network carries those fork times, so a node started without `--rollup.config` would derive blocks against a stale fork schedule and diverge. Run with this file until the hardforks land in the registry and the images are rebuilt against it.
+On **both networks**, supplying this file is now **mandatory**, not just a convenience: the Isthmus and Jovian hardfork activation times have not yet been merged into the [superchain-registry](https://github.com/ethereum-optimism/superchain-registry). Neither the upstream network configs nor the Boba-built op-node's built-in networks carry those fork times, so a node started without `--rollup.config` would derive blocks against a stale fork schedule and diverge. Run with these files until the hardforks land in the registry and the images are rebuilt against it.
+
+| Network | `isthmus_time` | `jovian_time` |
+|---|---|---|
+| Boba Mainnet | `1796058000` (2026-11-30 17:00 UTC) | `1796230800` (2026-12-02 17:00 UTC) |
+| Boba Sepolia | `1787227200` (2026-08-20 12:00 UTC) | `1787659200` (2026-08-25 12:00 UTC) |
 
 ## Regenerating these files
 
 The `boba-sepolia-rollup.json` committed here is the canonical rollup config for Boba
 Sepolia; run op-node against it directly. It should not need regenerating unless
-Boba Sepolia activates a new hardfork.
+Boba Sepolia schedules a new hardfork.
 
 Both committed files are normalized with keys sorted lexicographically (`jq -S`)
 so that regenerating them produces a minimal, reviewable diff. Keep the `-S`
@@ -33,9 +38,10 @@ when refreshing.
 curl -fsSL https://raas-backend.g.alchemy.com/rollups/boba-sepolia/rollup.json | jq -S . > boba-sepolia-rollup.json
 ```
 
-`boba-mainnet-rollup.json` was produced from the boba-built op-node and should not need regenerating unless Boba Mainnet activates a new hardfork:
+`boba-mainnet-rollup.json` is the canonical rollup config for Boba Mainnet. It was produced from the boba-built op-node, with the scheduled Isthmus/Jovian times (supplied by the Boba team) patched in. It should not need regenerating unless Boba Mainnet schedules a new hardfork:
 
 ```bash
 docker run --rm us-docker.pkg.dev/boba-392114/bobanetwork-tools-artifacts/images/op-node:v1.16.5 \
-  op-node networks dump-rollup-config --network=boba-mainnet | jq -S . > boba-mainnet-rollup.json
+  op-node networks dump-rollup-config --network=boba-mainnet \
+  | jq -S '.isthmus_time = 1796058000 | .jovian_time = 1796230800' > boba-mainnet-rollup.json
 ```
