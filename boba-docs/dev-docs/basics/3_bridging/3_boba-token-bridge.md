@@ -10,6 +10,10 @@ The BOBA Token Bridge is composed of two main contracts the [`EthBridge` (opens 
 
 Here we'll go over the basics of using this bridge to move BOBA tokens between Layer 1s.
 
+:::warning Known issue: ETH → BNB deposits currently revert
+Since LayerZero moved the V1 default library to ULNv301 (Aug 4, 2026), calls that pass empty `adapterParams` (`'0x'`, as in the examples below) revert with `LZ_ULN_InvalidWorkerOptions`. The deployed `Proxy__EthBridgeToBNB` also requires empty `adapterParams` and has no `setUseCustomAdapterParams`, so this cannot be worked around client-side. A bridge implementation upgrade is required; until it ships, **do not send funds through this bridge** and treat the examples below as non-working. The BNB → Ethereum direction is untested and is likely affected too. See [LayerZero's security update](https://layerzero.network/blog/ongoing-security-updates-3). This page will be updated once the upgrade is live.
+:::
+
 ## Bridge Boba Tokens from Ethereum
 
 For normal users, bridging can be accomplished simply via the [Light Bridge](light-bridge).
